@@ -1,0 +1,174 @@
+/* Auth page — bright, laconic, subtle wow */
+
+.root {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 767px) {
+  .root {
+    padding: 12px;
+    align-items: center;
+    min-height: 100dvh;
+  }
+}
+
+/* Animated gradient background */
+.bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #e8f7f4 0%, #f0faf8 25%, #d4f1e8 50%, #e0f2ee 75%, #c8ede4 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 18s ease infinite;
+}
+
+/* Soft orbs for depth */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.orb1 {
+  width: 400px;
+  height: 400px;
+  background: linear-gradient(135deg, #50BFA0, #3FFFA3);
+  top: -100px;
+  right: -100px;
+  animation: float 12s ease-in-out infinite;
+}
+
+.orb2 {
+  width: 320px;
+  height: 320px;
+  background: linear-gradient(135deg, #1F6A5C, #50BFA0);
+  bottom: -80px;
+  left: -80px;
+  animation: float 14s ease-in-out infinite 1.5s;
+}
+
+.orb3 {
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(135deg, #3FFFA3, #50BFA0);
+  top: 50%;
+  left: 20%;
+  animation: float 10s ease-in-out infinite 0.5s;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(20px, -20px) scale(1.05); }
+  66% { transform: translate(-15px, 15px) scale(0.98); }
+}
+
+/* Glass card */
+.card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  padding: 40px 36px;
+  box-sizing: border-box;
+  overflow: visible;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.06),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  animation: cardIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #0f172a;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: #64748b;
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+}
+
+.errorText {
+  font-size: 12px;
+  color: #dc2626;
+}
+
+.successText {
+  font-size: 12px;
+  color: #059669;
+}
+
+.toggle {
+  font-size: 14px;
+  color: #50BFA0;
+  text-align: center;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.toggle:hover {
+  color: #1F6A5C;
+  text-decoration: underline;
+}
+
+@media (max-width: 767px) {
+  .card {
+    padding: 24px 20px;
+  }
+  .title {
+    font-size: 1.5rem;
+  }
+  .subtitle {
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+  }
+}

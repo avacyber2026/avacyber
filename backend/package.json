@@ -1,0 +1,28 @@
+{
+  "name": "secureconnect-backend",
+  "version": "1.0.0",
+  "description": "SecureConnect backend API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "db:init": "node db/runInit.js",
+    "db:seed": "node db/seed.js",
+    "db:seed:tickets": "node db/seedTicketsFromFiles.js",
+    "db:timeline": "node db/runTimelineMigration.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "exceljs": "^4.4.0",
+    "express": "^4.21.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.1.1",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^8.0.3",
+    "openai": "^6.32.0",
+    "pg": "^8.12.0",
+    "ws": "^8.20.0"
+  }
+}

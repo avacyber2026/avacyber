@@ -1,0 +1,152 @@
+Previously defined:
+
+let tickets = [
+    {
+        id: 214305,
+        title: 'Logon from suspicious location',
+        text: 'Hello, \nSecurity Operations Center has detected suspicious activity related to your account/computer.\n\nWe have observed a sign-in to your work account from a new/unfamiliar location different from your primary location based on Active Directoty.\nThe sign-in has happened on 08.03.24 at 20:03:45 from Bogota, Colombia, IP 98.98.26.155. \n\nPlease, confirm whether you are aware of this activity, or whether you are not informed about any reason of signing-in from this location. \n\nThank you.',
+        status: 'New',
+        priority: 'Medium',
+        fromUser: 'security.analyst@secops.com',
+        type: 'Activity Verification',
+        answer: ''
+    },
+    {
+        id: 261560,
+        title: 'Computer infected with malware',
+        text: 'Hello, \nDuring regular operations activities Security Operations Center has detected unusual activity on your work computer. \n\nBased upon the results of our analysis we have observed an execution of malicious .vbs script on your computer, which led a communication to a malicious external IP. \n\nWe have found that the infection started from downloading a file.zip file from Google Drive link. However, it seems that this link was found by you from an email, because the file is password protected. \n\nSince we haven`t found any related email in your work email communication, we belive that this link was present in some of your personal emails, for exmaple Gmail or otehr email client. \n\nPlease, let us know if you are aware of any email communication as described above. We hope for your cooperation, which will help us to protect the company`s environment. \n\nThank you.',
+        status: 'New',
+        priority: 'High',
+        fromUser: 'security.analyst@secops.com',
+        type: 'Activity Verification',
+        answer: ''
+    },
+    {
+        id: 601529,
+        title: 'Powershell history log modification',
+        text: 'Hello, \nSecurity Operations Center has detected suspicious activity related to your account/computer. \n\nWith the release of PowerShell V5 on Windows 10 operating systems, all commands executed within a PowerShell session are stored to a user-specific history log on disk. While the ability to review previously executed commands is primarily designed to enhance user experience, the log file can also be hugely useful during forensic investigations. It enables incident responders to determine the exact commands executed during a malicious PowerShell session, which is generally a blind spot for EDR platforms. The modification of this log file by any process other than PowerShell itself would indicate that the file is being tampered with by an attacker in order to evade being detected during a forensic investigation. \n\nWe have observed a modification of Powershell history file on your work computer. Please, clarify if you are aware of such activity? \n\nThank you.',
+        status: 'New',
+        priority: 'Medium',
+        fromUser: 'security.analyst@secops.com',
+        type: 'Activity Verification',
+        answer: ''
+    },
+
+ {
+        id: 772789,
+        title: 'Invoice scam',
+        text: 'Hello, \n\nWe wish to bring to your attention that we have identified a security breach involving one of our client`s email accounts. It has come to our notice that unauthorized access was gained to their payroll email account, resulting in the submission of a manipulated invoice with a falsified IBAN number. \n\ne are asking you to be extra careful when working with any invoice coming from this client. Specifically, please exercise vigilance regarding communications from their standard finance email address, which has been compromised. \n\nThank you.',
+        status: 'New',
+        priority: 'High',
+        fromUser: 'security.analyst@secops.com',
+        type: 'Security Announcement',
+        answer: ''
+    }
+];
+
+
+
+
+
+
+
+
+
+
+
+New data for the tickets:
+
+let tickets = [
+{
+id: 782441,
+title: 'Installation of software from unknown source',
+text: 'Hello, \nSecurity Operations Center has detected unusual activity related to your work computer.\n\nWe have identified an installation of Git software that was downloaded from an unknown external source instead of the official Git distribution website.\n\nGiven your department role in Finance, we would like to verify whether you are aware of this installation and whether there was a legitimate business reason for downloading Git from this location.\n\nPlease confirm if you initiated this installation or if you are aware of this activity.\n\nThank you.',
+status: 'New',
+priority: 'Medium',
+fromUser: 'security.analyst@secops.com',
+type: 'Activity Verification',
+answer: ''
+},
+{
+id: 553118,
+title: 'Installation of Kali Linux detected',
+text: 'Hello, \nSecurity Operations Center has detected unusual activity related to your work computer.\n\nWe have identified an installation of the Kali Linux operating system on your machine. Kali Linux is a specialized distribution commonly used for penetration testing and security research.\n\nSince this type of software is not typically required for standard business operations, we would like to verify whether this installation was authorized and required for your work activities.\n\nPlease confirm whether you initiated this installation and provide additional context regarding its purpose.\n\nThank you.',
+status: 'New',
+priority: 'High',
+fromUser: 'security.analyst@secops.com',
+type: 'Activity Verification',
+answer: ''
+},
+{
+id: 337906,
+title: 'Malware infection related to USB device',
+text: 'Hello, \nSecurity Operations Center has detected malicious activity related to your work computer.\n\nBased on our analysis, your machine was recently infected with Sality malware. Our investigation indicates that the infection most likely occurred through an infected USB storage device that was connected to your computer.\n\nWe have identified the serial number of the USB device involved in this activity.\n\nPlease let us know if you recognize using a USB device recently and whether you are aware of any files transferred from external storage.\n\nYour cooperation will help us identify the source of the infection and prevent further spread within the company environment.\n\nThank you.',
+status: 'New',
+priority: 'High',
+fromUser: 'security.analyst@secops.com',
+type: 'Activity Verification',
+answer: ''
+}
+];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Security Announcement:
+let tickets = [
+{
+id: 772790,
+title: 'Security intelligence update – Middle East situation',
+text: 'Hello, \n\nAs you are aware, there is an ongoing geopolitical situation in the Middle East. The Security Operations Center is currently monitoring the situation closely and reviewing potential cyber threats that may arise from this development.\n\nAt this time, we can confirm that we have not observed any activity in our environment related to Iranian-based threat actors.\n\nWe will continue monitoring the situation and will inform you immediately if any relevant activity is identified.\n\nThank you.',
+status: 'New',
+priority: 'Medium',
+fromUser: 'security.analyst@secops.com',
+type: 'Security Announcement',
+answer: ''
+},
+{
+id: 772791,
+title: 'Social engineering campaign impersonating CEO',
+text: 'Hello, \n\nWe would like to inform you that we have identified an ongoing social engineering campaign targeting our users.\n\nIn this campaign, attackers are impersonating our CEO and sending messages asking employees to contact them via a personal phone number. This is a scam attempt designed to collect information or request unauthorized actions.\n\nIf you receive such communication, please do not respond and report it immediately to the Security Operations Center.\n\nThank you.',
+status: 'New',
+priority: 'High',
+fromUser: 'security.analyst@secops.com',
+type: 'Security Announcement',
+answer: ''
+},
+{
+id: 772792,
+title: 'Phone scam impersonating IT department',
+text: 'Hello, \n\nWe would like to notify you about an ongoing phone-based social engineering campaign.\n\nAttackers may call employees while pretending to be members of the IT department and request sensitive information or ask users to perform certain actions on their computers.\n\nPlease remember that our IT team will never ask for passwords or sensitive account information over the phone. If you receive such a call, please refuse the request and report the incident to the Security Operations Center.\n\nThank you.',
+status: 'New',
+priority: 'High',
+fromUser: 'security.analyst@secops.com',
+type: 'Security Announcement',
+answer: ''
+},
+{
+id: 772793,
+title: 'Compromised customer email account',
+text: 'Hello, \n\nWe would like to inform you that we have received notification that one of the email accounts belonging to your customer has been compromised.\n\nDue to the possibility of Business Email Compromise (BEC), please treat any communication received from this customer with caution.\n\nUntil further notice, please suspend financial transactions and verify any requests coming from this customer through alternative communication channels.\n\nWe will inform you once the situation has been resolved.\n\nThank you.',
+status: 'New',
+priority: 'High',
+fromUser: 'security.analyst@secops.com',
+type: 'Security Announcement',
+answer: ''
+}
+];

@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.mobile-menu-slide {
+  animation: slideInRight 0.25s ease-out forwards;
+}
+
+:root {
+  /* Dark theme — landing background */
+  --background: #103E36;
+  --foreground: #F4F3F4;
+  /* AVA cyber brand palette (only these 6 colors) */
+  --ava-page: #103E36;
+  --ava-block: #1F6A5C;
+  --ava-primary: #50BFA0;
+  --ava-accent: #3FFFA3;
+  --ava-light: #F4F3F4;
+  --ava-dark: #1C1E1C;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--ava-primary);
+  --font-sans: var(--font-inter), "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), "Inter", system-ui, sans-serif;
+}
+
+/* AVA cyber — dark theme utility classes (palette only) */
+.bg-ava-page { background-color: #103E36; }
+.bg-ava-block { background-color: #1F6A5C; }
+.bg-ava-dark { background-color: #1C1E1C; }
+.text-ava-light { color: #F4F3F4; }
+.text-ava-muted { color: #50BFA0; }
+.border-ava { border-color: #1F6A5C; }
+.border-ava-primary { border-color: rgba(80, 191, 160, 0.3); }
+
+.bg-background-light {
+  background-color: #103E36;
+}
+
+.bg-background-dark {
+  background-color: #1C1E1C;
+}
+
+.bg-primary {
+  background-color: #50BFA0;
+}
+
+.text-primary {
+  color: #50BFA0;
+}
+
+.font-display,
+.font-serif {
+  font-family: var(--font-rethink), "Rethink Sans", "Inter", system-ui, sans-serif;
+}
+
+/* Escaped class names for Tailwind-style color modifiers */
+.bg-primary\/10 {
+  background-color: rgba(80, 191, 160, 0.1);
+}
+
+.bg-primary\/20 {
+  background-color: rgba(80, 191, 160, 0.2);
+}
+
+.bg-primary\/40 {
+  background-color: rgba(80, 191, 160, 0.4);
+}
+
+.bg-primary\/5 {
+  background-color: rgba(80, 191, 160, 0.05);
+}
+
+.ring-primary\/5 {
+  box-shadow: 0 0 0 4px rgba(80, 191, 160, 0.05);
+}
+
+.shadow-primary\/20 {
+  box-shadow: 0 10px 30px rgba(80, 191, 160, 0.2);
+}
+
+.border-primary\/20 {
+  border-color: rgba(80, 191, 160, 0.2);
+}
+
+.border-primary\/30 {
+  border-color: rgba(80, 191, 160, 0.3);
+}

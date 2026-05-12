@@ -1,0 +1,153 @@
+.wrap {
+  border-radius: 12px;
+  border: 1px solid rgb(229 231 235);
+  overflow: hidden;
+  background: white;
+}
+
+.dark .wrap {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgb(35 37 34);
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 8px 10px;
+  border-bottom: 1px solid rgb(229 231 235);
+  background: rgb(249 250 251);
+}
+
+.dark .toolbar {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.tlBtn {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgb(55 65 81);
+  background: white;
+  border: 1px solid rgb(229 231 235);
+  line-height: 1.2;
+}
+
+.dark .tlBtn {
+  color: rgb(209 213 219);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.tlBtn:hover {
+  background: rgb(243 244 246);
+}
+
+.dark .tlBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tlBtnActive {
+  border-color: rgb(31 106 92);
+  color: rgb(31 106 92);
+  background: rgba(31, 106, 92, 0.08);
+}
+
+.dark .tlBtnActive {
+  border-color: rgb(80 191 160);
+  color: rgb(80 191 160);
+  background: rgba(80, 191, 160, 0.12);
+}
+
+.editorArea {
+  min-height: 220px;
+  padding: 12px 14px;
+}
+
+.proseMirror {
+  min-height: 200px;
+  outline: none;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgb(17 24 39);
+}
+
+.dark .proseMirror {
+  color: rgb(243 244 246);
+}
+
+.proseMirror :global(p) {
+  margin: 0.5rem 0;
+}
+
+.proseMirror :global(p:first-child) {
+  margin-top: 0;
+}
+
+.proseMirror :global(p:last-child) {
+  margin-bottom: 0;
+}
+
+.proseMirror :global(ul),
+.proseMirror :global(ol) {
+  margin: 0.5rem 0;
+  padding-left: 1.35rem;
+}
+
+.proseMirror :global(h1) {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0.75rem 0 0.5rem;
+}
+
+.proseMirror :global(h2) {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0.65rem 0 0.45rem;
+}
+
+.proseMirror :global(h3) {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0.55rem 0 0.35rem;
+}
+
+.proseMirror :global(a) {
+  color: rgb(31 106 92);
+  text-decoration: underline;
+}
+
+.dark .proseMirror :global(a) {
+  color: rgb(80 191 160);
+}
+
+.proseMirror :global(blockquote) {
+  margin: 0.65rem 0;
+  padding-left: 0.85rem;
+  border-left: 3px solid rgba(31, 106, 92, 0.45);
+}
+
+.skeleton {
+  min-height: 220px;
+  border-radius: 12px;
+  border: 1px solid rgb(229 231 235);
+  background: rgb(249 250 251);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.dark .skeleton {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.65;
+  }
+}

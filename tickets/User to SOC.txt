@@ -1,0 +1,142 @@
+let tickets = [
+{
+id: 110231,
+title: 'Lost company laptop',
+text: 'Hello, \nI would like to report that my company laptop is missing. I believe I may have lost it while traveling today. Please let me know what I should do next and if there are any steps needed to secure my account or the device.\n\nThank you.',
+status: 'New',
+priority: 'High',
+fromUser: 'employee.user@company.com',
+type: 'User Report',
+answer: ''
+},
+{
+id: 110232,
+title: 'Laptop stolen',
+text: 'Hello, \nMy company laptop was stolen earlier today. I noticed it missing from my bag and I cannot locate it. I am concerned that someone may try to access company information. Please advise on the next steps.\n\nThank you.',
+status: 'New',
+priority: 'High',
+fromUser: 'employee.user@company.com',
+type: 'User Report',
+answer: ''
+},
+{
+id: 110233,
+title: 'Possible payroll account change',
+text: 'Hello, \nPayroll informed me that my bank account details were recently changed and that my salary was sent to a new account. I did not request any change to my payroll information. Could you please investigate if my account may have been compromised?\n\nThank you.',
+status: 'New',
+priority: 'High',
+fromUser: 'employee.user@company.com',
+type: 'User Report',
+answer: ''
+},
+{
+id: 110234,
+title: 'Too many MFA notifications',
+text: 'Hello, \nToday I received many MFA approval notifications on my phone even though I was not trying to log in. After many requests I accidentally approved one of them. I am not sure if this could be suspicious. Could you please check if someone tried to access my account?\n\nThank you.',
+status: 'New',
+priority: 'High',
+fromUser: 'employee.user@company.com',
+type: 'User Report',
+answer: ''
+},
+{
+id: 110235,
+title: 'Accidentally sent sensitive file externally',
+text: 'Hello, \nI believe I accidentally sent a file containing internal information to an external partner by email. I realized it shortly after sending it and wanted to report it immediately. Please advise if any action is required.\n\nThank you.',
+status: 'New',
+priority: 'Medium',
+fromUser: 'employee.user@company.com',
+type: 'User Report',
+answer: ''
+},
+{
+id: 110236,
+title: 'CMD window appearing in background',
+text: 'Hello, \nI noticed a command prompt window (cmd.exe) briefly appearing in the background on my computer. I did not open it myself and I am not sure what caused it. Could you please check if this is normal?\n\nThank you.',
+status: 'New',
+priority: 'Medium',
+fromUser: 'employee.user@company.com',
+type: 'User Report',
+answer: ''
+},
+{
+id: 110237,
+title: 'Computer running very slow',
+text: 'Hello, \nMy computer has been running very slowly today and the CPU usage seems to be very high even when I am not running many applications. Could you please check if something unusual might be happening?\n\nThank you.',
+status: 'New',
+priority: 'Low',
+fromUser: 'employee.user@company.com',
+type: 'User Report',
+answer: ''
+},
+{
+id: 110238,
+title: 'Not receiving emails from client',
+text: 'Hello, \nOne of our clients told me they have sent several emails to me, but I cannot see any of them in my inbox. Could you please check if there might be an issue with my email account?\n\nThank you.',
+status: 'New',
+priority: 'Medium',
+fromUser: 'employee.user@company.com',
+type: 'User Report',
+answer: ''
+},
+{
+id: 110239,
+title: 'Payment sent but client did not receive it',
+text: 'Hello, \nI processed a payment to one of our clients, but they informed me that the money has not arrived in their account yet. I wanted to report this in case something unusual happened with the transaction.\n\nThank you.',
+status: 'New',
+priority: 'Medium',
+fromUser: 'employee.user@company.com',
+type: 'User Report',
+answer: ''
+},
+{
+id: 110240,
+title: 'Received WhatsApp messages from CEO',
+text: 'Hello, \nI received messages on WhatsApp from someone claiming to be our CEO asking me to perform a task. It seemed unusual so I wanted to check if this might be a scam.\n\nThank you.',
+status: 'New',
+priority: 'High',
+fromUser: 'employee.user@company.com',
+type: 'User Report',
+answer: ''
+},
+{
+id: 110241,
+title: 'Phone call claiming to be IT department',
+text: 'Hello, \nI received a phone call from someone claiming to be from our IT department asking me to provide some information about my account. I was not sure if this was legitimate so I decided to report it.\n\nThank you.',
+status: 'New',
+priority: 'High',
+fromUser: 'employee.user@company.com',
+type: 'User Report',
+answer: ''
+},
+{
+id: 110242,
+title: 'Request to enable domain for training',
+text: 'Hello, \nI will be attending a security training session and was asked to access a specific domain for the training exercises. It seems to be blocked on my computer. Could you please enable access if it is allowed?\n\nThank you.',
+status: 'New',
+priority: 'Low',
+fromUser: 'employee.user@company.com',
+type: 'User Report',
+answer: ''
+},
+{
+id: 110243,
+title: 'Clicked suspicious link from personal email',
+text: 'Hello, \nI accidentally clicked a link from an email in my personal mailbox while using my work computer. I realized afterward that it might have been malicious. I wanted to report it in case any action is needed.\n\nThank you.',
+status: 'New',
+priority: 'High',
+fromUser: 'employee.user@company.com',
+type: 'User Report',
+answer: ''
+},
+{
+id: 110244,
+title: 'Unknown USB device used',
+text: 'Hello, \nI found a USB drive and inserted it into my computer to see what was on it. After that my computer started showing many ads and behaving strangely. I thought it would be best to report this.\n\nThank you.',
+status: 'New',
+priority: 'High',
+fromUser: 'employee.user@company.com',
+type: 'User Report',
+answer: ''
+}
+];

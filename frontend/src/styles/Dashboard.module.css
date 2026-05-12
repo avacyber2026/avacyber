@@ -1,0 +1,129 @@
+.shell {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Brand greens: primary #1F6A5C, primaryDark #103E36, primaryLight #50BFA0 */
+.mesh {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(
+    125deg,
+    #ecfdf5 0%,
+    #d1fae5 24%,
+    #a7f3d0 48%,
+    #6ee7b7 72%,
+    #b8e8dd 100%
+  );
+}
+
+:global(.dark) .mesh {
+  background: linear-gradient(
+    125deg,
+    #0a1a16 0%,
+    #103e36 35%,
+    #143d35 55%,
+    #1f6a5c 100%
+  );
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(72px);
+  pointer-events: none;
+  opacity: 0.65;
+}
+
+:global(.dark) .blob {
+  opacity: 0.35;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.52);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow:
+    0 4px 24px -4px rgba(31, 106, 92, 0.14),
+    0 12px 48px -12px rgba(16, 62, 54, 0.08);
+}
+
+/* Тёмная тема: карточки #232522 на фоне #1C1E1C (app kit) */
+:global(.dark) .glass {
+  background: #232522;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  /* Мягкая тень без жёсткого градиента (меньше «полос» на тёмном фоне) */
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.07),
+    0 10px 32px -10px rgba(0, 0, 0, 0.28),
+    0 2px 8px -2px rgba(0, 0, 0, 0.2);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.glassStrong {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow:
+    0 4px 24px -4px rgba(31, 106, 92, 0.16),
+    0 12px 48px -12px rgba(16, 62, 54, 0.1);
+}
+
+:global(.dark) .glassStrong {
+  background: #2a2d2a;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08),
+    0 12px 36px -12px rgba(0, 0, 0, 0.3),
+    0 2px 10px -2px rgba(0, 0, 0, 0.22);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.stripedBar {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 4px,
+    rgba(255, 255, 255, 0.22) 4px,
+    rgba(255, 255, 255, 0.22) 5px
+  );
+}
+
+/* На тёмной теме полоски на градиенте бара почти незаметны */
+:global(.dark) .stripedBar {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 5px,
+    rgba(255, 255, 255, 0.05) 5px,
+    rgba(255, 255, 255, 0.05) 6px
+  );
+}
+
+.ringGlow {
+  filter: drop-shadow(0 0 20px rgba(80, 191, 160, 0.5));
+}
+
+:global(.dark) .ringGlow {
+  filter: drop-shadow(0 0 14px rgba(80, 191, 160, 0.22));
+}
+
+.profileShine {
+  background: linear-gradient(
+    135deg,
+    rgba(80, 191, 160, 0.45) 0%,
+    rgba(31, 106, 92, 0.35) 45%,
+    rgba(16, 62, 54, 0.4) 100%
+  );
+}

@@ -1,0 +1,64 @@
+{
+id: 904522,
+title: 'Phishing awareness campaign notification',
+text: 'Hello SOC team, \n\nThe GRC team would like to inform you that we will be conducting a phishing awareness campaign during the upcoming period.\n\nDuring this campaign, simulated phishing emails will be sent to employees in order to evaluate and improve phishing awareness within the organization.\n\nThe emails will originate from the following sender and domains that have already been whitelisted within the environment.\n\nPlease be aware that alerts related to these emails may be triggered during the campaign period. These alerts can be considered part of the simulation.\n\nThank you for your cooperation.',
+status: 'New',
+priority: 'Low',
+fromUser: 'grc.team@secops.com',
+type: 'Notification',
+answer: ''
+},
+
+
+let tickets = [
+{
+id: 904523,
+title: 'Unauthorized software installation detected',
+text: 'Hello GRC team, \n\nSecurity Operations Center has identified that a user installed a video game on a corporate workstation. The software appears to be unrelated to any business activities and may violate the company acceptable use policy.\n\nPlease advise whether further action or user notification is required according to current policy guidelines.\n\nThank you.',
+status: 'New',
+priority: 'Medium',
+fromUser: 'soc.analyst@secops.com',
+type: 'Policy Notification',
+answer: ''
+},
+{
+id: 904524,
+title: 'Cryptocurrency mining activity detected',
+text: 'Hello GRC team, \n\nSecurity Operations Center has detected activity on a corporate workstation consistent with cryptocurrency mining. The system appears to be running mining software that is utilizing corporate computing resources.\n\nSince this activity may violate company policies regarding acceptable use of corporate assets, we would like to inform GRC and request guidance on further action.\n\nThank you.',
+status: 'New',
+priority: 'High',
+fromUser: 'soc.analyst@secops.com',
+type: 'Policy Notification',
+answer: ''
+},
+{
+id: 904525,
+title: 'Use of unauthorized cloud storage service',
+text: 'Hello GRC team, \n\nSecurity Operations Center has identified repeated uploads of corporate files to an external cloud storage provider that is not approved by company policy.\n\nAs this may represent a potential policy violation related to data handling and storage, we are notifying the GRC team for review and guidance.\n\nThank you.',
+status: 'New',
+priority: 'Medium',
+fromUser: 'soc.analyst@secops.com',
+type: 'Policy Notification',
+answer: ''
+},
+{
+id: 904526,
+title: 'Use of personal email for company documents',
+text: 'Hello GRC team, \n\nSecurity Operations Center observed that a user sent several internal documents from their corporate mailbox to a personal email address.\n\nWhile the intent is currently unknown, this behavior may conflict with company data handling policies. Please advise if this case should be escalated for compliance review.\n\nThank you.',
+status: 'New',
+priority: 'Medium',
+fromUser: 'soc.analyst@secops.com',
+type: 'Policy Notification',
+answer: ''
+},
+{
+id: 904527,
+title: 'Use of unauthorized remote access software',
+text: 'Hello GRC team, \n\nSecurity Operations Center detected the installation and usage of remote access software that is not approved within the corporate environment.\n\nSince the use of such tools may conflict with company security policies, we are informing GRC to determine whether further investigation or user awareness actions are required.\n\nThank you.',
+status: 'New',
+priority: 'High',
+fromUser: 'soc.analyst@secops.com',
+type: 'Policy Notification',
+answer: ''
+}
+];

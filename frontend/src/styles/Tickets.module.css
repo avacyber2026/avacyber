@@ -1,0 +1,341 @@
+/* Синхронно с Report.module.css и --app-sidebar-width из layout */
+.main {
+    width: calc(100% - var(--app-sidebar-width, 308px));
+    margin-left: var(--app-sidebar-width, 308px);
+    min-height: 90vh;
+    background: transparent;
+    padding: 24px 40px;
+}
+
+.container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+}
+
+.title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: inherit;
+    letter-spacing: -0.02em;
+}
+
+.subtitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: inherit;
+}
+
+.createTicketBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.userSelect {
+    width: 500px;
+    max-width: 100%;
+    border: solid 1px #edf2f6;
+    border-radius: 20px;
+    height: 50px;
+    padding: 20px;
+}
+
+.userSelectText {
+    color: inherit;
+}
+
+.userSelectButton {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.input {
+    width: 500px;
+    max-width: 100%;
+    border: solid 1px #edf2f6;
+    border-radius: 20px;
+    height: 50px;
+    padding: 20px;
+}
+
+.input::placeholder {
+    color: #9ca3af;
+}
+
+.textarea {
+    height: auto;
+    width: 500px;
+    max-width: 100%;
+    border: solid 1px #edf2f6;
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.textarea::placeholder {
+    color: #9ca3af;
+}
+
+.line {
+    display: flex;
+    flex-direction: row;
+    width: 500px;
+    max-width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.lineHistory {
+    display: flex;
+    flex-direction: row;
+    width: 600px;
+    max-width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.priorityBlock {
+    width: 32%;
+    height: 50px;
+    border-radius: 20px;
+    border: solid 1px #edf2f6;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.buttonCreate {
+    width: 500px;
+}
+
+.emptyCircle {
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    border: solid 1px #edf2f6;
+}
+
+.completeCircle {
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    border: solid 1px #edf2f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.completeCircleEnter {
+    width: 13px;
+    height: 13px;
+    border-radius: 100%;
+    background-color: #50BFA0;
+}
+
+.createTicketBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 500px;
+}
+
+.historyBlock {
+    width: 600px;
+    max-width: 100%;
+    border-radius: 20px;
+    padding: 20px;
+    border: solid 1px #edf2f6;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.simpleTicketBlock {
+    width: 100%;
+    border-radius: 20px;
+    padding: 20px;
+    border: solid 1px #edf2f6;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.textBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.infoBlockLine {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.infoBlockUser {
+    border: solid 1px #edf2f6;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border-radius: 20px;
+}
+
+.parametrs {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.parametrsPriority {
+    border-radius: 20px;
+    padding: 5px 15px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.parametrsStatus {
+    border-radius: 20px;
+    padding: 5px 15px;
+    border: solid 1px red;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.parametrsId {
+    border-radius: 20px;
+    padding: 5px 15px;
+    border: solid 1px #edf2f6;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.border_red {
+    border: solid 1px red;
+    color: red;
+    user-select: none;
+}
+
+.border_yellow {
+    border: solid 1px gold;
+    color: gold;
+    user-select: none;
+}
+
+.border_green {
+    border: solid 1px green;
+    color: green;
+    user-select: none;
+}
+
+.border_white {
+    border: solid 1px #edf2f6;
+    color: #edf2f6;
+    user-select: none;
+}
+
+.simpleUserBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.simpleUserTicket {
+    width: 700px;
+    max-width: 100%;
+    border-radius: 20px;
+    padding: 20px;
+    border: solid 1px #edf2f6;
+}
+
+.blockUserLine {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.blockUserAnswers {
+    width: 75%;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.buttonCreateAnswer {
+    width: 25%;
+}
+
+.border_blue {
+    border: solid 2px #50BFA0;
+}
+
+.answerBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Mobile: full width, no sidebar offset, ensure padding overrides p-6 */
+@media (max-width: 767px) {
+    .main {
+        width: 100% !important;
+        margin-left: 0 !important;
+        padding: 76px 16px 24px !important;
+        min-height: calc(100vh - 56px);
+    }
+    .container {
+        flex-direction: column;
+        gap: 24px;
+    }
+    .title {
+        font-size: 28px;
+    }
+    .subtitle {
+        font-size: 22px;
+    }
+    .input,
+    .textarea,
+    .userSelect,
+    .buttonCreate,
+    .line,
+    .lineHistory,
+    .historyBlock,
+    .createTicketBlock,
+    .simpleUserTicket {
+        width: 100% !important;
+    }
+    .priorityBlock {
+        width: 100%;
+    }
+    .blockUserLine {
+        flex-direction: column;
+    }
+    .blockUserAnswers,
+    .buttonCreateAnswer {
+        width: 100%;
+    }
+    .infoBlockLine {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .parametrs {
+        flex-wrap: wrap;
+    }
+}

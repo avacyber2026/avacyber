@@ -1,0 +1,477 @@
+.main {
+    width: calc(100% - var(--app-sidebar-width, 308px));
+    margin-left: var(--app-sidebar-width, 308px);
+    min-height: 90vh;
+    background: transparent;
+    padding: 24px 40px;
+}
+
+.container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+}
+
+/* Right column: timeline of incident tickets */
+.container .createReportBlock:last-child {
+    min-width: 280px;
+    flex: 1;
+    max-width: 480px;
+}
+
+.title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: inherit;
+    letter-spacing: -0.02em;
+}
+
+.input {
+    width: 500px;
+    max-width: 100%;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    height: 44px;
+    padding: 0 14px;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #50BFA0;
+    box-shadow: 0 0 0 2px rgba(80, 191, 160, 0.2);
+}
+
+.input::placeholder {
+    color: #9ca3af;
+}
+
+/* Priority dropdown: black text in list (options) */
+.prioritySelect,
+.prioritySelect option {
+    color: #111;
+    background: #fff;
+}
+
+.dark .prioritySelect {
+    color: #e5e7eb;
+}
+
+.dark .prioritySelect option {
+    color: #111;
+    background: #fff;
+}
+
+.textarea {
+    height: auto;
+    width: 500px;
+    max-width: 100%;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 100px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.textarea:focus {
+    outline: none;
+    border-color: #50BFA0;
+    box-shadow: 0 0 0 2px rgba(80, 191, 160, 0.2);
+}
+
+.textarea::placeholder {
+    color: #9ca3af;
+}
+
+.createReportBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.buttonCreate {
+    width: 500px;
+    max-width: 100%;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+}
+
+.subtitle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: inherit;
+}
+
+/* Timeline: reference layout — comment row (avatar + input + post), then entries with avatar, name, time, card */
+.timelineWrap {
+    position: relative;
+    padding-left: 52px;
+    border-left: 2px solid #e5e7eb;
+    margin-left: 4px;
+}
+
+.dark .timelineWrap {
+    border-left-color: rgba(255, 255, 255, 0.2);
+}
+
+.timelineCommentRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.timelineAvatar {
+    position: absolute;
+    left: -46px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(80, 191, 160, 0.25);
+    color: #0d9488;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.dark .timelineAvatar {
+    background: rgba(80, 191, 160, 0.2);
+    color: #5eead4;
+}
+
+.timelineCommentInput {
+    flex: 1;
+    min-width: 0;
+    padding: 10px 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #fff;
+}
+
+.dark .timelineCommentInput {
+    background: #2c2f2c;
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #e5e7eb;
+}
+
+.timelineCommentInput::placeholder {
+    color: #9ca3af;
+}
+
+.timelinePostBtn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    background: #374151;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.dark .timelinePostBtn {
+    background: #4b5563;
+}
+
+.timelineItem {
+    position: relative;
+    margin-bottom: 24px;
+}
+
+.timelineEntryHead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.timelineEntryName {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111;
+}
+
+.dark .timelineEntryName {
+    color: #fff!important;
+}
+
+.timelineEntryTime {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.dark .timelineEntryTime {
+    color: #9ca3af;
+}
+
+.timelineTextPreview {
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.dark .timelineTextPreview {
+    color: #9ca3af;
+}
+
+.timelineEmpty {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.dark .timelineEmpty {
+    color: #9ca3af;
+}
+
+.historyBlock {
+    width: 100%;
+    max-width: 420px;
+    border-radius: 10px;
+    padding: 16px 20px;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: white;
+}
+
+.simpleTicketBlock {
+    width: 100%;
+    border-radius: 10px;
+    padding: 20px 24px;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: white;
+}
+
+.textBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.infoBlockLine {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.infoBlockUser {
+    border: 1px solid #e5e7eb;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.parametrs {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.parametrsPriority {
+    border-radius: 6px;
+    padding: 6px 12px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.parametrsStatus {
+    border-radius: 6px;
+    padding: 6px 12px;
+    border: 1px solid #e5e7eb;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.parametrsId {
+    border-radius: 6px;
+    padding: 6px 12px;
+    border: 1px solid #e5e7eb;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.border_red {
+    border: solid 1px red;
+    color: red;
+    user-select: none;
+}
+
+.border_yellow {
+    border: solid 1px gold;
+    color: gold;
+    user-select: none;
+}
+
+.border_green {
+    border: solid 1px green;
+    color: green;
+    user-select: none;
+}
+
+.border_white {
+    border: 1px solid #e5e7eb;
+    color: #9ca3af;
+    user-select: none;
+}
+
+/* Dark mode: .dark on html (ThemeContext / chakra-ui-color-mode) */
+.dark .main {
+    color: #e2e8f0;
+}
+
+.dark .historyBlock,
+.dark .simpleTicketBlock,
+.dark .simpleUserTicket {
+    background: #232522;
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.dark .input,
+.dark .textarea {
+    background: #2c2f2c !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: #f3f4f6 !important;
+}
+
+.dark .input::placeholder,
+.dark .textarea::placeholder {
+    color: #9ca3af !important;
+}
+
+.dark .infoBlockUser,
+.dark .parametrsId {
+    background: #2c2f2c !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: #f3f4f6 !important;
+}
+
+.similarReportItem {
+    padding: 8px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.dark .similarReportItem {
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.simpleUserBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.simpleUserTicket {
+    width: 700px;
+    max-width: 100%;
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    background: white;
+}
+
+.blockUserLine {
+    display: flex;
+    flex-direction: row;
+}
+
+.blockUserAnswers {
+    width: 75%;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.buttonCreateAnswer {
+    width: 25%;
+}
+
+.border_blue {
+    border: solid 2px #50BFA0;
+}
+
+.line {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;    
+}
+
+.reportPremium {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 20px;
+}
+
+/* Mobile: full width, no sidebar offset, ensure padding overrides p-6 */
+@media (max-width: 767px) {
+    .main {
+        width: 100% !important;
+        margin-left: 0 !important;
+        padding: 76px 16px 24px !important;
+        min-height: calc(100vh - 56px);
+    }
+    .container {
+        flex-direction: column;
+        gap: 24px;
+    }
+    .title {
+        font-size: 28px;
+    }
+    .subtitle {
+        font-size: 22px;
+    }
+    .input,
+    .textarea,
+    .buttonCreate,
+    .historyBlock,
+    .simpleUserTicket {
+        width: 100%;
+    }
+    .blockUserLine {
+        flex-direction: column;
+    }
+    .blockUserAnswers,
+    .buttonCreateAnswer {
+        width: 100%;
+    }
+    .infoBlockLine {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .parametrs {
+        flex-wrap: wrap;
+    }
+    .line {
+        flex-wrap: wrap;
+    }
+}

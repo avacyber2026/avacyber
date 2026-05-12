@@ -1,0 +1,265 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --app-sidebar-width: 308px;
+}
+
+/* Side menu: hide scrollbars (scroll still works) */
+.app-sidebar-nav-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.app-sidebar-nav-scroll::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Custom Select listbox: scroll without visible scrollbar */
+.ui-select-listbox {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.ui-select-listbox::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+@layer base {
+  p {
+    margin: 0;
+  }
+}
+
+/* Priority dropdown: black text in options list (Report + Report/create) */
+select[data-priority-select] option {
+  color: #111 !important;
+  background: #fff !important;
+}
+
+/* Light theme: explicit styles when html does NOT have .dark */
+html:not(.dark) .main,
+html:not(.dark) [class*="main"] {
+  background: #F4F3F4 !important;
+  color: #1f2937;
+}
+html:not(.dark) [class*="title"],
+html:not(.dark) [class*="subtitle"] {
+  color: #1f2937;
+}
+
+/* Dark theme: use .dark on html */
+.dark .main,
+.dark [class*="title"],
+.dark [class*="subtitle"] {
+  color: #f3f4f6;
+}
+
+.dark .main,
+.dark [class*="main"] {
+  background: #1C1E1C !important;
+}
+
+.dark [class*="createTicketBlock"] {
+  border-color: transparent;
+  background: transparent;
+}
+.dark [class*="historyBlock"],
+.dark [class*="simpleTicketBlock"],
+.dark [class*="simpleUserTicket"] {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: #232522;
+  color: #f3f4f6;
+}
+
+.dark .input,
+.dark .textarea,
+.dark [class*="createTicketBlock"] input,
+.dark [class*="createTicketBlock"] textarea,
+.dark [class*="createReportBlock"] input,
+.dark [class*="createReportBlock"] textarea {
+  background: #2c2f2c !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+.dark .input::placeholder,
+.dark .textarea::placeholder,
+.dark [class*="createTicketBlock"] input::placeholder,
+.dark [class*="createTicketBlock"] textarea::placeholder,
+.dark [class*="createReportBlock"] input::placeholder,
+.dark [class*="createReportBlock"] textarea::placeholder {
+  color: #9ca3af !important;
+}
+
+.dark [class*="userSelect"],
+.dark [class*="userSelectButton"] {
+  background: #2c2f2c !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+.dark [class*="userSelectText"] {
+  color: white !important;
+}
+
+.dark [class*="priorityBlock"],
+.dark [class*="emptyCircle"] {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  background: #2c2f2c !important;
+  color: #f3f4f6 !important;
+}
+.dark [class*="completeCircle"],
+.dark [class*="completeCircleEnter"] {
+  background: #50BFA0 !important;
+}
+
+.dark [class*="parametrsId"],
+.dark [class*="infoBlockUser"] {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: #f3f4f6 !important;
+}
+
+.dark [class*="textBlock"],
+.dark [class*="answerBlock"],
+.dark [class*="infoBlockLine"] {
+  color: #f3f4f6;
+}
+.dark [class*="textBlock"] p,
+.dark [class*="answerBlock"] p {
+  color: #f3f4f6;
+}
+
+/* Timeline: names (e.g. "Security M.") must be white in dark theme */
+.dark [class*="timelineEntryName"] {
+  color: #fff !important;
+}
+
+.dark .buttonCreate {
+  color: white !important;
+}
+
+.dark [class*="card"] {
+  background: #232522 !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #f3f4f6 !important;
+}
+.dark [class*="form"] input,
+.dark [class*="form"] [class*="input"] {
+  background: #2c2f2c !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+.authPageRoot [class*="card"] {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: #0f172a !important;
+}
+.authPageRoot [class*="title"] {
+  color: #0f172a !important;
+}
+.authPageRoot [class*="subtitle"] {
+  color: #64748b !important;
+}
+.authPageRoot [class*="form"] input,
+.authPageRoot [class*="form"] [class*="input"],
+.authPageRoot input,
+.authPageRoot textarea {
+  background: #fff !important;
+  border-color: #e2e8f0 !important;
+  color: #1a202c !important;
+}
+.authPageRoot [class*="form"] input::placeholder,
+.authPageRoot input::placeholder,
+.authPageRoot textarea::placeholder {
+  color: #718096 !important;
+}
+.authPageRoot [class*="toggle"] {
+  color: #50BFA0 !important;
+}
+.authPageRoot [class*="toggle"]:hover {
+  color: #1F6A5C !important;
+}
+.authPageRoot [class*="errorText"] {
+  color: #dc2626 !important;
+}
+.authPageRoot [class*="successText"] {
+  color: #059669 !important;
+}
+.authPageRoot [class*="form"] [class*="InputRightElement"],
+.authPageRoot [class*="form"] button[aria-label] {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: #64748b !important;
+}
+.authPageRoot [class*="form"] button[aria-label]:hover {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: #475569 !important;
+}
+
+/* Language switcher on auth: visible hover, proper rounded corners */
+.authPageRoot [class*="card"] > div:first-child button,
+.authPageRoot [class*="card"] .flex.justify-end button {
+  border-radius: 12px !important;
+}
+.authPageRoot [class*="card"] > div:first-child button:hover,
+.authPageRoot [class*="card"] .flex.justify-end button:hover {
+  background: rgba(0, 0, 0, 0.06) !important;
+  background-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Admin panel: ensure theme consistency (data-admin on layout) */
+.dark [data-admin] input,
+.dark [data-admin] select,
+.dark [data-admin] textarea {
+  background: #2c2f2c !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: #f3f4f6 !important;
+}
+.dark [data-admin] input::placeholder,
+.dark [data-admin] textarea::placeholder {
+  color: #9ca3af !important;
+}
+
+/* Admin auth page: keep light form (authPageRoot) even inside data-admin */
+.dark [data-admin] .authPageRoot input,
+.dark [data-admin] .authPageRoot textarea,
+.dark [data-admin] .authPageRoot select {
+  background: #fff !important;
+  border-color: #e2e8f0 !important;
+  color: #1a202c !important;
+}
+.dark [data-admin] .authPageRoot input::placeholder,
+.dark [data-admin] .authPageRoot textarea::placeholder {
+  color: #718096 !important;
+}
+.dark [data-admin] .authPageRoot [class*="card"] {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: #0f172a !important;
+}
+.dark [data-admin] .authPageRoot [class*="title"] {
+  color: #0f172a !important;
+}
+.dark [data-admin] .authPageRoot [class*="subtitle"] {
+  color: #64748b !important;
+}
+.dark [data-admin] .authPageRoot .authPageFooter {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: #e2e8f0 !important;
+  color: #475569 !important;
+}
+.dark [data-admin] .authPageRoot .authPageFooter a {
+  color: #2563eb !important;
+}
+
+/* Error toasts */
+[role="alert"][data-status="error"],
+[data-status="error"].chakra-alert {
+  background: #DC2626 !important;
+  background-color: #DC2626 !important;
+  color: white !important;
+}

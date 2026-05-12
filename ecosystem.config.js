@@ -1,0 +1,36 @@
+module.exports = {
+  apps: [
+    {
+      name: 'secureconnect-backend',
+      cwd: '/root/secureconnect/backend',
+      script: 'server.js',
+      env: { NODE_ENV: 'production', PORT: 3020 },
+      instances: 1,
+      exec_mode: 'fork',
+      watch: false,
+      max_memory_restart: '300M',
+    },
+    {
+      name: 'secureconnect-frontend',
+      cwd: '/root/secureconnect/frontend',
+      script: 'node_modules/next/dist/bin/next',
+      args: 'start',
+      env: { NODE_ENV: 'production', PORT: 3000 },
+      instances: 1,
+      exec_mode: 'fork',
+      watch: false,
+      max_memory_restart: '500M',
+    },
+    {
+      name: 'secureconnect-landing',
+      cwd: '/root/secureconnect/landing',
+      script: 'node_modules/next/dist/bin/next',
+      args: 'start',
+      env: { NODE_ENV: 'production', PORT: 3001 },
+      instances: 1,
+      exec_mode: 'fork',
+      watch: false,
+      max_memory_restart: '500M',
+    },
+  ],
+};
