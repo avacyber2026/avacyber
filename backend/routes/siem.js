@@ -178,7 +178,7 @@ router.put('/alerts/:id', async (req, res) => {
 router.get('/rules', async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT id, name, description, logic, sigma_yaml, severity, enabled, ai_generated,
+      `SELECT id, name, description, logic, sigma_yaml, spl, kql, severity, enabled, ai_generated,
               created_by, hit_count, false_positive_count, created_at, updated_at
        FROM siem_rules ORDER BY created_at DESC`
     );
@@ -293,18 +293,35 @@ router.post('/ai/generate-rule', async (req, res) => {
 
   try {
     const OpenAI = require('openai');
-    const client = new OpenAI({ apiKey, timeout: 30000, maxRetries: 2 });
+    const client = new OpenAI({ apiKey, timeout: 45000, maxRetries: 2 });
 
     const completion = await client.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: 'gpt-4o',
       messages: [
         {
           role: 'system',
-          content: 'You are a security detection engineering expert. Generate SIEM detection rules from natural language. Respond ONLY with valid JSON, no markdown, no code fences.',
+          content: `You are an expert security detection engineer with deep knowledge of Splunk SPL, Microsoft Sentinel KQL, and Sigma rules.
+Generate complete, production-ready detection rules in all formats.
+Respond ONLY with valid JSON, no markdown, no code fences.`,
         },
         {
           role: 'user',
-          content: `Create a detection rule for: "${description}"\n\nRespond with:\n{"name":"...","description":"...","severity":"low|medium|high|critical","logic":{"type":"..."},"sigma_yaml":"...","reasoning":"..."}`,
+          content: `Create a detection rule for: "${description}"
+
+Respond with this exact JSON structure:
+{
+  "name": "short descriptive rule name",
+  "description": "what this rule detects and why it matters",
+  "severity": "low|medium|high|critical",
+  "logic": {
+    "type": "pattern|threshold|time_range|threat_intel|behavioral",
+    "description": "plain english logic description"
+  },
+  "sigma_yaml": "complete valid Sigma rule in YAML format",
+  "spl": "complete Splunk SPL search query with index, sourcetype, stats, eval etc",
+  "kql": "complete Microsoft Sentinel KQL query using SecurityEvent or relevant tables",
+  "reasoning": "why this detection catches the described threat"
+}`,
         },
       ],
       temperature: 0.2,
@@ -317,6 +334,62 @@ router.post('/ai/generate-rule', async (req, res) => {
   } catch (err) {
     console.error('SIEM AI generate-rule:', err);
     res.status(500).json({ error: 'AI rule generation failed' });
+  }
+});
+
+// POST /siem/ai/translate-rule/:id — generate SPL + KQL for an existing rule
+router.post('/ai/translate-rule/:id', async (req, res) => {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) return res.status(503).json({ error: 'AI not configured' });
+
+  try {
+    const ruleRes = await pool.query(`SELECT * FROM siem_rules WHERE id = $1`, [parseInt(req.params.id)]);
+    if (!ruleRes.rows.length) return res.status(404).json({ error: 'Rule not found' });
+    const rule = ruleRes.rows[0];
+
+    const OpenAI = require('openai');
+    const client = new OpenAI({ apiKey, timeout: 45000, maxRetries: 2 });
+
+    const completion = await client.chat.completions.create({
+      model: 'gpt-4o',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are an expert security detection engineer. Translate detection rules into SPL and KQL. Respond ONLY with valid JSON, no markdown.',
+        },
+        {
+          role: 'user',
+          content: `Translate this detection rule into SPL and KQL:
+
+Name: ${rule.name}
+Description: ${rule.description}
+Logic: ${JSON.stringify(rule.logic)}
+Sigma: ${rule.sigma_yaml || 'not available'}
+
+Respond with:
+{
+  "spl": "complete Splunk SPL search query",
+  "kql": "complete Microsoft Sentinel KQL query",
+  "sigma_yaml": "complete Sigma rule YAML if not already provided"
+}`,
+        },
+      ],
+      temperature: 0.1,
+    });
+
+    let parsed;
+    try { parsed = JSON.parse(completion.choices[0]?.message?.content || '{}'); }
+    catch { return res.status(500).json({ error: 'AI returned invalid JSON' }); }
+
+    await pool.query(
+      `UPDATE siem_rules SET spl = $1, kql = $2, sigma_yaml = COALESCE(sigma_yaml, $3), updated_at = NOW() WHERE id = $4`,
+      [parsed.spl, parsed.kql, parsed.sigma_yaml, parseInt(req.params.id)]
+    );
+
+    res.json(parsed);
+  } catch (err) {
+    console.error('SIEM AI translate-rule:', err);
+    res.status(500).json({ error: 'AI translation failed' });
   }
 });
 

@@ -78,6 +78,10 @@ interface SiemRule {
   ai_generated: boolean;
   hit_count: number;
   false_positive_count: number;
+  logic: Record<string, unknown>;
+  sigma_yaml: string | null;
+  spl: string | null;
+  kql: string | null;
   created_at: string;
 }
 
@@ -189,6 +193,25 @@ export default function SiemPage() {
   const [aiRulePrompt, setAiRulePrompt] = useState("");
   const [aiRuleLoading, setAiRuleLoading] = useState(false);
   const [generatedRule, setGeneratedRule] = useState<Partial<SiemRule & { reasoning: string; sigma_yaml: string }> | null>(null);
+
+  // Rules expand state
+  const [expandedRules, setExpandedRules] = useState<Set<number>>(new Set());
+  const toggleRuleExpand = (id: number) => setExpandedRules(prev => { const s = new Set(prev); s.has(id) ? s.delete(id) : s.add(id); return s; });
+  const [ruleQueryTab, setRuleQueryTab] = useState<Record<number, string>>({});
+  const [translatingRules, setTranslatingRules] = useState<Set<number>>(new Set());
+
+  async function translateRule(id: number) {
+    setTranslatingRules(prev => new Set(prev).add(id));
+    try {
+      const res = await api.post(`/siem/ai/translate-rule/${id}`);
+      setRules(prev => prev.map(r => r.id === id ? { ...r, spl: res.data.spl, kql: res.data.kql, sigma_yaml: r.sigma_yaml || res.data.sigma_yaml } : r));
+      toast.success("SPL & KQL generated");
+    } catch {
+      toast.error("Translation failed");
+    } finally {
+      setTranslatingRules(prev => { const s = new Set(prev); s.delete(id); return s; });
+    }
+  }
 
   // Sources tab state
   const [showAddSource, setShowAddSource] = useState(false);
@@ -759,11 +782,86 @@ export default function SiemPage() {
                                 {r.ai_generated && <span className="text-xs px-2 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/25 text-purple-400 font-semibold">AI generated</span>}
                               </div>
                               {r.description && <p className="text-sm text-slate-600 dark:text-slate-300 mb-1">{r.description}</p>}
-                              <div className="flex gap-4 text-xs text-slate-500">
+                              <div className="flex gap-4 text-xs text-slate-500 mb-2">
                                 <span>{r.hit_count} hits</span>
                                 <span>{r.false_positive_count} false positives</span>
                                 <span>Created {formatRelative(r.created_at)}</span>
                               </div>
+                              {/* Expand button */}
+                              <button onClick={() => toggleRuleExpand(r.id)}
+                                className="flex items-center gap-1 text-xs text-[#1F6A5C] dark:text-[#50BFA0] hover:underline font-semibold">
+                                <IoChevronDown size={13} className={`transition-transform ${expandedRules.has(r.id) ? "rotate-180" : ""}`} />
+                                {expandedRules.has(r.id) ? "Hide logic" : "View rule logic"}
+                              </button>
+                              {/* Expanded logic */}
+                              <AnimatePresence>
+                                {expandedRules.has(r.id) && (
+                                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
+                                    className="mt-3 overflow-hidden">
+                                    {/* Query language tabs */}
+                                    <div className="flex items-center gap-1 mb-3 flex-wrap">
+                                      {(["logic","sigma","spl","kql"] as const).map(qt => (
+                                        <button key={qt} onClick={() => setRuleQueryTab(p => ({ ...p, [r.id]: qt }))}
+                                          className={`px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${
+                                            (ruleQueryTab[r.id] ?? "logic") === qt
+                                              ? qt === "logic" ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                                                : qt === "sigma" ? "bg-sky-500/20 text-sky-400 border border-sky-500/30"
+                                                : qt === "spl" ? "bg-orange-500/20 text-orange-400 border border-orange-500/30"
+                                                : "bg-blue-500/20 text-blue-400 border border-blue-500/30"
+                                              : "text-slate-500 hover:text-slate-300 border border-transparent"
+                                          }`}>
+                                          {qt === "logic" ? "Logic" : qt === "sigma" ? "Sigma" : qt === "spl" ? "SPL (Splunk)" : "KQL (Sentinel)"}
+                                        </button>
+                                      ))}
+                                      {(!r.spl || !r.kql) && (
+                                        <button onClick={() => translateRule(r.id)} disabled={translatingRules.has(r.id)}
+                                          className="ml-auto flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-purple-500/10 border border-purple-500/25 text-purple-400 hover:bg-purple-500/20 disabled:opacity-50 transition-colors">
+                                          {translatingRules.has(r.id)
+                                            ? <><span className="w-3 h-3 border-2 border-purple-400/30 border-t-purple-400 rounded-full animate-spin" /> Generating…</>
+                                            : <><MdAutoAwesome size={12} /> Generate SPL &amp; KQL</>}
+                                        </button>
+                                      )}
+                                    </div>
+
+                                    {/* Logic */}
+                                    {(ruleQueryTab[r.id] ?? "logic") === "logic" && (
+                                      <pre className="text-xs font-mono rounded-lg bg-slate-900 text-emerald-400 p-4 overflow-x-auto border border-slate-700/50">
+                                        {JSON.stringify(r.logic, null, 2)}
+                                      </pre>
+                                    )}
+                                    {/* Sigma */}
+                                    {ruleQueryTab[r.id] === "sigma" && (
+                                      r.sigma_yaml
+                                        ? <pre className="text-xs font-mono rounded-lg bg-slate-900 text-sky-300 p-4 overflow-x-auto border border-slate-700/50 whitespace-pre-wrap">{r.sigma_yaml}</pre>
+                                        : <div className="text-xs text-slate-500 italic p-3">No Sigma rule yet — click "Generate SPL &amp; KQL" to create all formats.</div>
+                                    )}
+                                    {/* SPL */}
+                                    {ruleQueryTab[r.id] === "spl" && (
+                                      r.spl
+                                        ? <pre className="text-xs font-mono rounded-lg bg-slate-900 text-orange-300 p-4 overflow-x-auto border border-slate-700/50 whitespace-pre-wrap">{r.spl}</pre>
+                                        : <div className="flex flex-col items-start gap-2 p-3">
+                                            <div className="text-xs text-slate-500 italic">No SPL query yet.</div>
+                                            <button onClick={() => translateRule(r.id)} disabled={translatingRules.has(r.id)}
+                                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-orange-500/10 border border-orange-500/25 text-orange-400 hover:bg-orange-500/20 disabled:opacity-50 transition-colors">
+                                              {translatingRules.has(r.id) ? "Generating…" : <><MdAutoAwesome size={12} /> Generate SPL (Splunk)</>}
+                                            </button>
+                                          </div>
+                                    )}
+                                    {/* KQL */}
+                                    {ruleQueryTab[r.id] === "kql" && (
+                                      r.kql
+                                        ? <pre className="text-xs font-mono rounded-lg bg-slate-900 text-blue-300 p-4 overflow-x-auto border border-slate-700/50 whitespace-pre-wrap">{r.kql}</pre>
+                                        : <div className="flex flex-col items-start gap-2 p-3">
+                                            <div className="text-xs text-slate-500 italic">No KQL query yet.</div>
+                                            <button onClick={() => translateRule(r.id)} disabled={translatingRules.has(r.id)}
+                                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-blue-500/10 border border-blue-500/25 text-blue-400 hover:bg-blue-500/20 disabled:opacity-50 transition-colors">
+                                              {translatingRules.has(r.id) ? "Generating…" : <><MdAutoAwesome size={12} /> Generate KQL (Sentinel)</>}
+                                            </button>
+                                          </div>
+                                    )}
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
                             </div>
                             <button onClick={() => deleteRule(r.id)}
                               className="p-1.5 rounded-lg hover:bg-red-500/10 text-slate-400 hover:text-red-400 transition-colors shrink-0">
