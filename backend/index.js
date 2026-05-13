@@ -9,6 +9,7 @@ const notificationsRoutes = require('./routes/notifications');
 const settingsRoutes = require('./routes/settings');
 const guideArticlesRoutes = require('./routes/guideArticles');
 const exportRoutes = require('./routes/export');
+const siemRoutes = require('./routes/siem');
 
 const router = express.Router();
 
@@ -28,5 +29,6 @@ router.use('/notifications', notificationsRoutes);
 router.use('/settings', settingsRoutes);
 router.use('/guide-articles', guideArticlesRoutes);
 router.use('/export', exportRoutes);
+router.use('/siem', siemRoutes);
 
 module.exports = router;

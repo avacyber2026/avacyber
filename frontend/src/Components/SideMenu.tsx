@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
 import { FaUserCog, FaChartLine, FaBook, FaPhone, FaBell, FaUser } from "react-icons/fa";
 import { IoGitPullRequestSharp } from "react-icons/io5";
+import { MdSecurity } from "react-icons/md";
 import type { UserStatus } from "@/types";
 import { useAuth } from "@/hooks/useAuth";
 import { useUser } from "@/contexts/UserContext";
@@ -28,7 +29,14 @@ export function SideMenu() {
   const { role: type, user, isAuthenticated, isLoading } = useAuth();
   const { profile } = useUser() ?? { profile: null };
   const [unreadNotifications, setUnreadNotifications] = useState(0);
-  const links = useMemo(() => (type === "Admin" ? [{ name: t("sidebar.admin"), icon: <FaUserCog />, link: "/admin" }] : getBaseLinks(t, unreadNotifications)), [type, t, unreadNotifications]);
+  const links = useMemo(() => {
+    if (type === "Admin") return [{ name: t("sidebar.admin"), icon: <FaUserCog />, link: "/admin" }];
+    const base = getBaseLinks(t, unreadNotifications);
+    if (type !== "End-User") {
+      base.splice(1, 0, { name: "SIEM", icon: <MdSecurity size={16} />, link: "/siem" });
+    }
+    return base;
+  }, [type, t, unreadNotifications]);
 
   useEffect(() => {
     if (isLoading) return;
