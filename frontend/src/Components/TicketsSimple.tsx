@@ -515,8 +515,8 @@ export function TicketsSimple() {
         {([
           { key: "all", label: "All", count: ticketRows.length },
           { key: "from_users", label: "From Users", count: fromUserRows.length },
-          { key: "sent_to_users", label: "Sent to Users", count: sentToUserRows.length },
-          { key: "team_comms", label: "Team Comms", count: teamCommsRows.length },
+          { key: "sent_to_users", label: "To Users", count: sentToUserRows.length },
+          { key: "team_comms", label: "Comms", count: teamCommsRows.length },
         ] as const).map(tab => (
           <button key={tab.key} onClick={() => setSocTab(tab.key)}
             className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px transition-all ${
@@ -550,9 +550,10 @@ export function TicketsSimple() {
         <div className={`${card} p-12 flex flex-col items-center text-center`}>
           <MdOutlineShield size={36} className="mb-3 text-slate-200 dark:text-slate-700" />
           <p className="text-sm font-medium text-slate-500">
-            {socTab === "from_users" ? "No reports from users" :
+            {socTab === "from_users" ? "No reports from users yet" :
              socTab === "sent_to_users" ? "No requests sent to users yet" :
-             "No team communications yet"}
+             socTab === "team_comms" ? "No comms yet" :
+             "No requests found"}
           </p>
           <p className="text-xs mt-1 text-slate-400 dark:text-slate-600">
             {socTab === "sent_to_users" ? 'Click "Send Request" to send an activity verification or announcement.' : ""}
