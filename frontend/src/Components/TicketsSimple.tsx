@@ -125,7 +125,7 @@ export function TicketsSimple() {
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [sourceFilter, setSourceFilter] = useState<string>("all");
   const [activeTab, setActiveTab] = useState<"action" | "mine" | "all">("action");
-  const [socTab, setSocTab] = useState<"from_users" | "sent_to_users" | "team_comms">("from_users");
+  const [socTab, setSocTab] = useState<"all" | "from_users" | "sent_to_users" | "team_comms">("all");
   const [siemMatches, setSiemMatches] = useState<Record<string, SiemMatch[]>>({});
   const [siemLoading, setSiemLoading] = useState(false);
 
@@ -241,7 +241,8 @@ export function TicketsSimple() {
   function getSocTabRows(): Ticket[] {
     if (socTab === "from_users") return fromUserRows;
     if (socTab === "sent_to_users") return sentToUserRows;
-    return teamCommsRows;
+    if (socTab === "team_comms") return teamCommsRows;
+    return ticketRows; // "all"
   }
 
   const socFilteredRows = useMemo(() => {
@@ -512,6 +513,7 @@ export function TicketsSimple() {
       {/* Tabs */}
       <div className="flex gap-0 border-b border-slate-200 dark:border-[#2c2f2c]">
         {([
+          { key: "all", label: "All", count: ticketRows.length },
           { key: "from_users", label: "From Users", count: fromUserRows.length },
           { key: "sent_to_users", label: "Sent to Users", count: sentToUserRows.length },
           { key: "team_comms", label: "Team Comms", count: teamCommsRows.length },
