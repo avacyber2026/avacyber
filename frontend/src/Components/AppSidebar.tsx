@@ -319,42 +319,6 @@ function SidebarContent({
         )}
       </Box>
 
-      {/* CTA: новый инцидент → /tickets/new; подсказка → список /tickets */}
-      {!isAdmin && (
-        <Box className="shrink-0 px-2 pb-3 pt-1">
-          <div
-            className={`rounded-lg border border-white/80 dark:border-[#2c2f2c] bg-white/60 dark:bg-[#2c2f2c] text-center shadow-sm dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] ${showLabels ? "p-4" : "p-3"}`}
-          >
-            <div className="flex flex-col items-center gap-2 w-full">
-              <SidebarHoverTooltip label={tFn("sidebar.newIncidentCta")} enabled={!showLabels}>
-                <Link
-                  href="/tickets/new"
-                  onClick={onLinkClick}
-                  className="inline-flex flex-col items-center gap-2 w-full"
-                >
-                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#103E36] to-[#1F6A5C] text-white shadow-lg shadow-emerald-900/25 hover:scale-105 transition-transform">
-                    <FaPlus size={20} />
-                  </span>
-                  {showLabels && (
-                    <Text fontSize="sm" fontWeight={700} className="text-slate-800 dark:text-white">
-                      {tFn("sidebar.newIncidentCta")}
-                    </Text>
-                  )}
-                </Link>
-              </SidebarHoverTooltip>
-              {showLabels && (
-                <Link
-                  href="/tickets"
-                  onClick={onLinkClick}
-                  className="text-xs text-slate-500 dark:text-gray-400 underline-offset-2 hover:underline font-medium"
-                >
-                  {tFn("sidebar.newIncidentHint")}
-                </Link>
-              )}
-            </div>
-          </div>
-        </Box>
-      )}
     </>
   );
 }
