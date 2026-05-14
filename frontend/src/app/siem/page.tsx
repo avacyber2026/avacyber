@@ -51,10 +51,12 @@ interface SiemAlert {
   description: string | null;
   ai_score: number | null;
   ai_summary: string | null;
+  ai_narrative: string | null;
   ai_generated: boolean | null;
   assigned_to: string | null;
   ticket_id: number | null;
   created_at: string;
+  updated_at: string;
 }
 
 interface SiemEvent {
@@ -225,6 +227,10 @@ export default function SiemPage() {
   // Alerts tab state
   const [alertFilter, setAlertFilter] = useState<string>("all");
 
+  // Alert detail panel
+  const [selectedAlert, setSelectedAlert] = useState<SiemAlert | null>(null);
+  const [investigatingId, setInvestigatingId] = useState<number | null>(null);
+
   useEffect(() => {
     if (!isAuthenticated && !isLoading) router.push("/");
   }, [isAuthenticated, isLoading, router]);
@@ -332,9 +338,26 @@ export default function SiemPage() {
       toast.loading("AI is triaging...", { id: `triage-${id}` });
       const res = await api.post(`/siem/ai/triage/${id}`);
       setAlerts((prev) => prev.map((a) => (a.id === id ? { ...a, ai_score: res.data.score, ai_summary: res.data.summary } : a)));
+      if (selectedAlert?.id === id) setSelectedAlert((prev) => prev ? { ...prev, ai_score: res.data.score, ai_summary: res.data.summary } : prev);
       toast.success(`AI score: ${res.data.score}/100 — ${res.data.recommended_action}`, { id: `triage-${id}` });
     } catch {
       toast.error("AI triage failed", { id: `triage-${id}` });
+    }
+  }
+
+  async function investigateAlert(id: number) {
+    setInvestigatingId(id);
+    try {
+      toast.loading("AI is investigating...", { id: `inv-${id}` });
+      const res = await api.post(`/siem/ai/investigate/${id}`);
+      const narrative = JSON.stringify(res.data);
+      setAlerts((prev) => prev.map((a) => (a.id === id ? { ...a, ai_narrative: narrative } : a)));
+      if (selectedAlert?.id === id) setSelectedAlert((prev) => prev ? { ...prev, ai_narrative: narrative } : prev);
+      toast.success("AI investigation complete", { id: `inv-${id}` });
+    } catch {
+      toast.error("AI investigation failed", { id: `inv-${id}` });
+    } finally {
+      setInvestigatingId(null);
     }
   }
 
@@ -498,7 +521,7 @@ export default function SiemPage() {
                     ) : (
                       <div className="space-y-2">
                         {alerts.slice(0, 8).map((a) => (
-                          <div key={a.id} className="flex items-center gap-3 rounded-lg px-3 py-3 border border-white/50 dark:border-[#2c2f2c] bg-white/40 dark:bg-[#2c2f2c]/40 hover:bg-white/70 dark:hover:bg-[#2c2f2c] transition-colors">
+                          <div key={a.id} onClick={() => setSelectedAlert(a)} className="flex items-center gap-3 rounded-lg px-3 py-3 border border-white/50 dark:border-[#2c2f2c] bg-white/40 dark:bg-[#2c2f2c]/40 hover:bg-white/70 dark:hover:bg-[#2c2f2c] transition-colors cursor-pointer">
                             <AiScore score={a.ai_score} />
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 flex-wrap">
@@ -594,7 +617,7 @@ export default function SiemPage() {
                   ) : (
                     <div className="space-y-2">
                       {filteredAlerts.map((a) => (
-                        <div key={a.id} className="flex items-start gap-4 rounded-xl px-4 py-4 border border-white/50 dark:border-[#2c2f2c] bg-white/40 dark:bg-[#2c2f2c]/40 hover:bg-white/70 dark:hover:bg-[#2c2f2c] transition-colors">
+                        <div key={a.id} onClick={() => setSelectedAlert(a)} className="flex items-start gap-4 rounded-xl px-4 py-4 border border-white/50 dark:border-[#2c2f2c] bg-white/40 dark:bg-[#2c2f2c]/40 hover:bg-white/70 dark:hover:bg-[#2c2f2c] transition-colors cursor-pointer">
                           <AiScore score={a.ai_score} />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap mb-1">
@@ -967,6 +990,158 @@ export default function SiemPage() {
           </AnimatePresence>
         </div>
       </div>
+
+      {/* ── Alert Detail Panel ── */}
+      <AnimatePresence>
+        {selectedAlert && (
+          <>
+            {/* Backdrop */}
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setSelectedAlert(null)}
+              className="fixed inset-0 bg-black/40 z-40" />
+
+            {/* Panel */}
+            <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 28, stiffness: 260 }}
+              className="fixed right-0 top-0 h-full w-full max-w-xl bg-white dark:bg-[#1a1c1a] shadow-2xl z-50 flex flex-col overflow-hidden border-l border-white/20 dark:border-[#2c2f2c]">
+
+              {/* Panel header */}
+              <div className="flex items-start justify-between px-6 py-5 border-b border-slate-100 dark:border-[#2c2f2c] shrink-0">
+                <div className="flex-1 min-w-0 pr-3">
+                  <div className="flex items-center gap-2 flex-wrap mb-1">
+                    <SevBadge severity={selectedAlert.severity} />
+                    <StatusBadge status={selectedAlert.status} />
+                    {selectedAlert.ai_generated && <span className="text-xs px-2 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/25 text-purple-400 font-semibold">AI</span>}
+                  </div>
+                  <h2 className="text-lg font-bold text-slate-900 dark:text-white">{selectedAlert.rule_name}</h2>
+                </div>
+                <button onClick={() => setSelectedAlert(null)} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-[#2c2f2c] text-slate-400 transition-colors shrink-0">
+                  <MdClose size={20} />
+                </button>
+              </div>
+
+              {/* Scrollable content */}
+              <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
+
+                {/* Description */}
+                {selectedAlert.description && (
+                  <p className="text-sm text-slate-600 dark:text-slate-300">{selectedAlert.description}</p>
+                )}
+
+                {/* Meta grid */}
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { label: "Source IP", value: selectedAlert.source_ip, mono: true },
+                    { label: "Username", value: selectedAlert.username, mono: false },
+                    { label: "Hostname", value: selectedAlert.hostname, mono: true },
+                    { label: "Detected", value: formatTime(selectedAlert.created_at), mono: false },
+                  ].map(({ label, value, mono }) => value ? (
+                    <div key={label} className="rounded-lg bg-slate-50 dark:bg-[#232522] px-4 py-3 border border-slate-100 dark:border-[#2c2f2c]">
+                      <div className="text-xs text-slate-400 mb-1">{label}</div>
+                      <div className={`text-sm font-semibold text-slate-800 dark:text-white ${mono ? "font-mono" : ""}`}>{value}</div>
+                    </div>
+                  ) : null)}
+                </div>
+
+                {/* AI Triage */}
+                <div className="rounded-xl border border-white/60 dark:border-[#2c2f2c] bg-white/55 dark:bg-[#232522] p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <MdAutoAwesome size={16} className="text-purple-400" />
+                      <span className="font-semibold text-slate-900 dark:text-white text-sm">AI Triage</span>
+                    </div>
+                    {selectedAlert.ai_score !== null && (
+                      <AiScore score={selectedAlert.ai_score} />
+                    )}
+                  </div>
+                  {selectedAlert.ai_summary ? (
+                    <p className="text-sm text-slate-600 dark:text-slate-300">{selectedAlert.ai_summary}</p>
+                  ) : (
+                    <div className="flex flex-col gap-2">
+                      <p className="text-xs text-slate-400">No AI triage yet.</p>
+                      <button onClick={(e) => { e.stopPropagation(); triageAlert(selectedAlert.id); }}
+                        className="self-start flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-purple-500/10 border border-purple-500/25 text-purple-400 hover:bg-purple-500/20 transition-colors">
+                        <MdAutoAwesome size={13} /> Run AI Triage
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* AI Investigation */}
+                <div className="rounded-xl border border-white/60 dark:border-[#2c2f2c] bg-white/55 dark:bg-[#232522] p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <MdAutoAwesome size={16} className="text-blue-400" />
+                      <span className="font-semibold text-slate-900 dark:text-white text-sm">AI Investigation</span>
+                    </div>
+                    {!selectedAlert.ai_narrative && (
+                      <button onClick={(e) => { e.stopPropagation(); investigateAlert(selectedAlert.id); }}
+                        disabled={investigatingId === selectedAlert.id}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-500/10 border border-blue-500/25 text-blue-400 hover:bg-blue-500/20 disabled:opacity-50 transition-colors">
+                        {investigatingId === selectedAlert.id
+                          ? <><span className="w-3 h-3 border-2 border-blue-400/30 border-t-blue-400 rounded-full animate-spin" /> Investigating…</>
+                          : <><MdAutoAwesome size={13} /> Investigate</>}
+                      </button>
+                    )}
+                  </div>
+                  {selectedAlert.ai_narrative ? (() => {
+                    try {
+                      const n = JSON.parse(selectedAlert.ai_narrative);
+                      return (
+                        <div className="space-y-4">
+                          {n.narrative && <p className="text-sm text-slate-600 dark:text-slate-300">{n.narrative}</p>}
+                          {n.mitre_techniques?.length > 0 && (
+                            <div>
+                              <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">MITRE ATT&CK</div>
+                              <div className="flex flex-wrap gap-2">
+                                {n.mitre_techniques.map((t: string) => (
+                                  <span key={t} className="px-2 py-0.5 rounded bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-mono">{t}</span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          {n.recommended_steps?.length > 0 && (
+                            <div>
+                              <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Recommended Steps</div>
+                              <ol className="space-y-1">
+                                {n.recommended_steps.map((s: string, i: number) => (
+                                  <li key={i} className="text-sm text-slate-600 dark:text-slate-300 flex gap-2">
+                                    <span className="text-slate-400 shrink-0">{i + 1}.</span>{s}
+                                  </li>
+                                ))}
+                              </ol>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    } catch { return <p className="text-sm text-slate-400">Investigation data unavailable.</p>; }
+                  })() : (
+                    <p className="text-xs text-slate-400">Click Investigate to generate a full AI investigation narrative with MITRE ATT&CK mapping and remediation steps.</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Action footer */}
+              <div className="px-6 py-4 border-t border-slate-100 dark:border-[#2c2f2c] flex gap-2 shrink-0">
+                {selectedAlert.status === "open" && (
+                  <button onClick={() => { updateAlertStatus(selectedAlert.id, "investigating"); setSelectedAlert(p => p ? { ...p, status: "investigating" } : p); }}
+                    className="flex-1 py-2 rounded-lg text-sm font-semibold bg-amber-400/10 border border-amber-400/25 text-amber-400 hover:bg-amber-400/20 transition-colors">
+                    Mark Investigating
+                  </button>
+                )}
+                {selectedAlert.status !== "resolved" && (
+                  <button onClick={() => { updateAlertStatus(selectedAlert.id, "resolved"); setSelectedAlert(p => p ? { ...p, status: "resolved" } : p); }}
+                    className="flex-1 py-2 rounded-lg text-sm font-semibold bg-emerald-500/10 border border-emerald-500/25 text-emerald-500 hover:bg-emerald-500/20 transition-colors">
+                    <span className="flex items-center justify-center gap-1.5"><MdCheck size={15} /> Resolve</span>
+                  </button>
+                )}
+                {selectedAlert.status === "resolved" && (
+                  <p className="flex-1 text-center text-sm text-slate-400 py-2">Alert resolved</p>
+                )}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 }

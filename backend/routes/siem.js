@@ -137,7 +137,7 @@ router.get('/alerts', async (req, res) => {
     const [rows, count] = await Promise.all([
       pool.query(
         `SELECT id, rule_id, rule_name, event_id, severity, status, source_ip, username, hostname,
-                description, ai_score, ai_summary, assigned_to, ticket_id, resolved_at, created_at, updated_at
+                description, ai_score, ai_summary, ai_narrative, assigned_to, ticket_id, resolved_at, created_at, updated_at
          FROM siem_alerts ${wc}
          ORDER BY created_at DESC LIMIT $${idx} OFFSET $${idx + 1}`,
         [...params, parseInt(limit), parseInt(offset)]
