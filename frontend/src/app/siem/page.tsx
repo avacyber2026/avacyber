@@ -51,6 +51,7 @@ interface SiemAlert {
   description: string | null;
   ai_score: number | null;
   ai_summary: string | null;
+  ai_generated: boolean | null;
   assigned_to: string | null;
   ticket_id: number | null;
   created_at: string;
