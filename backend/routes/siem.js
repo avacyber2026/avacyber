@@ -518,7 +518,7 @@ router.post('/bulk-correlate', async (req, res) => {
     );
 
     // Build a lookup: key = "username:hostname" -> alerts[]
-    const matches: Record<string, { id: number; rule_name: string; severity: string }[]> = {};
+    const matches = {};
     for (const row of result.rows) {
       const keys = new Set<string>();
       if (row.username) {
