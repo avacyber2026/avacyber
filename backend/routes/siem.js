@@ -520,7 +520,7 @@ router.post('/bulk-correlate', async (req, res) => {
     // Build a lookup: key = "username:hostname" -> alerts[]
     const matches = {};
     for (const row of result.rows) {
-      const keys = new Set<string>();
+      const keys = new Set();
       if (row.username) {
         for (const item of items) {
           if (item.username === row.username) keys.add(`${item.username}:${item.hostname || ''}`);
