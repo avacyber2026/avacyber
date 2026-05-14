@@ -213,26 +213,27 @@ export function TicketsSimple() {
   const TEAM_ROLE_NAMES = ["GRC", "IAM", "Pentesting", "Security Manager", "GSOC", "Admin"];
 
   const fromUserRows = useMemo(() =>
-    ticketRows.filter(t => (t.createdByRole === "End-User") || (t as Ticket & { createdByRole?: string }).createdByRole === "End-User"),
+    ticketRows.filter(t => t.createdByRole === "End-User"),
     [ticketRows]
   );
 
-  const sentToUserRows = useMemo(() => {
-    const myEmail = (user?.email || "").toLowerCase();
-    return ticketRows.filter(t => {
-      const createdBy = (t.createdBy || (t as Ticket & { createdBy?: string }).createdBy || "").toLowerCase();
-      const assignedTo = (t.assignedTo || (t as Ticket & { assignedTo?: string }).assignedTo || "");
-      const isTeamCreated = TEAM_ROLE_NAMES.includes((t as Ticket & { createdByRole?: string }).createdByRole || "");
-      const isAssignedToUser = assignedTo && !TEAM_ROLE_NAMES.includes(assignedTo) && assignedTo !== "MULTI";
+  const sentToUserRows = useMemo(() =>
+    ticketRows.filter(t => {
+      const assignedTo = t.assignedTo || "";
+      const createdByRole = t.createdByRole || "";
+      const isTeamCreated = TEAM_ROLE_NAMES.includes(createdByRole);
+      const isAssignedToUser = assignedTo && !TEAM_ROLE_NAMES.includes(assignedTo) && assignedTo !== "MULTI" && assignedTo !== "";
       return isTeamCreated && isAssignedToUser;
-    });
-  }, [ticketRows, user?.email]);
+    }),
+    [ticketRows]
+  );
 
   const teamCommsRows = useMemo(() =>
     ticketRows.filter(t => {
-      const assignedTo = (t.assignedTo || (t as Ticket & { assignedTo?: string }).assignedTo || "");
-      const createdByRole = (t as Ticket & { createdByRole?: string }).createdByRole || "";
-      return TEAM_ROLE_NAMES.includes(assignedTo) || (TEAM_ROLE_NAMES.includes(createdByRole) && createdByRole !== "GSOC" && createdByRole !== "Security Manager" && createdByRole !== "Admin");
+      const assignedTo = t.assignedTo || "";
+      const createdByRole = t.createdByRole || "";
+      return TEAM_ROLE_NAMES.includes(assignedTo) ||
+        (TEAM_ROLE_NAMES.includes(createdByRole) && !["GSOC","Security Manager","Admin"].includes(createdByRole));
     }),
     [ticketRows]
   );
