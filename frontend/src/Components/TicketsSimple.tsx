@@ -485,7 +485,7 @@ export function TicketsSimple() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-4 flex-wrap">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Security Requests</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Comms</h1>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Incoming reports and team communications</p>
           </div>
           {/* Stats */}
