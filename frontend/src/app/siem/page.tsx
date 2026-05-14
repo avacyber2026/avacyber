@@ -99,53 +99,39 @@ interface SiemSource {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-const SEV_LEFT: Record<string, string> = {
-  critical: "border-l-red-500",
-  high:     "border-l-orange-500",
-  medium:   "border-l-amber-500",
-  low:      "border-l-blue-400",
-  info:     "border-l-slate-300 dark:border-l-slate-600",
+const SEV_COLOR: Record<string, string> = {
+  critical: "text-red-500 bg-red-500/10 border-red-500/30",
+  high:     "text-orange-400 bg-orange-400/10 border-orange-400/30",
+  medium:   "text-amber-400 bg-amber-400/10 border-amber-400/30",
+  low:      "text-teal-400 bg-teal-400/10 border-teal-400/30",
+  info:     "text-slate-400 bg-slate-400/10 border-slate-400/20",
 };
 
 const SEV_DOT: Record<string, string> = {
   critical: "bg-red-500",
-  high:     "bg-orange-500",
-  medium:   "bg-amber-500",
-  low:      "bg-blue-400",
+  high:     "bg-orange-400",
+  medium:   "bg-amber-400",
+  low:      "bg-teal-400",
   info:     "bg-slate-400",
-};
-
-const SEV_TEXT: Record<string, string> = {
-  critical: "text-red-500",
-  high:     "text-orange-500",
-  medium:   "text-amber-500",
-  low:      "text-blue-400",
-  info:     "text-slate-400",
-};
-
-// kept for compatibility
-const SEV_COLOR: Record<string, string> = {
-  critical: "text-red-500 bg-red-500/8 border-red-500/20",
-  high:     "text-orange-500 bg-orange-500/8 border-orange-500/20",
-  medium:   "text-amber-500 bg-amber-500/8 border-amber-500/20",
-  low:      "text-blue-400 bg-blue-400/8 border-blue-400/20",
-  info:     "text-slate-400 bg-slate-400/8 border-slate-400/15",
 };
 
 function SevBadge({ severity }: { severity: string }) {
   return (
-    <span className={`inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide ${SEV_TEXT[severity] ?? "text-slate-400"}`}>
-      <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${SEV_DOT[severity] ?? "bg-slate-400"}`} />
+    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold border capitalize ${SEV_COLOR[severity] ?? SEV_COLOR.info}`}>
+      <span className={`w-1.5 h-1.5 rounded-full ${SEV_DOT[severity] ?? "bg-slate-400"}`} />
       {severity}
     </span>
   );
 }
 
 function AiScore({ score }: { score: number | null }) {
-  if (score === null) return <span className="text-sm text-slate-300 dark:text-slate-600 tabular-nums font-mono">—</span>;
-  const color = score >= 80 ? "text-red-500" : score >= 50 ? "text-orange-500" : "text-slate-400";
+  if (score === null) return <span className="text-xs text-slate-500">—</span>;
+  const color = score >= 80 ? "text-red-400" : score >= 50 ? "text-orange-400" : "text-slate-400";
+  const ring = score >= 80 ? "ring-red-500/40" : score >= 50 ? "ring-orange-400/40" : "ring-slate-400/20";
   return (
-    <span className={`text-sm font-bold tabular-nums font-mono ${color}`}>{score}</span>
+    <span className={`inline-flex items-center justify-center w-10 h-10 rounded-full ring-2 ${ring} bg-transparent text-sm font-bold tabular-nums ${color}`}>
+      {score}
+    </span>
   );
 }
 
@@ -174,8 +160,7 @@ const SOURCE_ICON: Record<string, React.ReactNode> = {
   custom:   <FaServer size={14} />,
 };
 
-const card = "rounded-xl border border-slate-200 dark:border-[#1e1e1e] bg-white dark:bg-[#111111]";
-const glass = card; // alias kept so existing uses work
+const glass = "rounded-xl border border-white/60 dark:border-[#2c2f2c] bg-white/55 dark:bg-[#232522] shadow-[0_4px_24px_-8px_rgba(31,106,92,0.12)]";
 
 // ── Status filter tabs ─────────────────────────────────────────────────────────
 
@@ -416,31 +401,46 @@ export default function SiemPage() {
   return (
     <>
       <SideMenu />
-      <div className="min-h-screen bg-[#FAFAFA] dark:bg-[#0A0A0A]" style={{ paddingLeft: "var(--app-sidebar-width, 308px)" }}>
-        <div className="max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 py-8 pb-16">
+      <div className="min-h-screen bg-[#F4F3F4] dark:bg-[#1C1E1C]" style={{ paddingLeft: "var(--app-sidebar-width, 308px)" }}>
+        <div className="max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 py-6 pb-16">
 
           {/* ── Header ── */}
-          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between mb-8 flex-wrap gap-3">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between mb-6 flex-wrap gap-3">
             <div className="flex items-center gap-3">
-              <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">SIEM</h1>
-              <span className="flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500">
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#103E36] to-[#1F6A5C] flex items-center justify-center text-white shadow-lg shadow-emerald-900/20">
+                <MdSecurity size={22} />
+              </div>
+              <div>
+                <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">SIEM</h1>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Security Information &amp; Event Management</p>
+              </div>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                live
+                Live
               </span>
             </div>
-            <button onClick={fetchAll} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-slate-200 dark:border-[#2a2a2a] text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#1a1a1a] transition-colors">
-              <MdRefresh size={14} />
+            <button
+              onClick={fetchAll}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border border-white/70 dark:border-[#2c2f2c] bg-white/60 dark:bg-[#232522] text-slate-700 dark:text-slate-200 hover:bg-white/90 dark:hover:bg-[#2c2f2c] transition-colors"
+            >
+              <MdRefresh size={16} />
               Refresh
             </button>
           </motion.div>
 
           {/* ── Stat cards ── */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {statCards.map((c, i) => (
-              <motion.div key={c.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-                className={`${card} p-5`}>
-                <div className="text-3xl font-semibold tabular-nums text-slate-900 dark:text-white mb-1">{c.value}</div>
-                <div className="text-xs font-medium text-slate-500 dark:text-slate-500 uppercase tracking-wide">{c.label}</div>
+              <motion.div key={c.label} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}
+                className={`${glass} p-5`}>
+                <div className="flex items-start justify-between mb-3">
+                  <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${c.grad} flex items-center justify-center text-white shadow-md`}>
+                    {c.icon}
+                  </div>
+                </div>
+                <div className="text-3xl font-light tabular-nums text-slate-900 dark:text-white mb-0.5">{c.value}</div>
+                <div className="text-sm font-semibold text-slate-700 dark:text-slate-200">{c.label}</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{c.sub}</div>
               </motion.div>
             ))}
           </div>
@@ -448,14 +448,13 @@ export default function SiemPage() {
           {/* ── Severity breakdown ── */}
           {stats && Object.keys(stats.severityBreakdown).length > 0 && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
-              className="flex flex-wrap items-center gap-4 mb-6 px-1">
-              <span className="text-xs font-medium text-slate-400 dark:text-slate-600 uppercase tracking-wide">Open</span>
+              className={`${glass} p-4 mb-6 flex flex-wrap items-center gap-4`}>
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mr-1">Open alerts by severity</span>
               {(["critical","high","medium","low","info"] as const).map((sev) =>
                 (stats.severityBreakdown[sev] ?? 0) > 0 ? (
-                  <span key={sev} className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-400">
+                  <span key={sev} className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border capitalize ${SEV_COLOR[sev]}`}>
                     <span className={`w-1.5 h-1.5 rounded-full ${SEV_DOT[sev]}`} />
-                    <span className="capitalize">{sev}</span>
-                    <span className="text-slate-400 dark:text-slate-600">{stats.severityBreakdown[sev]}</span>
+                    {sev} &nbsp;·&nbsp; {stats.severityBreakdown[sev]}
                   </span>
                 ) : null
               )}
@@ -463,19 +462,20 @@ export default function SiemPage() {
           )}
 
           {/* ── Tab navigation ── */}
-          <div className="flex gap-0 border-b border-slate-200 dark:border-[#1e1e1e] mb-6">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }}
+            className={`${glass} p-1 mb-6 flex gap-1 flex-wrap`}>
             {TABS.map((t) => (
               <button key={t.key} onClick={() => setTab(t.key)}
-                className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium transition-all border-b-2 -mb-px ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
                   tab === t.key
-                    ? "border-slate-900 dark:border-white text-slate-900 dark:text-white"
-                    : "border-transparent text-slate-400 dark:text-slate-600 hover:text-slate-700 dark:hover:text-slate-300"
+                    ? "bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white shadow-md shadow-emerald-900/15"
+                    : "text-slate-600 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-[#2c2f2c]"
                 }`}>
                 {t.icon}
                 {t.label}
               </button>
             ))}
-          </div>
+          </motion.div>
 
           {/* ── Tab content ── */}
           <AnimatePresence mode="wait">
@@ -483,81 +483,84 @@ export default function SiemPage() {
 
               {/* ────────── OVERVIEW ────────── */}
               {tab === "overview" && (
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
                   {/* Recent alerts */}
-                  <div className={`lg:col-span-2 ${card} overflow-hidden`}>
-                    <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-[#1e1e1e]">
-                      <span className="text-sm font-semibold text-slate-900 dark:text-white">Recent Alerts</span>
-                      <button onClick={() => setTab("alerts")} className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">View all →</button>
+                  <div className={`lg:col-span-2 ${glass} p-5`}>
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="font-bold text-slate-900 dark:text-white">Recent Alerts</h2>
+                      <button onClick={() => setTab("alerts")} className="text-xs text-[#1F6A5C] dark:text-[#50BFA0] hover:underline font-semibold">View all</button>
                     </div>
                     {dataLoading ? (
-                      <div className="p-4 space-y-2">{[1,2,3].map(i => <div key={i} className="h-12 rounded-lg bg-slate-100 dark:bg-[#1a1a1a] animate-pulse" />)}</div>
+                      <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-14 rounded-lg bg-slate-200/60 dark:bg-[#2c2f2c]/60 animate-pulse" />)}</div>
                     ) : alerts.length === 0 ? (
-                      <EmptyState icon={<IoAlertCircle size={28} />} title="No alerts yet" sub="Alerts appear when detection rules match events." />
+                      <EmptyState icon={<IoAlertCircle size={32} />} title="No alerts yet" sub="Alerts will appear here when detection rules match incoming events." />
                     ) : (
-                      <div className="divide-y divide-slate-100 dark:divide-[#1a1a1a]">
+                      <div className="space-y-2">
                         {alerts.slice(0, 8).map((a) => (
-                          <div key={a.id} className={`flex items-center gap-3 px-5 py-3 border-l-[3px] hover:bg-slate-50 dark:hover:bg-[#161616] transition-colors ${SEV_LEFT[a.severity] ?? "border-l-slate-200"}`}>
+                          <div key={a.id} className="flex items-center gap-3 rounded-lg px-3 py-3 border border-white/50 dark:border-[#2c2f2c] bg-white/40 dark:bg-[#2c2f2c]/40 hover:bg-white/70 dark:hover:bg-[#2c2f2c] transition-colors">
+                            <AiScore score={a.ai_score} />
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 flex-wrap">
-                                <span className="text-sm font-medium text-slate-900 dark:text-white truncate">{a.rule_name}</span>
+                                <span className="font-semibold text-sm text-slate-900 dark:text-white truncate">{a.rule_name}</span>
                                 <SevBadge severity={a.severity} />
                               </div>
-                              <div className="text-xs text-slate-400 dark:text-slate-600 mt-0.5 font-mono truncate">
-                                {a.source_ip && <span className="mr-3">{a.source_ip}</span>}
-                                {a.username && <span className="mr-3">{a.username}</span>}
+                              <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">
+                                {a.source_ip && <span className="mr-2">IP: {a.source_ip}</span>}
+                                {a.username && <span className="mr-2">User: {a.username}</span>}
                                 {formatRelative(a.created_at)}
                               </div>
                             </div>
-                            <div className="flex items-center gap-2 shrink-0">
-                              <AiScore score={a.ai_score} />
-                              <StatusBadge status={a.status} />
-                            </div>
+                            <StatusBadge status={a.status} />
                           </div>
                         ))}
                       </div>
                     )}
                   </div>
 
-                  {/* Right column */}
+                  {/* Right column: sources + quick rule stats */}
                   <div className="flex flex-col gap-4">
-                    <div className={`${card} overflow-hidden`}>
-                      <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-[#1e1e1e]">
-                        <span className="text-sm font-semibold text-slate-900 dark:text-white">Log Sources</span>
-                        <button onClick={() => setTab("sources")} className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">Manage →</button>
+                    {/* Sources */}
+                    <div className={`${glass} p-5`}>
+                      <div className="flex items-center justify-between mb-3">
+                        <h2 className="font-bold text-slate-900 dark:text-white">Log Sources</h2>
+                        <button onClick={() => setTab("sources")} className="text-xs text-[#1F6A5C] dark:text-[#50BFA0] hover:underline font-semibold">Manage</button>
                       </div>
                       {sources.length === 0 ? (
-                        <EmptyState icon={<MdOutlineStorage size={24} />} title="No sources" sub="Connect a log source." compact />
+                        <EmptyState icon={<MdOutlineStorage size={28} />} title="No sources" sub="Connect a log source to start ingesting events." compact />
                       ) : (
-                        <div className="divide-y divide-slate-100 dark:divide-[#1a1a1a]">
+                        <div className="space-y-2">
                           {sources.slice(0, 5).map((s) => (
-                            <div key={s.id} className="flex items-center gap-3 px-5 py-3">
-                              <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${s.enabled ? "bg-emerald-500" : "bg-slate-300 dark:bg-slate-600"}`} />
-                              <div className="flex-1 min-w-0">
-                                <div className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">{s.name}</div>
-                                <div className="text-xs text-slate-400 font-mono">{s.event_count.toLocaleString()} events</div>
+                            <div key={s.id} className="flex items-center gap-3 py-2">
+                              <div className="w-8 h-8 rounded-lg bg-[#1F6A5C]/12 dark:bg-[#50BFA0]/15 flex items-center justify-center text-[#1F6A5C] dark:text-[#50BFA0]">
+                                {SOURCE_ICON[s.type] ?? <FaServer size={14} />}
                               </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="text-sm font-semibold text-slate-800 dark:text-white truncate">{s.name}</div>
+                                <div className="text-xs text-slate-500">{s.event_count.toLocaleString()} events</div>
+                              </div>
+                              <span className={`w-2 h-2 rounded-full ${s.enabled ? "bg-emerald-500" : "bg-slate-400"}`} />
                             </div>
                           ))}
                         </div>
                       )}
                     </div>
 
-                    <div className={`${card} overflow-hidden`}>
-                      <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-[#1e1e1e]">
-                        <span className="text-sm font-semibold text-slate-900 dark:text-white">Top Rules</span>
-                        <button onClick={() => setTab("rules")} className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">All →</button>
+                    {/* Top rules */}
+                    <div className={`${glass} p-5`}>
+                      <div className="flex items-center justify-between mb-3">
+                        <h2 className="font-bold text-slate-900 dark:text-white">Top Rules</h2>
+                        <button onClick={() => setTab("rules")} className="text-xs text-[#1F6A5C] dark:text-[#50BFA0] hover:underline font-semibold">All rules</button>
                       </div>
                       {rules.length === 0 ? (
-                        <EmptyState icon={<MdOutlineRule size={24} />} title="No rules" sub="Detection rules load from DB." compact />
+                        <EmptyState icon={<MdOutlineRule size={28} />} title="No rules yet" sub="Detection rules are loaded from the DB." compact />
                       ) : (
-                        <div className="divide-y divide-slate-100 dark:divide-[#1a1a1a]">
+                        <div className="space-y-2">
                           {rules.filter(r => r.enabled).slice(0, 5).map((r) => (
-                            <div key={r.id} className="flex items-center gap-2 px-5 py-3">
+                            <div key={r.id} className="flex items-center gap-2 py-1.5">
                               <SevBadge severity={r.severity} />
-                              <span className="text-sm text-slate-700 dark:text-slate-300 flex-1 truncate">{r.name}</span>
-                              <span className="text-xs text-slate-400 tabular-nums font-mono">{r.hit_count}</span>
+                              <span className="text-sm text-slate-700 dark:text-slate-200 flex-1 truncate">{r.name}</span>
+                              <span className="text-xs text-slate-400 tabular-nums">{r.hit_count} hits</span>
                             </div>
                           ))}
                         </div>
@@ -569,16 +572,16 @@ export default function SiemPage() {
 
               {/* ────────── ALERTS ────────── */}
               {tab === "alerts" && (
-                <div className={`${card} overflow-hidden`}>
-                  <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-[#1e1e1e] flex-wrap gap-3">
-                    <span className="text-sm font-semibold text-slate-900 dark:text-white">Alert Queue <span className="text-slate-400 font-normal ml-1">({filteredAlerts.length})</span></span>
-                    <div className="flex gap-1 flex-wrap">
+                <div className={`${glass} p-5`}>
+                  <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+                    <h2 className="font-bold text-slate-900 dark:text-white text-lg">Alert Queue</h2>
+                    <div className="flex gap-2 flex-wrap">
                       {(["all","open","investigating","resolved","suppressed"] as const).map((f) => (
                         <button key={f} onClick={() => setAlertFilter(f)}
-                          className={`px-3 py-1 rounded-md text-xs font-medium transition-all capitalize ${
+                          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${
                             alertFilter === f
-                              ? "bg-slate-900 dark:bg-white text-white dark:text-black"
-                              : "text-slate-500 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-300"
+                              ? "bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white"
+                              : "border border-white/60 dark:border-[#2c2f2c] bg-white/40 dark:bg-[#2c2f2c]/40 text-slate-600 dark:text-slate-300"
                           }`}>
                           {f}
                         </button>
@@ -587,52 +590,50 @@ export default function SiemPage() {
                   </div>
 
                   {filteredAlerts.length === 0 ? (
-                    <EmptyState icon={<IoAlertCircle size={32} />} title="No alerts" sub="When detection rules fire, alerts appear here." />
+                    <EmptyState icon={<IoAlertCircle size={40} />} title="No alerts" sub="When detection rules fire, alerts appear here with AI triage scores." />
                   ) : (
-                    <div className="divide-y divide-slate-100 dark:divide-[#1a1a1a]">
+                    <div className="space-y-2">
                       {filteredAlerts.map((a) => (
-                        <div key={a.id} className={`flex items-start gap-4 px-5 py-4 border-l-[3px] hover:bg-slate-50 dark:hover:bg-[#161616] transition-colors ${SEV_LEFT[a.severity] ?? "border-l-slate-200"}`}>
-                          <div className="pt-0.5 shrink-0 w-8 text-center">
-                            <AiScore score={a.ai_score} />
-                          </div>
+                        <div key={a.id} className="flex items-start gap-4 rounded-xl px-4 py-4 border border-white/50 dark:border-[#2c2f2c] bg-white/40 dark:bg-[#2c2f2c]/40 hover:bg-white/70 dark:hover:bg-[#2c2f2c] transition-colors">
+                          <AiScore score={a.ai_score} />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap mb-1">
-                              <span className="text-sm font-semibold text-slate-900 dark:text-white">{a.rule_name}</span>
+                              <span className="font-bold text-slate-900 dark:text-white">{a.rule_name}</span>
                               <SevBadge severity={a.severity} />
                               <StatusBadge status={a.status} />
-                              {a.ai_generated && <span className="text-xs text-purple-400 font-medium">· AI</span>}
+                              {a.ai_generated && <span className="text-xs px-2 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/25 text-purple-400 font-semibold">AI</span>}
                             </div>
-                            {a.description && <p className="text-xs text-slate-500 dark:text-slate-400 mb-1 line-clamp-2">{a.description}</p>}
+                            {a.description && <p className="text-sm text-slate-600 dark:text-slate-300 mb-1 line-clamp-2">{a.description}</p>}
                             {a.ai_summary && (
-                              <p className="text-xs text-slate-600 dark:text-slate-400 mb-1.5 flex items-start gap-1">
-                                <MdAutoAwesome size={12} className="mt-0.5 shrink-0 text-purple-400" />
+                              <p className="text-xs text-[#1F6A5C] dark:text-[#50BFA0] mb-1.5 flex items-start gap-1">
+                                <MdAutoAwesome size={13} className="mt-0.5 shrink-0" />
                                 {a.ai_summary}
                               </p>
                             )}
-                            <div className="flex flex-wrap gap-3 text-xs text-slate-400 dark:text-slate-600 font-mono">
-                              {a.source_ip && <span>{a.source_ip}</span>}
-                              {a.username && <span>{a.username}</span>}
-                              {a.hostname && <span>{a.hostname}</span>}
+                            <div className="flex flex-wrap gap-3 text-xs text-slate-500 dark:text-slate-400">
+                              {a.source_ip && <span>IP: <span className="font-mono text-slate-700 dark:text-slate-200">{a.source_ip}</span></span>}
+                              {a.username && <span>User: <span className="font-semibold text-slate-700 dark:text-slate-200">{a.username}</span></span>}
+                              {a.hostname && <span>Host: <span className="font-mono text-slate-700 dark:text-slate-200">{a.hostname}</span></span>}
                               <span>{formatTime(a.created_at)}</span>
                             </div>
                           </div>
-                          <div className="flex flex-col gap-1.5 shrink-0">
+                          <div className="flex flex-col gap-2 shrink-0">
                             {a.ai_score === null && a.status === "open" && (
                               <button onClick={() => triageAlert(a.id)}
-                                className="flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium border border-slate-200 dark:border-[#2a2a2a] text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#1a1a1a] transition-colors whitespace-nowrap">
-                                <MdAutoAwesome size={12} className="text-purple-400" /> AI Triage
+                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-purple-500/10 border border-purple-500/25 text-purple-400 hover:bg-purple-500/20 transition-colors whitespace-nowrap">
+                                <MdAutoAwesome size={13} /> AI Triage
                               </button>
                             )}
                             {a.status === "open" && (
                               <button onClick={() => updateAlertStatus(a.id, "investigating")}
-                                className="px-2.5 py-1.5 rounded-md text-xs font-medium border border-slate-200 dark:border-[#2a2a2a] text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#1a1a1a] transition-colors whitespace-nowrap">
+                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-400/10 border border-amber-400/25 text-amber-400 hover:bg-amber-400/20 transition-colors whitespace-nowrap">
                                 Investigate
                               </button>
                             )}
                             {a.status !== "resolved" && (
                               <button onClick={() => updateAlertStatus(a.id, "resolved")}
-                                className="px-2.5 py-1.5 rounded-md text-xs font-medium border border-slate-200 dark:border-[#2a2a2a] text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#1a1a1a] transition-colors whitespace-nowrap">
-                                Resolve
+                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500/10 border border-emerald-500/25 text-emerald-500 hover:bg-emerald-500/20 transition-colors whitespace-nowrap">
+                                <MdCheck size={13} /> Resolve
                               </button>
                             )}
                           </div>
@@ -645,54 +646,54 @@ export default function SiemPage() {
 
               {/* ────────── EVENTS ────────── */}
               {tab === "events" && (
-                <div className={`${card} overflow-hidden`}>
-                  <div className="flex items-center gap-3 px-5 py-4 border-b border-slate-100 dark:border-[#1e1e1e] flex-wrap">
-                    <span className="text-sm font-semibold text-slate-900 dark:text-white flex-1">Live Event Stream</span>
+                <div className={`${glass} p-5`}>
+                  <div className="flex items-center gap-3 mb-5 flex-wrap">
+                    <h2 className="font-bold text-slate-900 dark:text-white text-lg flex-1">Live Event Stream</h2>
                     <div className="flex gap-2 items-center">
                       <div className="relative">
-                        <IoSearch size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <IoSearch size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                         <input
                           value={eventSearchInput}
                           onChange={(e) => setEventSearchInput(e.target.value)}
                           onKeyDown={(e) => { if (e.key === "Enter") { setEventSearch(eventSearchInput); fetchEvents(eventSearchInput); }}}
                           placeholder="Search logs, IPs, usernames…"
-                          className="pl-8 pr-3 py-1.5 rounded-lg text-sm border border-slate-200 dark:border-[#2a2a2a] bg-white dark:bg-[#0A0A0A] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-400 w-56"
+                          className="pl-8 pr-3 py-2 rounded-lg text-sm border border-white/60 dark:border-[#2c2f2c] bg-white/60 dark:bg-[#1C1E1C] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40 w-64"
                         />
                       </div>
                       <button onClick={() => { setEventSearch(eventSearchInput); fetchEvents(eventSearchInput); }}
-                        className="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-900 dark:bg-white text-white dark:text-black transition-colors">
+                        className="px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white">
                         Search
                       </button>
                     </div>
                   </div>
 
                   {events.length === 0 ? (
-                    <EmptyState icon={<MdOutlineStream size={32} />} title="No events ingested yet"
-                      sub="Send logs to POST /siem/events/ingest or connect a log source." />
+                    <EmptyState icon={<MdOutlineStream size={40} />} title="No events ingested yet"
+                      sub="Send logs to the ingest API at POST /siem/events/ingest or connect a log source." />
                   ) : (
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
                         <thead>
-                          <tr className="text-left text-xs font-medium uppercase tracking-wider text-slate-400 dark:text-slate-600 border-b border-slate-100 dark:border-[#1e1e1e]">
-                            <th className="pb-3 pt-3 px-5 pr-4">Time</th>
-                            <th className="pb-3 pt-3 pr-4">Source</th>
-                            <th className="pb-3 pt-3 pr-4">Type</th>
-                            <th className="pb-3 pt-3 pr-4">Severity</th>
-                            <th className="pb-3 pt-3 pr-4">IP</th>
-                            <th className="pb-3 pt-3 pr-4">User</th>
-                            <th className="pb-3 pt-3 pr-5">Message</th>
+                          <tr className="text-left text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-white/40 dark:border-[#2c2f2c]">
+                            <th className="pb-3 pr-4">Time</th>
+                            <th className="pb-3 pr-4">Source</th>
+                            <th className="pb-3 pr-4">Type</th>
+                            <th className="pb-3 pr-4">Severity</th>
+                            <th className="pb-3 pr-4">IP</th>
+                            <th className="pb-3 pr-4">User</th>
+                            <th className="pb-3">Message</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100 dark:divide-[#1a1a1a]">
+                        <tbody className="divide-y divide-white/30 dark:divide-[#2c2f2c]/60">
                           {events.map((e) => (
-                            <tr key={e.id} className="hover:bg-slate-50 dark:hover:bg-[#161616] transition-colors">
-                              <td className="py-2.5 px-5 pr-4 text-xs text-slate-400 whitespace-nowrap font-mono">{formatRelative(e.ingested_at)}</td>
-                              <td className="py-2.5 pr-4 text-xs font-medium text-slate-700 dark:text-slate-300 whitespace-nowrap">{e.source_name ?? "—"}</td>
-                              <td className="py-2.5 pr-4 text-xs font-mono text-slate-500 dark:text-slate-400 whitespace-nowrap">{e.event_type}</td>
+                            <tr key={e.id} className="hover:bg-white/30 dark:hover:bg-[#2c2f2c]/30 transition-colors">
+                              <td className="py-2.5 pr-4 text-xs text-slate-500 whitespace-nowrap font-mono">{formatRelative(e.ingested_at)}</td>
+                              <td className="py-2.5 pr-4 text-xs font-semibold text-slate-700 dark:text-slate-200 whitespace-nowrap">{e.source_name ?? "—"}</td>
+                              <td className="py-2.5 pr-4 text-xs font-mono text-slate-600 dark:text-slate-300 whitespace-nowrap">{e.event_type}</td>
                               <td className="py-2.5 pr-4"><SevBadge severity={e.severity} /></td>
-                              <td className="py-2.5 pr-4 text-xs font-mono text-slate-600 dark:text-slate-400 whitespace-nowrap">{e.source_ip ?? "—"}</td>
-                              <td className="py-2.5 pr-4 text-xs font-mono text-slate-500 dark:text-slate-400 whitespace-nowrap">{e.username ?? "—"}</td>
-                              <td className="py-2.5 pr-5 text-xs text-slate-400 dark:text-slate-600 max-w-xs truncate">{e.raw_log ?? "—"}</td>
+                              <td className="py-2.5 pr-4 text-xs font-mono text-slate-600 dark:text-slate-300 whitespace-nowrap">{e.source_ip ?? "—"}</td>
+                              <td className="py-2.5 pr-4 text-xs text-slate-600 dark:text-slate-300 whitespace-nowrap">{e.username ?? "—"}</td>
+                              <td className="py-2.5 text-xs text-slate-500 dark:text-slate-400 max-w-xs truncate">{e.raw_log ?? "—"}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -704,83 +705,94 @@ export default function SiemPage() {
 
               {/* ────────── RULES (DETECTIONS) ────────── */}
               {tab === "rules" && (
-                <div className="space-y-4">
+                <div className="space-y-5">
                   {/* AI Rule Builder */}
-                  <div className={`${card} overflow-hidden`}>
-                    <div className="flex items-center gap-2 px-5 py-4 border-b border-slate-100 dark:border-[#1e1e1e]">
-                      <MdAutoAwesome size={15} className="text-purple-400" />
-                      <span className="text-sm font-semibold text-slate-900 dark:text-white">AI Rule Builder</span>
-                      <span className="text-xs text-purple-400 font-medium ml-1">· AI</span>
+                  <div className={`${glass} p-5`}>
+                    <div className="flex items-center gap-2 mb-3">
+                      <MdAutoAwesome size={18} className="text-purple-400" />
+                      <h2 className="font-bold text-slate-900 dark:text-white">AI Detection Rule Builder</h2>
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/25 text-purple-400 font-semibold">AI</span>
                     </div>
-                    <div className="p-5">
-                      <p className="text-xs text-slate-400 dark:text-slate-600 mb-3">Describe what you want to detect in plain English.</p>
-                      <div className="flex gap-2 flex-wrap">
-                        <input
-                          value={aiRulePrompt}
-                          onChange={(e) => setAiRulePrompt(e.target.value)}
-                          onKeyDown={(e) => { if (e.key === "Enter" && !aiRuleLoading) handleGenerateRule(); }}
-                          placeholder='e.g. "Alert when a user logs in from outside the US between midnight and 6am"'
-                          className="flex-1 min-w-[260px] px-3 py-2 rounded-lg text-sm border border-slate-200 dark:border-[#2a2a2a] bg-white dark:bg-[#0A0A0A] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-400"
-                        />
-                        <button onClick={handleGenerateRule} disabled={aiRuleLoading || !aiRulePrompt.trim()}
-                          className="px-4 py-2 rounded-lg text-sm font-medium bg-slate-900 dark:bg-white text-white dark:text-black disabled:opacity-40 transition-colors flex items-center gap-1.5">
-                          {aiRuleLoading ? <><span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Generating…</> : <><MdAutoAwesome size={14} /> Generate</>}
-                        </button>
-                      </div>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Describe what you want to detect in plain English. The AI will write the detection rule for you.</p>
+                    <div className="flex gap-3 flex-wrap">
+                      <input
+                        value={aiRulePrompt}
+                        onChange={(e) => setAiRulePrompt(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === "Enter" && !aiRuleLoading) handleGenerateRule(); }}
+                        placeholder='e.g. "Alert when a user logs in from outside the US between midnight and 6am"'
+                        className="flex-1 min-w-[260px] px-4 py-2.5 rounded-lg text-sm border border-white/60 dark:border-[#2c2f2c] bg-white/60 dark:bg-[#1C1E1C] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/40"
+                      />
+                      <button onClick={handleGenerateRule} disabled={aiRuleLoading || !aiRulePrompt.trim()}
+                        className="px-5 py-2.5 rounded-lg text-sm font-semibold bg-purple-600 hover:bg-purple-700 text-white disabled:opacity-50 transition-colors flex items-center gap-2">
+                        {aiRuleLoading ? <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Generating…</> : <><MdAutoAwesome size={15} /> Generate Rule</>}
+                      </button>
+                    </div>
 
-                      {generatedRule && (
-                        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
-                          className="mt-4 rounded-lg border border-slate-200 dark:border-[#2a2a2a] bg-slate-50 dark:bg-[#161616] p-4">
-                          <div className="flex items-start justify-between gap-3 mb-3">
-                            <div>
-                              <div className="text-sm font-semibold text-slate-900 dark:text-white mb-1">{generatedRule.name}</div>
-                              <div className="text-xs text-slate-500 dark:text-slate-400">{generatedRule.description}</div>
-                              {generatedRule.reasoning && <div className="text-xs text-purple-400 mt-1.5">{generatedRule.reasoning}</div>}
-                            </div>
-                            {generatedRule.severity && <SevBadge severity={generatedRule.severity} />}
+                    {/* Generated rule preview */}
+                    {generatedRule && (
+                      <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                        className="mt-4 rounded-xl border border-purple-500/25 bg-purple-500/5 p-4">
+                        <div className="flex items-start justify-between gap-3 mb-3">
+                          <div>
+                            <div className="font-bold text-slate-900 dark:text-white mb-1">{generatedRule.name}</div>
+                            <div className="text-sm text-slate-600 dark:text-slate-300">{generatedRule.description}</div>
+                            {generatedRule.reasoning && (
+                              <div className="text-xs text-purple-400 mt-1.5 italic">{generatedRule.reasoning}</div>
+                            )}
                           </div>
-                          <div className="flex gap-2">
-                            <button onClick={handleSaveGeneratedRule} className="px-3 py-1.5 rounded-md text-xs font-medium bg-slate-900 dark:bg-white text-white dark:text-black">Save Rule</button>
-                            <button onClick={() => setGeneratedRule(null)} className="px-3 py-1.5 rounded-md text-xs font-medium border border-slate-200 dark:border-[#2a2a2a] text-slate-500 dark:text-slate-400">Discard</button>
-                          </div>
-                        </motion.div>
-                      )}
-                    </div>
+                          {generatedRule.severity && <SevBadge severity={generatedRule.severity} />}
+                        </div>
+                        <div className="flex gap-2">
+                          <button onClick={handleSaveGeneratedRule}
+                            className="px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white">
+                            Save Rule
+                          </button>
+                          <button onClick={() => setGeneratedRule(null)}
+                            className="px-4 py-2 rounded-lg text-sm font-semibold border border-white/60 dark:border-[#2c2f2c] text-slate-600 dark:text-slate-300">
+                            Discard
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
                   </div>
 
                   {/* Rules list */}
-                  <div className={`${card} overflow-hidden`}>
-                    <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-[#1e1e1e]">
-                      <span className="text-sm font-semibold text-slate-900 dark:text-white">Detection Rules <span className="text-slate-400 font-normal ml-1">({rules.length})</span></span>
+                  <div className={`${glass} p-5`}>
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="font-bold text-slate-900 dark:text-white text-lg">Detection Rules <span className="ml-2 text-sm font-normal text-slate-500">({rules.length})</span></h2>
                     </div>
                     {rules.length === 0 ? (
-                      <EmptyState icon={<MdOutlineRule size={32} />} title="No rules" sub="Run the migration to load default detection rules." />
+                      <EmptyState icon={<MdOutlineRule size={40} />} title="No rules" sub="Rules were seeded from the database. Run the migration to load defaults." />
                     ) : (
-                      <div className="divide-y divide-slate-100 dark:divide-[#1a1a1a]">
+                      <div className="space-y-2">
                         {rules.map((r) => (
-                          <div key={r.id} className={`flex items-start gap-4 px-5 py-4 transition-colors hover:bg-slate-50 dark:hover:bg-[#161616] ${!r.enabled ? "opacity-50" : ""}`}>
+                          <div key={r.id} className={`flex items-start gap-4 rounded-xl px-4 py-4 border transition-colors ${
+                            r.enabled
+                              ? "border-white/50 dark:border-[#2c2f2c] bg-white/40 dark:bg-[#2c2f2c]/40"
+                              : "border-white/30 dark:border-[#2c2f2c]/50 bg-white/20 dark:bg-[#2c2f2c]/20 opacity-60"
+                          }`}>
                             {/* Toggle */}
                             <button onClick={() => toggleRule(r)}
-                              className={`mt-0.5 w-9 h-5 rounded-full transition-colors shrink-0 relative ${r.enabled ? "bg-slate-900 dark:bg-white" : "bg-slate-200 dark:bg-[#2a2a2a]"}`}>
-                              <span className={`absolute top-0.5 w-4 h-4 rounded-full shadow transition-transform ${r.enabled ? "translate-x-[18px] bg-white dark:bg-slate-900" : "translate-x-0.5 bg-white dark:bg-slate-400"}`} />
+                              className={`mt-0.5 w-10 h-6 rounded-full transition-colors shrink-0 relative ${r.enabled ? "bg-gradient-to-r from-[#1F6A5C] to-[#50BFA0]" : "bg-slate-300 dark:bg-slate-600"}`}>
+                              <span className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-transform ${r.enabled ? "translate-x-5" : "translate-x-1"}`} />
                             </button>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 flex-wrap mb-1">
-                                <span className="text-sm font-medium text-slate-900 dark:text-white">{r.name}</span>
+                                <span className="font-semibold text-slate-900 dark:text-white">{r.name}</span>
                                 <SevBadge severity={r.severity} />
-                                {r.ai_generated && <span className="text-xs text-purple-400 font-medium">· AI</span>}
+                                {r.ai_generated && <span className="text-xs px-2 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/25 text-purple-400 font-semibold">AI generated</span>}
                               </div>
-                              {r.description && <p className="text-xs text-slate-500 dark:text-slate-400 mb-1.5">{r.description}</p>}
-                              <div className="flex gap-4 text-xs text-slate-400 dark:text-slate-600 font-mono mb-2">
+                              {r.description && <p className="text-sm text-slate-600 dark:text-slate-300 mb-1">{r.description}</p>}
+                              <div className="flex gap-4 text-xs text-slate-500 mb-2">
                                 <span>{r.hit_count} hits</span>
-                                <span>{r.false_positive_count} fp</span>
-                                <span>{formatRelative(r.created_at)}</span>
+                                <span>{r.false_positive_count} false positives</span>
+                                <span>Created {formatRelative(r.created_at)}</span>
                               </div>
                               {/* Expand button */}
                               <button onClick={() => toggleRuleExpand(r.id)}
-                                className="flex items-center gap-1 text-xs text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-colors font-medium">
-                                <IoChevronDown size={12} className={`transition-transform ${expandedRules.has(r.id) ? "rotate-180" : ""}`} />
-                                {expandedRules.has(r.id) ? "Hide" : "View logic"}
+                                className="flex items-center gap-1 text-xs text-[#1F6A5C] dark:text-[#50BFA0] hover:underline font-semibold">
+                                <IoChevronDown size={13} className={`transition-transform ${expandedRules.has(r.id) ? "rotate-180" : ""}`} />
+                                {expandedRules.has(r.id) ? "Hide logic" : "View rule logic"}
                               </button>
                               {/* Expanded logic */}
                               <AnimatePresence>
@@ -791,20 +803,23 @@ export default function SiemPage() {
                                     <div className="flex items-center gap-1 mb-3 flex-wrap">
                                       {(["logic","sigma","spl","kql"] as const).map(qt => (
                                         <button key={qt} onClick={() => setRuleQueryTab(p => ({ ...p, [r.id]: qt }))}
-                                          className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
+                                          className={`px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${
                                             (ruleQueryTab[r.id] ?? "logic") === qt
-                                              ? "bg-slate-900 dark:bg-white text-white dark:text-black"
-                                              : "text-slate-400 dark:text-slate-600 hover:text-slate-700 dark:hover:text-slate-300 border border-transparent"
+                                              ? qt === "logic" ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                                                : qt === "sigma" ? "bg-sky-500/20 text-sky-400 border border-sky-500/30"
+                                                : qt === "spl" ? "bg-orange-500/20 text-orange-400 border border-orange-500/30"
+                                                : "bg-blue-500/20 text-blue-400 border border-blue-500/30"
+                                              : "text-slate-500 hover:text-slate-300 border border-transparent"
                                           }`}>
-                                          {qt === "logic" ? "Logic" : qt === "sigma" ? "Sigma" : qt === "spl" ? "SPL" : "KQL"}
+                                          {qt === "logic" ? "Logic" : qt === "sigma" ? "Sigma" : qt === "spl" ? "SPL (Splunk)" : "KQL (Sentinel)"}
                                         </button>
                                       ))}
                                       {(!r.spl || !r.kql) && (
                                         <button onClick={() => translateRule(r.id)} disabled={translatingRules.has(r.id)}
-                                          className="ml-auto flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium border border-slate-200 dark:border-[#2a2a2a] text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#1a1a1a] disabled:opacity-50 transition-colors">
+                                          className="ml-auto flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-purple-500/10 border border-purple-500/25 text-purple-400 hover:bg-purple-500/20 disabled:opacity-50 transition-colors">
                                           {translatingRules.has(r.id)
-                                            ? <><span className="w-3 h-3 border-2 border-slate-400/30 border-t-slate-400 rounded-full animate-spin" /> Generating…</>
-                                            : <><MdAutoAwesome size={11} className="text-purple-400" /> Generate SPL &amp; KQL</>}
+                                            ? <><span className="w-3 h-3 border-2 border-purple-400/30 border-t-purple-400 rounded-full animate-spin" /> Generating…</>
+                                            : <><MdAutoAwesome size={12} /> Generate SPL &amp; KQL</>}
                                         </button>
                                       )}
                                     </div>
@@ -826,10 +841,10 @@ export default function SiemPage() {
                                       r.spl
                                         ? <pre className="text-xs font-mono rounded-lg bg-slate-900 text-orange-300 p-4 overflow-x-auto border border-slate-700/50 whitespace-pre-wrap">{r.spl}</pre>
                                         : <div className="flex flex-col items-start gap-2 p-3">
-                                            <div className="text-xs text-slate-400 dark:text-slate-600">No SPL query yet.</div>
+                                            <div className="text-xs text-slate-500 italic">No SPL query yet.</div>
                                             <button onClick={() => translateRule(r.id)} disabled={translatingRules.has(r.id)}
-                                              className="flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium border border-slate-200 dark:border-[#2a2a2a] text-slate-500 disabled:opacity-50 transition-colors">
-                                              {translatingRules.has(r.id) ? "Generating…" : <><MdAutoAwesome size={12} className="text-purple-400" /> Generate SPL</>}
+                                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-orange-500/10 border border-orange-500/25 text-orange-400 hover:bg-orange-500/20 disabled:opacity-50 transition-colors">
+                                              {translatingRules.has(r.id) ? "Generating…" : <><MdAutoAwesome size={12} /> Generate SPL (Splunk)</>}
                                             </button>
                                           </div>
                                     )}
@@ -838,10 +853,10 @@ export default function SiemPage() {
                                       r.kql
                                         ? <pre className="text-xs font-mono rounded-lg bg-slate-900 text-blue-300 p-4 overflow-x-auto border border-slate-700/50 whitespace-pre-wrap">{r.kql}</pre>
                                         : <div className="flex flex-col items-start gap-2 p-3">
-                                            <div className="text-xs text-slate-400 dark:text-slate-600">No KQL query yet.</div>
+                                            <div className="text-xs text-slate-500 italic">No KQL query yet.</div>
                                             <button onClick={() => translateRule(r.id)} disabled={translatingRules.has(r.id)}
-                                              className="flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium border border-slate-200 dark:border-[#2a2a2a] text-slate-500 disabled:opacity-50 transition-colors">
-                                              {translatingRules.has(r.id) ? "Generating…" : <><MdAutoAwesome size={12} className="text-purple-400" /> Generate KQL</>}
+                                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-blue-500/10 border border-blue-500/25 text-blue-400 hover:bg-blue-500/20 disabled:opacity-50 transition-colors">
+                                              {translatingRules.has(r.id) ? "Generating…" : <><MdAutoAwesome size={12} /> Generate KQL (Sentinel)</>}
                                             </button>
                                           </div>
                                     )}
@@ -850,8 +865,8 @@ export default function SiemPage() {
                               </AnimatePresence>
                             </div>
                             <button onClick={() => deleteRule(r.id)}
-                              className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-[#1a1a1a] text-slate-300 dark:text-slate-700 hover:text-red-400 dark:hover:text-red-500 transition-colors shrink-0">
-                              <MdClose size={15} />
+                              className="p-1.5 rounded-lg hover:bg-red-500/10 text-slate-400 hover:text-red-400 transition-colors shrink-0">
+                              <MdClose size={16} />
                             </button>
                           </div>
                         ))}
@@ -863,26 +878,27 @@ export default function SiemPage() {
 
               {/* ────────── SOURCES ────────── */}
               {tab === "sources" && (
-                <div className={`${card} overflow-hidden`}>
-                  <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-[#1e1e1e]">
-                    <span className="text-sm font-semibold text-slate-900 dark:text-white">Log Sources</span>
+                <div className={`${glass} p-5`}>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="font-bold text-slate-900 dark:text-white text-lg">Log Sources</h2>
                     <button onClick={() => setShowAddSource(true)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-900 dark:bg-white text-white dark:text-black transition-colors">
-                      <MdAdd size={13} /> Add Source
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white shadow-md hover:opacity-90 transition-opacity">
+                      <MdAdd size={16} /> Add Source
                     </button>
                   </div>
 
+                  {/* Add source form */}
                   <AnimatePresence>
                     {showAddSource && (
                       <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
-                        className="border-b border-slate-100 dark:border-[#1e1e1e] bg-slate-50 dark:bg-[#161616] p-5 overflow-hidden">
-                        <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-3">Connect a Log Source</p>
+                        className="mb-4 rounded-xl border border-[#1F6A5C]/30 bg-[#1F6A5C]/5 p-4 overflow-hidden">
+                        <h3 className="font-semibold text-slate-800 dark:text-white mb-3">Connect a Log Source</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
                           <input value={newSource.name} onChange={(e) => setNewSource(s => ({ ...s, name: e.target.value }))}
                             placeholder="Source name (e.g. Firewall-01)"
-                            className="px-3 py-2 rounded-lg text-sm border border-slate-200 dark:border-[#2a2a2a] bg-white dark:bg-[#0A0A0A] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-400" />
+                            className="px-3 py-2 rounded-lg text-sm border border-white/60 dark:border-[#2c2f2c] bg-white/80 dark:bg-[#1C1E1C] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40" />
                           <select value={newSource.type} onChange={(e) => setNewSource(s => ({ ...s, type: e.target.value }))}
-                            className="px-3 py-2 rounded-lg text-sm border border-slate-200 dark:border-[#2a2a2a] bg-white dark:bg-[#0A0A0A] text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-slate-400">
+                            className="px-3 py-2 rounded-lg text-sm border border-white/60 dark:border-[#2c2f2c] bg-white/80 dark:bg-[#1C1E1C] text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40">
                             <option value="syslog">Syslog (UDP/TCP 514)</option>
                             <option value="api">REST API</option>
                             <option value="aws">AWS CloudTrail</option>
@@ -893,43 +909,52 @@ export default function SiemPage() {
                           </select>
                           <input value={newSource.description} onChange={(e) => setNewSource(s => ({ ...s, description: e.target.value }))}
                             placeholder="Description (optional)"
-                            className="px-3 py-2 rounded-lg text-sm border border-slate-200 dark:border-[#2a2a2a] bg-white dark:bg-[#0A0A0A] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-400" />
+                            className="px-3 py-2 rounded-lg text-sm border border-white/60 dark:border-[#2c2f2c] bg-white/80 dark:bg-[#1C1E1C] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40" />
                         </div>
                         <div className="flex gap-2">
-                          <button onClick={addSource} className="px-3 py-1.5 rounded-md text-xs font-medium bg-slate-900 dark:bg-white text-white dark:text-black">Add</button>
-                          <button onClick={() => setShowAddSource(false)} className="px-3 py-1.5 rounded-md text-xs font-medium border border-slate-200 dark:border-[#2a2a2a] text-slate-500 dark:text-slate-400">Cancel</button>
+                          <button onClick={addSource}
+                            className="px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white">
+                            Add Source
+                          </button>
+                          <button onClick={() => setShowAddSource(false)}
+                            className="px-4 py-2 rounded-lg text-sm font-semibold border border-white/60 dark:border-[#2c2f2c] text-slate-600 dark:text-slate-300">
+                            Cancel
+                          </button>
                         </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
 
                   {sources.length === 0 ? (
-                    <EmptyState icon={<MdOutlineStorage size={32} />} title="No sources connected"
-                      sub="Connect your first log source. Supports syslog, REST API, AWS, Azure, GCP." />
+                    <EmptyState icon={<MdOutlineStorage size={40} />} title="No sources connected"
+                      sub='Click "Add Source" to connect your first log source. Supports syslog, REST API, AWS, Azure, GCP, and endpoint agents.' />
                   ) : (
-                    <div className="divide-y divide-slate-100 dark:divide-[#1a1a1a]">
+                    <div className="space-y-3">
                       {sources.map((s) => (
-                        <div key={s.id} className="flex items-center gap-4 px-5 py-4 hover:bg-slate-50 dark:hover:bg-[#161616] transition-colors">
-                          <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-[#1a1a1a] flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0">
-                            {SOURCE_ICON[s.type] ?? <FaServer size={14} />}
+                        <div key={s.id} className="flex items-center gap-4 rounded-xl px-4 py-4 border border-white/50 dark:border-[#2c2f2c] bg-white/40 dark:bg-[#2c2f2c]/40">
+                          <div className="w-10 h-10 rounded-xl bg-[#1F6A5C]/12 dark:bg-[#50BFA0]/15 flex items-center justify-center text-[#1F6A5C] dark:text-[#50BFA0]">
+                            {SOURCE_ICON[s.type] ?? <FaServer size={16} />}
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-0.5">
-                              <span className="text-sm font-medium text-slate-900 dark:text-white">{s.name}</span>
-                              <span className="text-xs text-slate-400 capitalize">{s.type}</span>
-                              <span className={`w-1.5 h-1.5 rounded-full ${s.enabled ? "bg-emerald-500" : "bg-slate-300 dark:bg-slate-600"}`} />
+                              <span className="font-semibold text-slate-900 dark:text-white">{s.name}</span>
+                              <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-[#2c2f2c] text-slate-500 border border-slate-200 dark:border-[#3d4240] capitalize">{s.type}</span>
+                              <span className={`w-2 h-2 rounded-full ${s.enabled ? "bg-emerald-500" : "bg-slate-400"}`} />
                             </div>
-                            <div className="flex gap-4 text-xs text-slate-400 dark:text-slate-600 font-mono">
-                              <span>{s.event_count.toLocaleString()} events</span>
-                              {s.last_seen && <span>last {formatRelative(s.last_seen)}</span>}
-                              {s.description && <span className="font-sans">{s.description}</span>}
+                            <div className="flex gap-4 text-xs text-slate-500">
+                              <span>{s.event_count.toLocaleString()} events total</span>
+                              {s.last_seen && <span>Last seen {formatRelative(s.last_seen)}</span>}
+                              {s.description && <span>{s.description}</span>}
                             </div>
                           </div>
-                          <div className="flex items-center gap-3 shrink-0">
-                            <code className="text-xs font-mono text-slate-400 dark:text-slate-600">POST /siem/events/ingest</code>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <div className="text-right">
+                              <div className="text-xs text-slate-500">Ingest endpoint</div>
+                              <code className="text-xs font-mono text-[#1F6A5C] dark:text-[#50BFA0]">POST /siem/events/ingest</code>
+                            </div>
                             <button onClick={() => deleteSource(s.id)}
-                              className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-[#1a1a1a] text-slate-300 dark:text-slate-700 hover:text-red-400 dark:hover:text-red-500 transition-colors">
-                              <MdClose size={14} />
+                              className="p-2 rounded-lg hover:bg-red-500/10 text-slate-400 hover:text-red-400 transition-colors">
+                              <MdClose size={16} />
                             </button>
                           </div>
                         </div>
@@ -950,23 +975,23 @@ export default function SiemPage() {
 
 function EmptyState({ icon, title, sub, compact = false }: { icon: React.ReactNode; title: string; sub: string; compact?: boolean }) {
   return (
-    <div className={`flex flex-col items-center text-center ${compact ? "py-6" : "py-12"}`}>
-      <div className="mb-2 text-slate-200 dark:text-slate-800">{icon}</div>
-      <div className="text-sm font-medium text-slate-500 dark:text-slate-500 mb-1">{title}</div>
-      <div className="text-xs text-slate-400 dark:text-slate-600 max-w-xs">{sub}</div>
+    <div className={`flex flex-col items-center text-center ${compact ? "py-6" : "py-12"} text-slate-400`}>
+      <div className="mb-3 opacity-40">{icon}</div>
+      <div className="font-semibold text-slate-600 dark:text-slate-300 mb-1">{title}</div>
+      <div className="text-sm text-slate-500 dark:text-slate-400 max-w-sm">{sub}</div>
     </div>
   );
 }
 
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, string> = {
-    open:          "text-red-500",
-    investigating: "text-amber-500",
-    resolved:      "text-slate-400 dark:text-slate-600",
-    suppressed:    "text-slate-400 dark:text-slate-600",
+    open:          "bg-red-500/10 border-red-500/25 text-red-400",
+    investigating: "bg-amber-400/10 border-amber-400/25 text-amber-400",
+    resolved:      "bg-emerald-500/10 border-emerald-500/25 text-emerald-500",
+    suppressed:    "bg-slate-400/10 border-slate-400/20 text-slate-400",
   };
   return (
-    <span className={`text-xs font-medium capitalize ${map[status] ?? map.open}`}>
+    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border capitalize ${map[status] ?? map.open}`}>
       {status}
     </span>
   );
