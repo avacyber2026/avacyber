@@ -1,255 +1,145 @@
 "use client";
 
 import { useEffect, useState, useMemo, useCallback } from "react";
-import style from "@/styles/Tickets.module.css";
-import { IoBugOutline, IoAttachOutline } from "react-icons/io5";
 import { FiSearch } from "react-icons/fi";
-import { Button, Box, Text, HStack, Input, Select } from "@/ui";
-import { useToast } from "@/hooks/useToast";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import api from "@/lib/axios";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/useToast";
 import type { Ticket, ReportItem, UserStatus } from "@/types";
 import { TEAM_ROLES } from "@/types";
 import type { Locale } from "@/lib/i18n/translations";
+import {
+  MdOutlineDevices, MdOutlinePhoneIphone, MdOutlineLock,
+  MdOutlineWarningAmber, MdOutlineUsb, MdOutlineAccountCircle,
+  MdOutlineFolderShared, MdOutlineHelpOutline, MdAdd, MdRefresh,
+  MdOutlineShield, MdOutlineMarkEmailRead, MdOutlineVerified,
+} from "react-icons/md";
+import { IoAlertCircle, IoBugOutline, IoAttachOutline, IoChevronDown, IoChevronUp } from "react-icons/io5";
 
-const getTickets = () => api.get("/tickets").then((r) => r.data);
-const getProfile = () => api.get("/profile").then((r) => r.data).catch(() => null);
-const sendTicketAnswer = (id: number, answer: string) => api.patch(`/tickets/${id}/answer`, { answer }).then((r) => r.data);
-
-const LOCALE_TAG: Record<Locale, string> = {
-  en: "en-US",
-  cs: "cs-CZ",
-  fr: "fr-FR",
-  es: "es-ES",
-  de: "de-DE",
-};
-
-/** Значения ответа API (PATCH /tickets/:id/answer) — подписи через i18n */
-const VERIFICATION_OPTIONS = [
-  { value: "Aware", labelKey: "tickets.answerAware" },
-  { value: "Not Aware", labelKey: "tickets.answerNotAware" },
-  { value: "Description is not clear", labelKey: "tickets.answerDescUnclear" },
-] as const;
-
-function statusBadgeLabel(status: string, t: (key: string) => string): string | null {
-  const s = (status || "").toLowerCase();
-  if (s.includes("resolved")) return t("tickets.statusResolved");
-  if (s.includes("updated")) return t("tickets.statusUpdated");
-  if (s === "new" || s.startsWith("new ")) return t("tickets.statusNew");
-  return null;
-}
-
-function onCallLabel(email: string): string {
-  const part = email.split("@")[0] || "";
-  const [name, rest] = part.split(".");
-  const a = (name || part).charAt(0).toUpperCase() + (name || part).slice(1);
-  const b = rest ? rest.charAt(0).toUpperCase() : "";
-  return b ? `${a} ${b}.` : a;
-}
-
-/** Значение <option> для фильтра «по роли создателя» (GSOC / Management). */
-const FILTER_BY_CREATOR_ROLE_PREFIX = "byCreatorRole:";
-const FILTER_CREATOR_UNKNOWN = "creator_unknown";
-
-const TICKET_CREATOR_ROLES_FOR_FILTER = [
-  "Security Manager",
-  "GSOC",
-  "Admin",
-  "GRC",
-  "IAM",
-  "Pentesting",
-  "End-User",
-] as const;
-
-function labelForCreatorRole(roleName: string, t: (key: string) => string): string {
-  const keyMap: Record<string, string> = {
-    "Security Manager": "tickets.creatorRole.securityManager",
-    GSOC: "tickets.creatorRole.gsoc",
-    Admin: "tickets.creatorRole.admin",
-    GRC: "tickets.creatorRole.grc",
-    IAM: "tickets.creatorRole.iam",
-    Pentesting: "tickets.creatorRole.pentesting",
-    "End-User": "tickets.creatorRole.endUser",
-  };
-  const k = keyMap[roleName];
-  return k ? t(k) : roleName;
-}
+// ── Types ─────────────────────────────────────────────────────────────────────
 
 type TableRow =
   | { kind: "ticket"; key: string; ticket: Ticket }
   | { kind: "report"; key: string; report: ReportItem };
+
+type SiemMatch = { id: number; rule_name: string; severity: string };
+
+const VERIFICATION_OPTIONS = [
+  { value: "Aware", label: "I was aware of this" },
+  { value: "Not Aware", label: "Not aware — this wasn't me" },
+  { value: "Description is not clear", label: "Description unclear" },
+] as const;
+
+const LOCALE_TAG: Record<Locale, string> = {
+  en: "en-US", cs: "cs-CZ", fr: "fr-FR", es: "es-ES", de: "de-DE",
+};
+
+// ── Incident categories ───────────────────────────────────────────────────────
+
+const INCIDENT_CATEGORIES = [
+  { value: "suspicious_device", label: "Suspicious Device Activity", icon: <MdOutlineDevices size={20} />, desc: "Strange behavior on your computer or device" },
+  { value: "lost_device", label: "Lost or Stolen Device", icon: <MdOutlinePhoneIphone size={20} />, desc: "Corporate laptop, phone, or badge is missing" },
+  { value: "unauthorized_access", label: "Unauthorized Access", icon: <MdOutlineLock size={20} />, desc: "Someone accessed your account or system without permission" },
+  { value: "phishing_click", label: "Accidental Phishing Click", icon: <MdOutlineWarningAmber size={20} />, desc: "Clicked a suspicious link or opened a malicious attachment" },
+  { value: "physical_security", label: "Physical Security Incident", icon: <MdOutlineUsb size={20} />, desc: "Found a USB drive, tailgating, suspicious person" },
+  { value: "account_anomaly", label: "Account Anomaly", icon: <MdOutlineAccountCircle size={20} />, desc: "Unexpected password change, login, or account behavior" },
+  { value: "data_concern", label: "Data Concern", icon: <MdOutlineFolderShared size={20} />, desc: "Accidental data share or suspicious request for data" },
+  { value: "other", label: "Other Security Concern", icon: <MdOutlineHelpOutline size={20} />, desc: "Anything else that seems suspicious or wrong" },
+];
+
+function categoryForValue(v?: string | null) {
+  return INCIDENT_CATEGORIES.find(c => c.value === v) ?? INCIDENT_CATEGORIES[INCIDENT_CATEGORIES.length - 1];
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function formatRelativeTime(iso: string | Date | undefined, locale: Locale): string {
+  if (iso == null) return "—";
+  const d = iso instanceof Date ? iso : new Date(iso);
+  if (Number.isNaN(d.getTime())) return "—";
+  const diff = Date.now() - d.getTime();
+  const mins = Math.floor(diff / 60000);
+  const hrs = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
+  if (mins < 2) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  if (hrs < 24) return `${hrs}h ago`;
+  if (days < 7) return `${days}d ago`;
+  const tag = LOCALE_TAG[locale] ?? "en-US";
+  return d.toLocaleString(tag, { month: "short", day: "numeric" });
+}
+
+function priorityColor(p?: string) {
+  const v = (p || "").toLowerCase();
+  if (v === "critical") return "text-red-500 bg-red-500/10 border-red-500/25";
+  if (v === "high") return "text-orange-400 bg-orange-400/10 border-orange-400/25";
+  if (v === "medium") return "text-amber-400 bg-amber-400/10 border-amber-400/25";
+  return "text-teal-400 bg-teal-400/10 border-teal-400/25";
+}
+
+function statusInfo(status: string) {
+  const s = (status || "").toLowerCase();
+  if (s.includes("resolved")) return { label: "Resolved", cls: "text-emerald-500 bg-emerald-500/10 border-emerald-500/25" };
+  if (s.includes("updated")) return { label: "Updated", cls: "text-violet-400 bg-violet-400/10 border-violet-400/25" };
+  if (s.includes("progress")) return { label: "In Progress", cls: "text-blue-400 bg-blue-400/10 border-blue-400/25" };
+  return { label: "Open", cls: "text-sky-400 bg-sky-400/10 border-sky-400/25" };
+}
+
+function sevColor(sev: string) {
+  const s = (sev || "").toLowerCase();
+  if (s === "critical") return "text-red-500";
+  if (s === "high") return "text-orange-400";
+  if (s === "medium") return "text-amber-400";
+  return "text-slate-400";
+}
 
 function normalizeTicketRow(t: Record<string, unknown>): Ticket {
   const created = t.createdAt ?? t.created_at;
   return { ...t, createdAt: created } as Ticket;
 }
 
+const getTickets = () => api.get("/tickets").then((r) => r.data);
+const getProfile = () => api.get("/profile").then((r) => r.data).catch(() => null);
+const sendTicketAnswer = (id: number, answer: string) =>
+  api.patch(`/tickets/${id}/answer`, { answer }).then((r) => r.data);
+
+// ── Main Component ─────────────────────────────────────────────────────────────
+
 export function TicketsSimple() {
   const router = useRouter();
+  const { t, locale } = useLanguage();
+  const { user, role } = useAuth();
+  const { toast } = useToast();
+
   const [ticketRows, setTicketRows] = useState<Ticket[]>([]);
   const [reportRows, setReportRows] = useState<ReportItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
   const [firstName, setFirstName] = useState("");
+  const [search, setSearch] = useState("");
   const [answer, setAnswer] = useState("");
   const [idTicket, setIdTicket] = useState<number | "">("");
   const [expandedId, setExpandedId] = useState<number | null>(null);
-  /** End-User: all | soc | mine. GSOC/Management/Admin: all | created_me | byCreatorRole:* | creator_unknown */
   const [sourceFilter, setSourceFilter] = useState<string>("all");
-  const { toast } = useToast();
-  const { t, locale } = useLanguage();
-  const { user, role } = useAuth();
+  const [activeTab, setActiveTab] = useState<"action" | "mine" | "all">("action");
+  const [siemMatches, setSiemMatches] = useState<Record<string, SiemMatch[]>>({});
+  const [siemLoading, setSiemLoading] = useState(false);
 
-  const showInlineReply =
-    role === "End-User" || (role != null && TEAM_ROLES.includes(role as UserStatus));
+  const isEndUser = role === "End-User";
+  const isSecurityTeam = role === "Security Manager" || role === "GSOC" || role === "Admin";
+  const isTeamMember = role != null && TEAM_ROLES.includes(role as UserStatus);
 
-  const showSourceFilter =
-    role === "End-User" ||
-    role === "Security Manager" ||
-    role === "GSOC" ||
-    role === "Admin";
-
-  useEffect(() => {
-    setSourceFilter("all");
-  }, [role]);
-
-  const sourceFilterOptions = useMemo(() => {
-    const opts: { value: string; label: string }[] = [
-      { value: "all", label: t("tickets.filterAll") },
-    ];
-    if (role === "End-User") {
-      opts.push(
-        { value: "soc", label: t("tickets.filterFromSoc") },
-        { value: "mine", label: t("tickets.filterMySubmissions") }
-      );
-    } else {
-      opts.push({ value: "created_me", label: t("tickets.filterICreated") });
-      TICKET_CREATOR_ROLES_FOR_FILTER.forEach((r) => {
-        opts.push({
-          value: `${FILTER_BY_CREATOR_ROLE_PREFIX}${r}`,
-          label: labelForCreatorRole(r, t),
-        });
-      });
-      opts.push({ value: FILTER_CREATOR_UNKNOWN, label: t("tickets.filterUnknownCreator") });
-    }
-    return opts;
-  }, [role, t]);
-
-  const formatStartedAt = useCallback(
-    (createdAt: string | Date | undefined): string => {
-      if (createdAt == null) return "—";
-      const d = createdAt instanceof Date ? createdAt : new Date(createdAt);
-      if (Number.isNaN(d.getTime())) return "—";
-      const now = new Date();
-      const diffMs = now.getTime() - d.getTime();
-      const diffDays = Math.floor(diffMs / (24 * 60 * 60 * 1000));
-      if (diffDays === 0) return t("tickets.timeToday");
-      if (diffDays === 1) return t("tickets.timeOneDayAgo");
-      if (diffDays < 7) return t("tickets.timeDaysAgo").replace("{n}", String(diffDays));
-      if (diffDays < 14) return t("tickets.timeOneWeekAgo");
-      const tag = LOCALE_TAG[locale] ?? "en-US";
-      return d.toLocaleString(tag, {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-      });
-    },
-    [locale, t]
-  );
-
-  const mergedTableRows = useMemo((): TableRow[] => {
-    const fromTickets: TableRow[] = ticketRows.map((ticket) => ({
-      kind: "ticket",
-      key: `t-${ticket.id}`,
-      ticket,
-    }));
-    const fromReports: TableRow[] =
-      role === "End-User"
-        ? reportRows.map((report) => ({
-            kind: "report",
-            key: `r-${report.id}`,
-            report,
-          }))
-        : [];
-    const combined = [...fromTickets, ...fromReports];
-    combined.sort((a, b) => {
-      const ta = a.kind === "ticket" ? a.ticket.createdAt : a.report.createdAt;
-      const tb = b.kind === "ticket" ? b.ticket.createdAt : b.report.createdAt;
-      const da = ta ? new Date(ta).getTime() : 0;
-      const db = tb ? new Date(tb).getTime() : 0;
-      return db - da;
-    });
-    return combined;
-  }, [ticketRows, reportRows, role]);
-
-  const sourceFilteredRows = useMemo(() => {
-    const merged = mergedTableRows;
-    if (role === "End-User") {
-      if (sourceFilter === "soc") return merged.filter((r) => r.kind === "ticket");
-      if (sourceFilter === "mine") return merged.filter((r) => r.kind === "report");
-      return merged;
-    }
-    if (role === "Security Manager" || role === "GSOC" || role === "Admin") {
-      const email = (user?.email || "").toLowerCase();
-      if (sourceFilter === "created_me") {
-        return merged.filter((r) => {
-          if (r.kind !== "ticket") return false;
-          return (r.ticket.createdBy || "").toLowerCase() === email;
-        });
-      }
-      if (sourceFilter === FILTER_CREATOR_UNKNOWN) {
-        return merged.filter((r) => {
-          if (r.kind !== "ticket") return false;
-          const cr = r.ticket.createdByRole;
-          return cr == null || String(cr).trim() === "";
-        });
-      }
-      if (sourceFilter.startsWith(FILTER_BY_CREATOR_ROLE_PREFIX)) {
-        const roleName = sourceFilter.slice(FILTER_BY_CREATOR_ROLE_PREFIX.length);
-        return merged.filter((r) => {
-          if (r.kind !== "ticket") return false;
-          return (r.ticket.createdByRole || "") === roleName;
-        });
-      }
-      return merged;
-    }
-    return merged;
-  }, [mergedTableRows, role, user?.email, sourceFilter]);
-
-  const filteredTableRows = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return sourceFilteredRows;
-    return sourceFilteredRows.filter((row) => {
-      if (row.kind === "ticket") {
-        const x = row.ticket;
-        return (
-          x.title?.toLowerCase().includes(q) ||
-          x.text?.toLowerCase().includes(q) ||
-          String(x.id).includes(q)
-        );
-      }
-      const r = row.report;
-      return (
-        (r.subject && r.subject.toLowerCase().includes(q)) ||
-        (r.description && r.description.toLowerCase().includes(q)) ||
-        String(r.id).toLowerCase().includes(q)
-      );
-    });
-  }, [sourceFilteredRows, search]);
+  // ── Load data ──────────────────────────────────────────────────────────────
 
   useEffect(() => {
     setLoading(true);
     const ticketP = getTickets();
-    const reportP =
-      role === "End-User"
-        ? api.get("/reports").then((r) => (Array.isArray(r.data) ? r.data : []))
-        : Promise.resolve([] as ReportItem[]);
+    const reportP = isEndUser
+      ? api.get("/reports").then((r) => (Array.isArray(r.data) ? r.data : []))
+      : Promise.resolve([] as ReportItem[]);
 
     Promise.all([ticketP, reportP])
       .then(([rawTickets, rawReports]) => {
@@ -259,316 +149,467 @@ export function TicketsSimple() {
       })
       .catch(() => toast({ title: t("tickets.errorLoading"), status: "error", duration: 4000 }))
       .finally(() => setLoading(false));
-  }, [toast, t, role]);
-
-  useEffect(() => {
-    if (loading || typeof window === "undefined") return;
-    const raw = window.location.hash.replace(/^#/, "");
-    if (!raw.startsWith("incident-")) return;
-    requestAnimationFrame(() => {
-      document.getElementById(raw)?.scrollIntoView({ behavior: "smooth", block: "center" });
-    });
-  }, [loading, filteredTableRows]);
+  }, [toast, t, isEndUser, role]);
 
   useEffect(() => {
     getProfile().then((p) => p && setFirstName(p.firstName || (user?.email ?? "").split("@")[0] || ""));
   }, [user?.email]);
 
+  // ── SIEM correlation (for security teams only) ─────────────────────────────
+
+  useEffect(() => {
+    if (!isSecurityTeam || ticketRows.length === 0) return;
+    setSiemLoading(true);
+    const items = ticketRows
+      .filter(t => t.fromUser || (t as unknown as { hostname?: string }).hostname)
+      .map(t => ({
+        username: t.fromUser || null,
+        hostname: (t as unknown as { hostname?: string }).hostname || null,
+      }))
+      .filter(i => i.username || i.hostname);
+
+    if (items.length === 0) { setSiemLoading(false); return; }
+
+    api.post("/siem/bulk-correlate", { items })
+      .then(r => setSiemMatches(r.data?.matches ?? {}))
+      .catch(() => {})
+      .finally(() => setSiemLoading(false));
+  }, [ticketRows, isSecurityTeam]);
+
+  function getSiemMatchForTicket(ticket: Ticket): SiemMatch[] {
+    const key = `${ticket.fromUser || ""}:${(ticket as unknown as { hostname?: string }).hostname || ""}`;
+    return siemMatches[key] ?? [];
+  }
+
+  // ── Merged rows ────────────────────────────────────────────────────────────
+
+  const mergedRows = useMemo((): TableRow[] => {
+    const fromTickets: TableRow[] = ticketRows.map(ticket => ({ kind: "ticket", key: `t-${ticket.id}`, ticket }));
+    const fromReports: TableRow[] = isEndUser
+      ? reportRows.map(report => ({ kind: "report", key: `r-${report.id}`, report }))
+      : [];
+    return [...fromTickets, ...fromReports].sort((a, b) => {
+      const ta = a.kind === "ticket" ? a.ticket.createdAt : a.report.createdAt;
+      const tb = b.kind === "ticket" ? b.ticket.createdAt : b.report.createdAt;
+      return (tb ? new Date(tb).getTime() : 0) - (ta ? new Date(ta).getTime() : 0);
+    });
+  }, [ticketRows, reportRows, isEndUser]);
+
+  // ── End-user splits ────────────────────────────────────────────────────────
+
+  const fromSocItems = useMemo(() =>
+    ticketRows.filter(t => t.answer === "" || t.answer == null),
+    [ticketRows]
+  );
+
+  const myReportItems = useMemo(() =>
+    reportRows,
+    [reportRows]
+  );
+
+  // ── SOC filtered rows ──────────────────────────────────────────────────────
+
+  const filteredRows = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    let rows = mergedRows;
+
+    if (isSecurityTeam) {
+      if (sourceFilter === "created_me") {
+        const email = (user?.email || "").toLowerCase();
+        rows = rows.filter(r => r.kind === "ticket" && (r.ticket.createdBy || "").toLowerCase() === email);
+      } else if (sourceFilter.startsWith("role:")) {
+        const roleName = sourceFilter.slice(5);
+        rows = rows.filter(r => r.kind === "ticket" && (r.ticket.createdByRole || "") === roleName);
+      }
+    }
+
+    if (!q) return rows;
+    return rows.filter(row => {
+      if (row.kind === "ticket") {
+        const x = row.ticket;
+        return x.title?.toLowerCase().includes(q) || x.text?.toLowerCase().includes(q) || String(x.id).includes(q);
+      }
+      const r = row.report;
+      return (r.subject && r.subject.toLowerCase().includes(q)) || String(r.id).toLowerCase().includes(q);
+    });
+  }, [mergedRows, search, isSecurityTeam, sourceFilter, user?.email]);
+
+  // ── Answer ─────────────────────────────────────────────────────────────────
+
   async function sendAnswer() {
-    const answerValue = answer;
-    const ticketId = idTicket;
-    if (!ticketId || !answerValue) return;
+    if (!idTicket || !answer) return;
     try {
-      const updated = await sendTicketAnswer(ticketId, answerValue);
-      setTicketRows((prev) =>
-        prev.map((x) => (x.id === ticketId ? { ...x, answer: updated.answer, status: updated.status } : x))
-      );
-      setAnswer("");
-      setIdTicket("");
-      setExpandedId(null);
-      toast({
-        title: t("tickets.toastReplySent"),
-        description: t("tickets.toastReplySentDesc"),
-        status: "success",
-        duration: 4000,
-      });
+      const updated = await sendTicketAnswer(idTicket as number, answer);
+      setTicketRows(prev => prev.map(x => x.id === idTicket ? { ...x, answer: updated.answer, status: updated.status } : x));
+      setAnswer(""); setIdTicket(""); setExpandedId(null);
+      toast({ title: t("tickets.toastReplySent"), description: t("tickets.toastReplySentDesc"), status: "success", duration: 4000 });
     } catch {
-      toast({
-        title: t("tickets.toastReplyFailed"),
-        description: t("tickets.toastReplyFailedDesc"),
-        status: "error",
-        duration: 4000,
-      });
+      toast({ title: t("tickets.toastReplyFailed"), description: t("tickets.toastReplyFailedDesc"), status: "error", duration: 4000 });
     }
   }
 
-  if (loading) return <div className={style.simpleUserBlock}>{t("common.loading")}</div>;
+  // ── UI helpers ─────────────────────────────────────────────────────────────
 
-  const textColor = "text-gray-800 dark:text-gray-100";
-  const labelColor = "text-gray-500 dark:text-gray-400";
+  const card = "rounded-xl border border-white/60 dark:border-[#2c2f2c] bg-white/80 dark:bg-[#232522] shadow-sm";
 
-  return (
-    <div className={style.simpleUserBlock}>
-      {/* Header: greeting, search, Report button */}
-      <HStack className="flex-wrap gap-4 mb-6" justify="space-between" align="center">
-        <Text fontSize="xl" fontWeight={700} className={textColor}>
-          {t("tickets.welcomeUser").replace("{name}", firstName || t("tickets.welcomeAnonymous"))}
-        </Text>
-        <HStack spacing={3} className="flex-nowrap items-center overflow-x-auto max-w-full min-w-0 pb-0.5">
-          {showSourceFilter ? (
-            <Select
-              size="sm"
-              value={sourceFilter}
-              onChange={setSourceFilter}
-              options={sourceFilterOptions}
-              className="min-w-[180px] max-w-[260px] w-[min(260px,45vw)] shrink-0 h-9"
-              aria-label={t("tickets.filterListAria")}
-            />
-          ) : null}
-          <Box className="relative h-9 flex items-center shrink-0">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 pointer-events-none" size={18} />
-            <Input
-              placeholder={t("tickets.searchPlaceholder")}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 w-40 sm:w-48 min-w-[120px] max-w-[200px] h-9"
-            />
-          </Box>
-          <Button
-            as={Link}
-            href="/tickets/new"
-            className="bg-[#1F6A5C] hover:bg-[#267E6D] text-white rounded-lg px-4 !h-9 min-h-[36px] shrink-0 whitespace-nowrap"
-            size="sm"
-          >
-            {t("tickets.createNewIncident")}
-          </Button>
-        </HStack>
-      </HStack>
+  if (loading) return (
+    <div className="flex items-center justify-center py-20 text-slate-400">
+      <span className="w-5 h-5 border-2 border-slate-300 border-t-slate-600 rounded-full animate-spin mr-3" />
+      Loading…
+    </div>
+  );
 
-      {/* Table */}
-      <Box className="rounded-lg border border-gray-200 dark:border-white/20 overflow-hidden bg-white dark:bg-[#232522]">
-        <table className="w-full text-left">
-          <thead>
-            <tr className="border-b border-gray-200 dark:border-white/20 bg-gray-100 dark:bg-[#181a18]">
-              <th className={`px-4 py-3 text-sm font-600 ${labelColor}`}>{t("tickets.colIncident")}</th>
-              <th className={`px-4 py-3 text-sm font-600 ${labelColor}`}>{t("tickets.colStartedAt")}</th>
-              <th className={`px-4 py-3 text-sm font-600 ${labelColor}`}>{t("tickets.colLength")}</th>
-              <th className={`px-4 py-3 text-sm font-600 ${labelColor}`}>{t("tickets.colOnCall")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredTableRows.map((row) => {
-              if (row.kind === "ticket") {
-                const x = row.ticket;
-                const badge = statusBadgeLabel(x.status, t);
+  // ══════════════════════════════════════════════════════════════════════════
+  // END-USER VIEW
+  // ══════════════════════════════════════════════════════════════════════════
+
+  if (isEndUser) {
+    return (
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+              Hi{firstName ? `, ${firstName}` : ""}!
+            </h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+              Report security concerns or respond to requests from the security team.
+            </p>
+          </div>
+          <Link href="/tickets/new"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white shadow-sm hover:opacity-90 transition-opacity">
+            <MdAdd size={18} /> Report Incident
+          </Link>
+        </div>
+
+        {/* Action needed banner */}
+        {fromSocItems.length > 0 && (
+          <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }}
+            className="rounded-xl border border-amber-400/30 bg-amber-400/8 dark:bg-amber-400/5 p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <IoAlertCircle size={18} className="text-amber-400 shrink-0" />
+              <span className="text-sm font-bold text-amber-500 dark:text-amber-400">
+                {fromSocItems.length} request{fromSocItems.length > 1 ? "s" : ""} need{fromSocItems.length === 1 ? "s" : ""} your response
+              </span>
+            </div>
+            <div className="space-y-3">
+              {fromSocItems.map(x => (
+                <div key={x.id} className="rounded-lg bg-white dark:bg-[#1c1e1c] border border-white/60 dark:border-[#2c2f2c] p-4">
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="w-8 h-8 rounded-lg bg-[#1F6A5C]/10 dark:bg-[#50BFA0]/10 flex items-center justify-center shrink-0 mt-0.5">
+                      {x.type === "Activity Verification" ? <MdOutlineVerified size={16} className="text-[#1F6A5C] dark:text-[#50BFA0]" /> :
+                        x.type === "Security Announcement" ? <MdOutlineMarkEmailRead size={16} className="text-[#1F6A5C] dark:text-[#50BFA0]" /> :
+                        <MdOutlineShield size={16} className="text-[#1F6A5C] dark:text-[#50BFA0]" />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                        <span className="text-xs font-bold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                          {x.type === "Activity Verification" ? "Activity Verification" :
+                           x.type === "Security Announcement" ? "Security Announcement" : "Request from Security Team"}
+                        </span>
+                      </div>
+                      <p className="text-sm font-semibold text-slate-900 dark:text-white">{x.title}</p>
+                      <p className="text-sm text-slate-600 dark:text-slate-300 mt-0.5 line-clamp-2">{x.text}</p>
+                    </div>
+                  </div>
+                  {/* Response buttons */}
+                  {x.type === "Activity Verification" ? (
+                    <div className="flex flex-wrap gap-2">
+                      {VERIFICATION_OPTIONS.map(({ value, label }) => (
+                        <button key={value}
+                          onClick={() => { setAnswer(value); setIdTicket(x.id); }}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
+                            idTicket === x.id && answer === value
+                              ? "bg-[#1F6A5C] border-[#1F6A5C] text-white"
+                              : "border-white/60 dark:border-[#2c2f2c] text-slate-600 dark:text-slate-300 hover:border-[#1F6A5C]/50"
+                          }`}>
+                          {label}
+                        </button>
+                      ))}
+                      <button onClick={sendAnswer} disabled={idTicket !== x.id || !answer}
+                        className="px-4 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white disabled:opacity-40 transition-opacity">
+                        Send Reply
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => { setAnswer("Acknowledged"); setIdTicket(x.id); }}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
+                          idTicket === x.id && answer === "Acknowledged"
+                            ? "bg-[#1F6A5C] border-[#1F6A5C] text-white"
+                            : "border-white/60 dark:border-[#2c2f2c] text-slate-600 dark:text-slate-300"
+                        }`}>
+                        Acknowledge
+                      </button>
+                      <button onClick={sendAnswer} disabled={idTicket !== x.id || !answer}
+                        className="px-4 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white disabled:opacity-40">
+                        Send
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* My submitted reports */}
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wide">
+              My Reports {myReportItems.length > 0 && <span className="text-slate-400 font-normal normal-case tracking-normal">({myReportItems.length})</span>}
+            </h2>
+          </div>
+          {myReportItems.length === 0 ? (
+            <div className={`${card} p-8 flex flex-col items-center text-center text-slate-400`}>
+              <IoBugOutline size={32} className="mb-2 opacity-40" />
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">No reports yet</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Click "Report Incident" to submit your first security concern.</p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {myReportItems.map((r) => {
+                const cat = categoryForValue((r as ReportItem & { category?: string }).category);
+                const pipelineStatus = r.pipelineStatus ?? "new";
+                const isResolved = r.status === true || pipelineStatus === "resolved";
                 return (
-                  <tr
-                    key={row.key}
-                    id={`incident-${x.id}`}
-                    role="link"
-                    tabIndex={0}
-                    className="border-b border-gray-100 dark:border-white/10 last:border-0 hover:bg-gray-50 dark:hover:bg-white/5 scroll-mt-24 cursor-pointer"
-                    onClick={() => router.push(`/tickets/${x.id}`)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        router.push(`/tickets/${x.id}`);
-                      }
-                    }}
-                  >
-                    <td className="px-4 py-3">
-                      <HStack spacing={3} align="flex-start">
-                        <Box className="shrink-0 mt-0.5 text-gray-500 dark:text-gray-400">
-                          <IoBugOutline size={20} />
-                        </Box>
-                        <Box>
-                          <HStack spacing={2} align="center" className="flex-wrap">
-                            <Text fontWeight={600} className={textColor}>
-                              {x.title}
-                            </Text>
-                            {(x.attachmentCount ?? 0) > 0 ? (
-                              <span
-                                className="inline-flex items-center gap-0.5 text-xs text-gray-500 dark:text-gray-400"
-                                title={t("tickets.attachmentsHeading")}
-                              >
-                                <IoAttachOutline size={16} aria-hidden />
-                                {x.attachmentCount}
-                              </span>
-                            ) : null}
-                          </HStack>
-                          <Text fontSize="sm" className={labelColor}>
-                            {x.text?.slice(0, 60)}
-                            {(x.text?.length ?? 0) > 60 ? "…" : ""}
-                          </Text>
-                          {badge && (
-                            <span
-                              className={`inline-block mt-1 px-2 py-0.5 rounded text-xs font-medium ${
-                                (x.status || "").toLowerCase().includes("resolved")
-                                  ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
-                                  : (x.status || "").toLowerCase().includes("updated")
-                                    ? "bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300"
-                                    : "bg-sky-100 dark:bg-sky-900/30 text-sky-800 dark:text-sky-200"
-                              }`}
-                            >
-                              {badge}
+                  <motion.div key={r.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+                    onClick={() => router.push("/report")}
+                    className={`${card} p-4 cursor-pointer hover:border-[#1F6A5C]/30 transition-colors`}>
+                    <div className="flex items-start gap-3">
+                      <div className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-[#1c1e1c] flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0">
+                        {cat.icon}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                          <span className="text-sm font-semibold text-slate-900 dark:text-white truncate">{r.subject}</span>
+                          {r.priority && (
+                            <span className={`text-xs px-2 py-0.5 rounded-full border font-semibold capitalize ${priorityColor(r.priority)}`}>
+                              {r.priority}
                             </span>
                           )}
-                        </Box>
-                      </HStack>
-                    </td>
-                    <td className={`px-4 py-3 text-sm ${labelColor}`}>{formatStartedAt(x.createdAt)}</td>
-                    <td className={`px-4 py-3 text-sm ${labelColor}`}>—</td>
-                    <td className="px-4 py-3">
-                      <HStack spacing={2} align="center">
-                        <Box className="w-6 h-6 rounded-full bg-blue-200 dark:bg-blue-900/50 shrink-0" />
-                        <Text fontSize="sm" className={textColor}>
-                          {onCallLabel(x.fromUser ?? "")}
-                        </Text>
-                      </HStack>
-                    </td>
-                  </tr>
+                        </div>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{String(r.description || "").slice(0, 100)}</p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <span className={`text-xs px-2 py-0.5 rounded-full border font-semibold ${isResolved ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/25" : "text-sky-400 bg-sky-400/10 border-sky-400/25"}`}>
+                          {isResolved ? "Resolved" : pipelineStatus.replace(/_/g, " ")}
+                        </span>
+                        <p className="text-xs text-slate-400 mt-1">{formatRelativeTime(r.createdAt, locale)}</p>
+                      </div>
+                    </div>
+                  </motion.div>
                 );
-              }
-              const r = row.report;
-              const pseudoStatus = r.status ? "Resolved" : "New";
-              const badge = statusBadgeLabel(pseudoStatus, t);
-              return (
-                <tr
-                  key={row.key}
-                  id={`incident-${r.id}`}
-                  role="link"
-                  tabIndex={0}
-                  className="border-b border-gray-100 dark:border-white/10 last:border-0 hover:bg-gray-50 dark:hover:bg-white/5 scroll-mt-24 cursor-pointer"
-                  onClick={() => router.push("/report")}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      router.push("/report");
-                    }
-                  }}
-                >
-                  <td className="px-4 py-3">
-                    <HStack spacing={3} align="flex-start">
-                      <Box className="shrink-0 mt-0.5 text-gray-500 dark:text-gray-400">
-                        <IoBugOutline size={20} />
-                      </Box>
-                      <Box>
-                        <Text fontSize="xs" fontWeight={600} className={`${labelColor} uppercase tracking-wide mb-0.5`}>
-                          {t("tickets.sourceReport")}
-                        </Text>
-                        <Text fontWeight={600} className={textColor}>
-                          {r.subject}
-                        </Text>
-                        <Text fontSize="sm" className={labelColor}>
-                          {r.description?.slice(0, 60)}
-                          {(r.description?.length ?? 0) > 60 ? "…" : ""}
-                        </Text>
-                        <Text fontSize="xs" className={`${labelColor} mt-0.5 font-mono`}>
-                          {r.id}
-                        </Text>
-                        {badge && (
-                          <span
-                            className={`inline-block mt-1 px-2 py-0.5 rounded text-xs font-medium ${
-                              r.status
-                                ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
-                                : "bg-sky-100 dark:bg-sky-900/30 text-sky-800 dark:text-sky-200"
-                            }`}
-                          >
-                            {badge}
-                          </span>
-                        )}
-                      </Box>
-                    </HStack>
-                  </td>
-                  <td className={`px-4 py-3 text-sm ${labelColor}`}>{formatStartedAt(r.createdAt)}</td>
-                  <td className={`px-4 py-3 text-sm ${labelColor}`}>—</td>
-                  <td className="px-4 py-3">
-                    <HStack spacing={2} align="center">
-                      <Box className="w-6 h-6 rounded-full bg-emerald-200 dark:bg-emerald-900/40 shrink-0" />
-                      <Text fontSize="sm" className={textColor}>
-                        {onCallLabel(r.fromUser ?? "")}
-                      </Text>
-                    </HStack>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </Box>
+              })}
+            </div>
+          )}
+        </div>
 
-      {filteredTableRows.length === 0 && (
-        <Text className={`mt-4 ${labelColor}`}>{t("tickets.noIncidents")}</Text>
-      )}
+        {/* Resolved tickets */}
+        {ticketRows.filter(t => t.answer && t.answer !== "").length > 0 && (
+          <div>
+            <h2 className="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wide mb-3">
+              Completed Requests
+            </h2>
+            <div className="space-y-2">
+              {ticketRows.filter(t => t.answer && t.answer !== "").map(x => (
+                <div key={x.id} className={`${card} p-4 opacity-70`}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0">
+                      <MdOutlineVerified size={15} className="text-emerald-500" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-slate-700 dark:text-slate-300 truncate">{x.title}</p>
+                      <p className="text-xs text-slate-400">Your response: <span className="font-semibold text-emerald-500">{x.answer}</span></p>
+                    </div>
+                    <span className="text-xs text-slate-400">{formatRelativeTime(x.createdAt, locale)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
 
-      {/* Inline answers: only for assignees (end-user / team), not GSOC/manager viewing the full catalog */}
-      {showInlineReply &&
-        ticketRows
-        .filter((x) => x.answer === "" && (expandedId === x.id || ticketRows.length <= 5))
-        .map((x) => (
-          <motion.div
-            key={x.id}
-            id={`incident-${x.id}-reply`}
-            className="mt-6 p-4 rounded-lg bg-white dark:bg-[#232522] border border-gray-200 dark:border-white/20 scroll-mt-24"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <Text fontWeight={600} className={`mb-2 ${textColor}`}>
-              {x.title}
-            </Text>
-            <Text fontSize="sm" className={`mb-4 ${labelColor}`}>
-              {x.text}
-            </Text>
-            {x.type === "Activity Verification" ? (
-              <HStack spacing={3} className="flex-wrap items-center">
-                {VERIFICATION_OPTIONS.map(({ value, labelKey }) => (
-                  <Button
-                    key={value}
-                    size="sm"
-                    variant="outline"
-                    className={`h-9 ${idTicket === x.id && answer === value ? "border-brand-primary text-brand-primary" : ""}`}
-                    onClick={() => {
-                      setAnswer(value);
-                      setIdTicket(x.id);
-                    }}
-                  >
-                    {t(labelKey)}
-                  </Button>
-                ))}
-                <Button
-                  className="h-9 bg-[#1F6A5C] hover:bg-[#267E6D] text-white"
-                  size="sm"
-                  disabled={idTicket !== x.id || !answer}
-                  onClick={sendAnswer}
-                >
-                  {t("tickets.sendReply")}
-                </Button>
-              </HStack>
-            ) : (
-              <HStack spacing={3} className="flex-wrap items-center">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className={`h-9 ${idTicket === x.id && answer === "Acknowledged" ? "border-brand-primary text-brand-primary" : ""}`}
-                  onClick={() => {
-                    setAnswer("Acknowledged");
-                    setIdTicket(x.id);
-                  }}
-                >
-                  {t("tickets.answerAcknowledged")}
-                </Button>
-                <Button
-                  className="h-9 bg-[#1F6A5C] hover:bg-[#267E6D] text-white"
-                  size="sm"
-                  disabled={idTicket !== x.id || !answer}
-                  onClick={sendAnswer}
-                >
-                  {t("tickets.sendReply")}
-                </Button>
-              </HStack>
+  // ══════════════════════════════════════════════════════════════════════════
+  // SECURITY TEAM VIEW (SOC / Manager / IAM / GRC / Pentesting)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  const siemMatchedCount = filteredRows.filter(r =>
+    r.kind === "ticket" && getSiemMatchForTicket(r.ticket).length > 0
+  ).length;
+
+  const openCount = filteredRows.filter(r => {
+    if (r.kind === "ticket") return !r.ticket.status?.toLowerCase().includes("resolved");
+    return !r.report.status;
+  }).length;
+
+  return (
+    <div className="space-y-5">
+      {/* Header */}
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div className="flex items-center gap-4 flex-wrap">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Security Requests</h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Incoming reports and team communications</p>
+          </div>
+          {/* Stats */}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/60 dark:bg-[#232522] border border-white/60 dark:border-[#2c2f2c]">
+              <span className="w-2 h-2 rounded-full bg-sky-400" />
+              <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">{openCount} open</span>
+            </div>
+            {siemMatchedCount > 0 && (
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/25">
+                <IoAlertCircle size={14} className="text-red-400" />
+                <span className="text-sm font-semibold text-red-400">{siemMatchedCount} SIEM match{siemMatchedCount > 1 ? "es" : ""}</span>
+              </div>
             )}
-          </motion.div>
-        ))}
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <Link href="/tickets/new"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white shadow-sm hover:opacity-90 transition-opacity">
+            <MdAdd size={16} /> Send Request
+          </Link>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="flex items-center gap-3 flex-wrap">
+        <div className="relative flex-1 min-w-[200px] max-w-[340px]">
+          <FiSearch size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+          <input
+            placeholder="Search incidents, IDs, descriptions…"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="pl-9 pr-3 py-2 w-full rounded-lg text-sm border border-white/60 dark:border-[#2c2f2c] bg-white/60 dark:bg-[#232522] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40"
+          />
+        </div>
+        {isSecurityTeam && (
+          <select
+            value={sourceFilter}
+            onChange={e => setSourceFilter(e.target.value)}
+            className="px-3 py-2 rounded-lg text-sm border border-white/60 dark:border-[#2c2f2c] bg-white/60 dark:bg-[#232522] text-slate-600 dark:text-slate-300 focus:outline-none"
+          >
+            <option value="all">All</option>
+            <option value="created_me">I Created</option>
+            <option value="role:End-User">From End Users</option>
+            <option value="role:GRC">From GRC</option>
+            <option value="role:IAM">From IAM</option>
+            <option value="role:Pentesting">From Pentesting</option>
+          </select>
+        )}
+      </div>
+
+      {/* Items list */}
+      {filteredRows.length === 0 ? (
+        <div className={`${card} p-12 flex flex-col items-center text-center text-slate-400`}>
+          <MdOutlineShield size={36} className="mb-3 opacity-30" />
+          <p className="text-sm font-medium">No requests found</p>
+          <p className="text-xs mt-1 text-slate-500">Try adjusting your filters or search.</p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {filteredRows.map((row) => {
+            if (row.kind === "ticket") {
+              const x = row.ticket;
+              const siemHits = getSiemMatchForTicket(x);
+              const hasSiem = siemHits.length > 0;
+              const st = statusInfo(x.status || "");
+              const cat = categoryForValue((x as Ticket & { category?: string }).category);
+
+              return (
+                <motion.div key={row.key} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+                  onClick={() => router.push(`/tickets/${x.id}`)}
+                  className={`${card} p-4 cursor-pointer hover:border-[#1F6A5C]/30 transition-colors ${hasSiem ? "border-red-500/30 dark:border-red-500/20" : ""}`}>
+                  {hasSiem && (
+                    <div className="flex items-center gap-2 mb-3 px-2 py-1.5 rounded-lg bg-red-500/8 border border-red-500/20">
+                      <IoAlertCircle size={14} className="text-red-400 shrink-0" />
+                      <span className="text-xs font-semibold text-red-400">SIEM Match:</span>
+                      <span className={`text-xs font-semibold ${sevColor(siemHits[0].severity)}`}>
+                        {siemHits[0].rule_name}
+                        {siemHits.length > 1 && ` +${siemHits.length - 1} more`}
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex items-start gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-[#1c1e1c] flex items-center justify-center text-slate-400 shrink-0">
+                      {x.type === "Activity Verification" ? <MdOutlineVerified size={17} className="text-[#1F6A5C] dark:text-[#50BFA0]" /> :
+                       x.type === "Security Announcement" ? <MdOutlineMarkEmailRead size={17} className="text-[#1F6A5C] dark:text-[#50BFA0]" /> :
+                       cat.icon}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                        <span className="text-xs font-bold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                          {x.type || "Incident"}
+                        </span>
+                        {x.priority && (
+                          <span className={`text-xs px-1.5 py-0.5 rounded border font-semibold capitalize ${priorityColor(x.priority)}`}>{x.priority}</span>
+                        )}
+                      </div>
+                      <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{x.title}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                        {x.fromUser && <span className="mr-2 font-mono">{x.fromUser}</span>}
+                        {x.text?.slice(0, 80)}{(x.text?.length ?? 0) > 80 ? "…" : ""}
+                      </p>
+                      {x.answer && (
+                        <p className="text-xs text-emerald-500 mt-1 font-semibold">
+                          ✓ Responded: {x.answer}
+                        </p>
+                      )}
+                    </div>
+                    <div className="text-right shrink-0">
+                      <span className={`text-xs px-2 py-0.5 rounded-full border font-semibold ${st.cls}`}>{st.label}</span>
+                      <p className="text-xs text-slate-400 mt-1">{formatRelativeTime(x.createdAt, locale)}</p>
+                      {(x.attachmentCount ?? 0) > 0 && (
+                        <span className="text-xs text-slate-400 flex items-center gap-0.5 justify-end mt-0.5">
+                          <IoAttachOutline size={12} />{x.attachmentCount}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            }
+
+            // Report row (only shown for end users, but handle for safety)
+            const r = row.report;
+            const cat = categoryForValue((r as ReportItem & { category?: string }).category);
+            const isResolved = r.status === true;
+            return (
+              <motion.div key={row.key} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+                onClick={() => router.push("/report")}
+                className={`${card} p-4 cursor-pointer hover:border-[#1F6A5C]/30 transition-colors`}>
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-[#1c1e1c] flex items-center justify-center text-slate-400 shrink-0">
+                    {cat.icon}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <span className="text-xs font-bold uppercase tracking-wide text-slate-400">User Report</span>
+                      {r.priority && (
+                        <span className={`text-xs px-1.5 py-0.5 rounded border font-semibold capitalize ${priorityColor(r.priority)}`}>{r.priority}</span>
+                      )}
+                    </div>
+                    <p className="text-sm font-semibold text-slate-900 dark:text-white">{r.subject}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{r.description?.slice(0, 80)}</p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <span className={`text-xs px-2 py-0.5 rounded-full border font-semibold ${isResolved ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/25" : "text-sky-400 bg-sky-400/10 border-sky-400/25"}`}>
+                      {isResolved ? "Resolved" : "Open"}
+                    </span>
+                    <p className="text-xs text-slate-400 mt-1">{formatRelativeTime(r.createdAt, locale)}</p>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

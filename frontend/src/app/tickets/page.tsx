@@ -34,9 +34,6 @@ function TicketsPageContent() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <Text fontSize="2xl" fontWeight={700} className="text-gray-800 dark:text-gray-100 mb-0">
-              {t("tickets.title")}
-            </Text>
             <Divider className="my-4 border-gray-200 dark:border-white/20" />
             <div className={style.container}>
               <TicketsSimple />

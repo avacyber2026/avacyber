@@ -485,4 +485,63 @@ router.post('/ai/investigate/:id', async (req, res) => {
   }
 });
 
+// POST /siem/bulk-correlate — checks which usernames/hostnames have open SIEM alerts
+router.post('/bulk-correlate', async (req, res) => {
+  const { items } = req.body; // [{username, hostname}]
+  if (!Array.isArray(items) || items.length === 0) return res.json({ matches: {} });
+
+  try {
+    const usernames = [...new Set(items.map(i => i.username).filter(Boolean))];
+    const hostnames = [...new Set(items.map(i => i.hostname).filter(Boolean))];
+
+    const conditions = [];
+    const params = [];
+    let idx = 1;
+
+    if (usernames.length > 0) {
+      conditions.push(`username = ANY($${idx++})`);
+      params.push(usernames);
+    }
+    if (hostnames.length > 0) {
+      conditions.push(`hostname = ANY($${idx++})`);
+      params.push(hostnames);
+    }
+
+    if (conditions.length === 0) return res.json({ matches: {} });
+
+    const result = await pool.query(
+      `SELECT id, rule_name, severity, username, hostname, status
+       FROM siem_alerts
+       WHERE status IN ('open', 'investigating') AND (${conditions.join(' OR ')})
+       ORDER BY created_at DESC`,
+      params
+    );
+
+    // Build a lookup: key = "username:hostname" -> alerts[]
+    const matches: Record<string, { id: number; rule_name: string; severity: string }[]> = {};
+    for (const row of result.rows) {
+      const keys = new Set<string>();
+      if (row.username) {
+        for (const item of items) {
+          if (item.username === row.username) keys.add(`${item.username}:${item.hostname || ''}`);
+        }
+      }
+      if (row.hostname) {
+        for (const item of items) {
+          if (item.hostname === row.hostname) keys.add(`${item.username || ''}:${item.hostname}`);
+        }
+      }
+      for (const key of keys) {
+        if (!matches[key]) matches[key] = [];
+        matches[key].push({ id: row.id, rule_name: row.rule_name, severity: row.severity });
+      }
+    }
+
+    res.json({ matches });
+  } catch (err) {
+    console.error('SIEM bulk-correlate:', err);
+    res.json({ matches: {} });
+  }
+});
+
 module.exports = router;
