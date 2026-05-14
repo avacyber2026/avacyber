@@ -288,7 +288,7 @@ router.post('/ai/generate-rule', async (req, res) => {
   const { description } = req.body;
   if (!description) return res.status(400).json({ error: 'description is required' });
 
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY || process.env.LLM_API_KEY;
   if (!apiKey) return res.status(503).json({ error: 'AI not configured — set OPENAI_API_KEY' });
 
   try {
@@ -339,7 +339,7 @@ Respond with this exact JSON structure:
 
 // POST /siem/ai/translate-rule/:id — generate SPL + KQL for an existing rule
 router.post('/ai/translate-rule/:id', async (req, res) => {
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY || process.env.LLM_API_KEY;
   if (!apiKey) return res.status(503).json({ error: 'AI not configured' });
 
   try {
@@ -394,7 +394,7 @@ Respond with:
 });
 
 router.post('/ai/triage/:id', async (req, res) => {
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY || process.env.LLM_API_KEY;
   if (!apiKey) return res.status(503).json({ error: 'AI not configured' });
 
   try {
@@ -440,7 +440,7 @@ router.post('/ai/triage/:id', async (req, res) => {
 });
 
 router.post('/ai/investigate/:id', async (req, res) => {
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY || process.env.LLM_API_KEY;
   if (!apiKey) return res.status(503).json({ error: 'AI not configured' });
 
   try {
