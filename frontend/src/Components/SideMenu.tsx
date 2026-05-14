@@ -15,7 +15,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 function getBaseLinks(t: (key: string) => string, unreadNotifications = 0): SidebarLink[] {
   return [
     { name: t("sidebar.dashboard"), icon: <FaChartLine />, link: "/dashboard" },
-    { name: "Security Requests", icon: <IoGitPullRequestSharp />, link: "/tickets" },
+    { name: "Comms", icon: <IoGitPullRequestSharp />, link: "/tickets" },
     { name: t("sidebar.profile"), icon: <FaUser />, link: "/profile" },
     { name: t("sidebar.userGuide"), icon: <FaBook />, link: "/guide" },
     { name: t("sidebar.securityOnCall"), icon: <FaPhone />, link: "/on-call" },
