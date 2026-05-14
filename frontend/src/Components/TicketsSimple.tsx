@@ -125,6 +125,7 @@ export function TicketsSimple() {
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [sourceFilter, setSourceFilter] = useState<string>("all");
   const [activeTab, setActiveTab] = useState<"action" | "mine" | "all">("action");
+  const [socTab, setSocTab] = useState<"from_users" | "sent_to_users" | "team_comms">("from_users");
   const [siemMatches, setSiemMatches] = useState<Record<string, SiemMatch[]>>({});
   const [siemLoading, setSiemLoading] = useState(false);
 
@@ -207,22 +208,57 @@ export function TicketsSimple() {
     [reportRows]
   );
 
-  // ── SOC filtered rows ──────────────────────────────────────────────────────
+  // ── SOC tab splits ─────────────────────────────────────────────────────────
+
+  const TEAM_ROLE_NAMES = ["GRC", "IAM", "Pentesting", "Security Manager", "GSOC", "Admin"];
+
+  const fromUserRows = useMemo(() =>
+    ticketRows.filter(t => (t.createdByRole === "End-User") || (t as Ticket & { createdByRole?: string }).createdByRole === "End-User"),
+    [ticketRows]
+  );
+
+  const sentToUserRows = useMemo(() => {
+    const myEmail = (user?.email || "").toLowerCase();
+    return ticketRows.filter(t => {
+      const createdBy = (t.createdBy || (t as Ticket & { createdBy?: string }).createdBy || "").toLowerCase();
+      const assignedTo = (t.assignedTo || (t as Ticket & { assignedTo?: string }).assignedTo || "");
+      const isTeamCreated = TEAM_ROLE_NAMES.includes((t as Ticket & { createdByRole?: string }).createdByRole || "");
+      const isAssignedToUser = assignedTo && !TEAM_ROLE_NAMES.includes(assignedTo) && assignedTo !== "MULTI";
+      return isTeamCreated && isAssignedToUser;
+    });
+  }, [ticketRows, user?.email]);
+
+  const teamCommsRows = useMemo(() =>
+    ticketRows.filter(t => {
+      const assignedTo = (t.assignedTo || (t as Ticket & { assignedTo?: string }).assignedTo || "");
+      const createdByRole = (t as Ticket & { createdByRole?: string }).createdByRole || "";
+      return TEAM_ROLE_NAMES.includes(assignedTo) || (TEAM_ROLE_NAMES.includes(createdByRole) && createdByRole !== "GSOC" && createdByRole !== "Security Manager" && createdByRole !== "Admin");
+    }),
+    [ticketRows]
+  );
+
+  function getSocTabRows(): Ticket[] {
+    if (socTab === "from_users") return fromUserRows;
+    if (socTab === "sent_to_users") return sentToUserRows;
+    return teamCommsRows;
+  }
+
+  const socFilteredRows = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    const rows = getSocTabRows();
+    if (!q) return rows;
+    return rows.filter(t =>
+      t.title?.toLowerCase().includes(q) ||
+      t.text?.toLowerCase().includes(q) ||
+      String(t.id).includes(q)
+    );
+  }, [socTab, ticketRows, search, fromUserRows, sentToUserRows, teamCommsRows]);
+
+  // ── General filtered rows (for non-security-team roles) ────────────────────
 
   const filteredRows = useMemo(() => {
     const q = search.trim().toLowerCase();
     let rows = mergedRows;
-
-    if (isSecurityTeam) {
-      if (sourceFilter === "created_me") {
-        const email = (user?.email || "").toLowerCase();
-        rows = rows.filter(r => r.kind === "ticket" && (r.ticket.createdBy || "").toLowerCase() === email);
-      } else if (sourceFilter.startsWith("role:")) {
-        const roleName = sourceFilter.slice(5);
-        rows = rows.filter(r => r.kind === "ticket" && (r.ticket.createdByRole || "") === roleName);
-      }
-    }
-
     if (!q) return rows;
     return rows.filter(row => {
       if (row.kind === "ticket") {
@@ -232,7 +268,7 @@ export function TicketsSimple() {
       const r = row.report;
       return (r.subject && r.subject.toLowerCase().includes(q)) || String(r.id).toLowerCase().includes(q);
     });
-  }, [mergedRows, search, isSecurityTeam, sourceFilter, user?.email]);
+  }, [mergedRows, search]);
 
   // ── Answer ─────────────────────────────────────────────────────────────────
 
@@ -438,14 +474,8 @@ export function TicketsSimple() {
   // SECURITY TEAM VIEW (SOC / Manager / IAM / GRC / Pentesting)
   // ══════════════════════════════════════════════════════════════════════════
 
-  const siemMatchedCount = filteredRows.filter(r =>
-    r.kind === "ticket" && getSiemMatchForTicket(r.ticket).length > 0
-  ).length;
-
-  const openCount = filteredRows.filter(r => {
-    if (r.kind === "ticket") return !r.ticket.status?.toLowerCase().includes("resolved");
-    return !r.report.status;
-  }).length;
+  const siemMatchedCount = fromUserRows.filter(t => getSiemMatchForTicket(t).length > 0).length;
+  const openCount = fromUserRows.filter(t => !t.status?.toLowerCase().includes("resolved")).length;
 
   return (
     <div className="space-y-5">
@@ -478,131 +508,100 @@ export function TicketsSimple() {
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex items-center gap-3 flex-wrap">
-        <div className="relative flex-1 min-w-[200px] max-w-[340px]">
-          <FiSearch size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-          <input
-            placeholder="Search incidents, IDs, descriptions…"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="pl-9 pr-3 py-2 w-full rounded-lg text-sm border border-white/60 dark:border-[#2c2f2c] bg-white/60 dark:bg-[#232522] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40"
-          />
-        </div>
-        {isSecurityTeam && (
-          <select
-            value={sourceFilter}
-            onChange={e => setSourceFilter(e.target.value)}
-            className="px-3 py-2 rounded-lg text-sm border border-white/60 dark:border-[#2c2f2c] bg-white/60 dark:bg-[#232522] text-slate-600 dark:text-slate-300 focus:outline-none"
-          >
-            <option value="all">All</option>
-            <option value="created_me">I Created</option>
-            <option value="role:End-User">From End Users</option>
-            <option value="role:GRC">From GRC</option>
-            <option value="role:IAM">From IAM</option>
-            <option value="role:Pentesting">From Pentesting</option>
-          </select>
-        )}
+      {/* Tabs */}
+      <div className="flex gap-0 border-b border-slate-200 dark:border-[#2c2f2c]">
+        {([
+          { key: "from_users", label: "From Users", count: fromUserRows.length },
+          { key: "sent_to_users", label: "Sent to Users", count: sentToUserRows.length },
+          { key: "team_comms", label: "Team Comms", count: teamCommsRows.length },
+        ] as const).map(tab => (
+          <button key={tab.key} onClick={() => setSocTab(tab.key)}
+            className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px transition-all ${
+              socTab === tab.key
+                ? "border-[#1F6A5C] text-[#1F6A5C] dark:text-[#50BFA0]"
+                : "border-transparent text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+            }`}>
+            {tab.label}
+            {tab.count > 0 && (
+              <span className={`text-xs px-1.5 py-0.5 rounded-full font-bold ${
+                socTab === tab.key ? "bg-[#1F6A5C]/15 text-[#1F6A5C] dark:text-[#50BFA0]" : "bg-slate-100 dark:bg-[#2c2f2c] text-slate-400"
+              }`}>{tab.count}</span>
+            )}
+          </button>
+        ))}
+      </div>
+
+      {/* Search */}
+      <div className="relative max-w-sm">
+        <FiSearch size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+        <input
+          placeholder="Search…"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          className="pl-9 pr-3 py-2 w-full rounded-lg text-sm border border-white/60 dark:border-[#2c2f2c] bg-white/60 dark:bg-[#232522] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40"
+        />
       </div>
 
       {/* Items list */}
-      {filteredRows.length === 0 ? (
-        <div className={`${card} p-12 flex flex-col items-center text-center text-slate-400`}>
-          <MdOutlineShield size={36} className="mb-3 opacity-30" />
-          <p className="text-sm font-medium">No requests found</p>
-          <p className="text-xs mt-1 text-slate-500">Try adjusting your filters or search.</p>
+      {socFilteredRows.length === 0 ? (
+        <div className={`${card} p-12 flex flex-col items-center text-center`}>
+          <MdOutlineShield size={36} className="mb-3 text-slate-200 dark:text-slate-700" />
+          <p className="text-sm font-medium text-slate-500">
+            {socTab === "from_users" ? "No reports from users" :
+             socTab === "sent_to_users" ? "No requests sent to users yet" :
+             "No team communications yet"}
+          </p>
+          <p className="text-xs mt-1 text-slate-400 dark:text-slate-600">
+            {socTab === "sent_to_users" ? 'Click "Send Request" to send an activity verification or announcement.' : ""}
+          </p>
         </div>
       ) : (
         <div className="space-y-2">
-          {filteredRows.map((row) => {
-            if (row.kind === "ticket") {
-              const x = row.ticket;
-              const siemHits = getSiemMatchForTicket(x);
-              const hasSiem = siemHits.length > 0;
-              const st = statusInfo(x.status || "");
-              const cat = categoryForValue((x as Ticket & { category?: string }).category);
+          {socFilteredRows.map((x) => {
+            const siemHits = getSiemMatchForTicket(x);
+            const hasSiem = siemHits.length > 0;
+            const st = statusInfo(x.status || "");
+            const cat = categoryForValue((x as Ticket & { category?: string }).category);
 
-              return (
-                <motion.div key={row.key} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
-                  onClick={() => router.push(`/tickets/${x.id}`)}
-                  className={`${card} p-4 cursor-pointer hover:border-[#1F6A5C]/30 transition-colors ${hasSiem ? "border-red-500/30 dark:border-red-500/20" : ""}`}>
-                  {hasSiem && (
-                    <div className="flex items-center gap-2 mb-3 px-2 py-1.5 rounded-lg bg-red-500/8 border border-red-500/20">
-                      <IoAlertCircle size={14} className="text-red-400 shrink-0" />
-                      <span className="text-xs font-semibold text-red-400">SIEM Match:</span>
-                      <span className={`text-xs font-semibold ${sevColor(siemHits[0].severity)}`}>
-                        {siemHits[0].rule_name}
-                        {siemHits.length > 1 && ` +${siemHits.length - 1} more`}
-                      </span>
-                    </div>
-                  )}
-                  <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-[#1c1e1c] flex items-center justify-center text-slate-400 shrink-0">
-                      {x.type === "Activity Verification" ? <MdOutlineVerified size={17} className="text-[#1F6A5C] dark:text-[#50BFA0]" /> :
-                       x.type === "Security Announcement" ? <MdOutlineMarkEmailRead size={17} className="text-[#1F6A5C] dark:text-[#50BFA0]" /> :
-                       cat.icon}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                        <span className="text-xs font-bold uppercase tracking-wide text-slate-400 dark:text-slate-500">
-                          {x.type || "Incident"}
-                        </span>
-                        {x.priority && (
-                          <span className={`text-xs px-1.5 py-0.5 rounded border font-semibold capitalize ${priorityColor(x.priority)}`}>{x.priority}</span>
-                        )}
-                      </div>
-                      <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{x.title}</p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
-                        {x.fromUser && <span className="mr-2 font-mono">{x.fromUser}</span>}
-                        {x.text?.slice(0, 80)}{(x.text?.length ?? 0) > 80 ? "…" : ""}
-                      </p>
-                      {x.answer && (
-                        <p className="text-xs text-emerald-500 mt-1 font-semibold">
-                          ✓ Responded: {x.answer}
-                        </p>
-                      )}
-                    </div>
-                    <div className="text-right shrink-0">
-                      <span className={`text-xs px-2 py-0.5 rounded-full border font-semibold ${st.cls}`}>{st.label}</span>
-                      <p className="text-xs text-slate-400 mt-1">{formatRelativeTime(x.createdAt, locale)}</p>
-                      {(x.attachmentCount ?? 0) > 0 && (
-                        <span className="text-xs text-slate-400 flex items-center gap-0.5 justify-end mt-0.5">
-                          <IoAttachOutline size={12} />{x.attachmentCount}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            }
-
-            // Report row (only shown for end users, but handle for safety)
-            const r = row.report;
-            const cat = categoryForValue((r as ReportItem & { category?: string }).category);
-            const isResolved = r.status === true;
             return (
-              <motion.div key={row.key} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
-                onClick={() => router.push("/report")}
-                className={`${card} p-4 cursor-pointer hover:border-[#1F6A5C]/30 transition-colors`}>
+              <motion.div key={x.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+                onClick={() => router.push(`/tickets/${x.id}`)}
+                className={`${card} p-4 cursor-pointer hover:border-[#1F6A5C]/30 transition-colors ${hasSiem ? "border-red-500/30 dark:border-red-500/20" : ""}`}>
+                {hasSiem && (
+                  <div className="flex items-center gap-2 mb-3 px-2 py-1.5 rounded-lg bg-red-500/8 border border-red-500/20">
+                    <IoAlertCircle size={14} className="text-red-400 shrink-0" />
+                    <span className="text-xs font-semibold text-red-400">SIEM Match:</span>
+                    <span className={`text-xs font-semibold ${sevColor(siemHits[0].severity)}`}>
+                      {siemHits[0].rule_name}{siemHits.length > 1 && ` +${siemHits.length - 1} more`}
+                    </span>
+                  </div>
+                )}
                 <div className="flex items-start gap-3">
                   <div className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-[#1c1e1c] flex items-center justify-center text-slate-400 shrink-0">
-                    {cat.icon}
+                    {x.type === "Activity Verification" ? <MdOutlineVerified size={17} className="text-[#1F6A5C] dark:text-[#50BFA0]" /> :
+                     x.type === "Security Announcement" ? <MdOutlineMarkEmailRead size={17} className="text-[#1F6A5C] dark:text-[#50BFA0]" /> :
+                     cat.icon}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-0.5">
-                      <span className="text-xs font-bold uppercase tracking-wide text-slate-400">User Report</span>
-                      {r.priority && (
-                        <span className={`text-xs px-1.5 py-0.5 rounded border font-semibold capitalize ${priorityColor(r.priority)}`}>{r.priority}</span>
-                      )}
+                    <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                      <span className="text-xs font-bold uppercase tracking-wide text-slate-400 dark:text-slate-500">{x.type || "Incident"}</span>
+                      {x.priority && <span className={`text-xs px-1.5 py-0.5 rounded border font-semibold capitalize ${priorityColor(x.priority)}`}>{x.priority}</span>}
                     </div>
-                    <p className="text-sm font-semibold text-slate-900 dark:text-white">{r.subject}</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{r.description?.slice(0, 80)}</p>
+                    <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{x.title}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                      {x.fromUser && <span className="mr-2 font-mono">{x.fromUser}</span>}
+                      {x.text?.slice(0, 80)}{(x.text?.length ?? 0) > 80 ? "…" : ""}
+                    </p>
+                    {x.answer && <p className="text-xs text-emerald-500 mt-1 font-semibold">✓ Responded: {x.answer}</p>}
                   </div>
                   <div className="text-right shrink-0">
-                    <span className={`text-xs px-2 py-0.5 rounded-full border font-semibold ${isResolved ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/25" : "text-sky-400 bg-sky-400/10 border-sky-400/25"}`}>
-                      {isResolved ? "Resolved" : "Open"}
-                    </span>
-                    <p className="text-xs text-slate-400 mt-1">{formatRelativeTime(r.createdAt, locale)}</p>
+                    <span className={`text-xs px-2 py-0.5 rounded-full border font-semibold ${st.cls}`}>{st.label}</span>
+                    <p className="text-xs text-slate-400 mt-1">{formatRelativeTime(x.createdAt, locale)}</p>
+                    {(x.attachmentCount ?? 0) > 0 && (
+                      <span className="text-xs text-slate-400 flex items-center gap-0.5 justify-end mt-0.5">
+                        <IoAttachOutline size={12} />{x.attachmentCount}
+                      </span>
+                    )}
                   </div>
                 </div>
               </motion.div>
