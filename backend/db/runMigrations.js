@@ -31,7 +31,7 @@ async function ensureDatabase() {
 }
 
 const pool = new Pool(poolConfig);
-const migrations = ['init.sql', 'migrate_approve.sql', 'admin_credentials.sql', 'migrate_profile_notifications.sql', 'migrate_app_settings.sql', 'migrate_approve_new_users.sql', 'migrate_123_gsoc.sql', 'migrate_report_attachments.sql', 'migrate_user_holiday.sql', 'migrate_guide_articles.sql', 'migrate_notifications_entities.sql', 'migrate_siem_alert_id.sql', 'migrate_ticket_attachments.sql', 'migrate_reports_pipeline.sql', 'migrate_ticket_recipients.sql', 'migrate_structured_answers.sql', 'migrate_audit_log.sql', 'migrate_ai_prompt_log.sql', 'migrate_report_incident_time_manager.sql', 'migrate_siem.sql', 'migrate_siem_rule_queries.sql'];
+const migrations = ['init.sql', 'migrate_approve.sql', 'admin_credentials.sql', 'migrate_profile_notifications.sql', 'migrate_app_settings.sql', 'migrate_approve_new_users.sql', 'migrate_123_gsoc.sql', 'migrate_report_attachments.sql', 'migrate_user_holiday.sql', 'migrate_guide_articles.sql', 'migrate_notifications_entities.sql', 'migrate_siem_alert_id.sql', 'migrate_ticket_attachments.sql', 'migrate_reports_pipeline.sql', 'migrate_ticket_recipients.sql', 'migrate_structured_answers.sql', 'migrate_audit_log.sql', 'migrate_ai_prompt_log.sql', 'migrate_report_incident_time_manager.sql', 'migrate_siem.sql', 'migrate_siem_rule_queries.sql', 'migrate_qa.sql'];
 
 async function run() {
   await ensureDatabase();

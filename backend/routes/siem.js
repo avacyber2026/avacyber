@@ -173,6 +173,37 @@ router.put('/alerts/:id', async (req, res) => {
   }
 });
 
+// POST /siem/alerts/:id/resolve — resolve with analyst action (captures for QA)
+router.post('/alerts/:id/resolve', async (req, res) => {
+  const { resolution_type = 'true_positive', notes } = req.body;
+  const alertId = parseInt(req.params.id);
+
+  try {
+    const alertRes = await pool.query(`SELECT * FROM siem_alerts WHERE id = $1`, [alertId]);
+    if (!alertRes.rows.length) return res.status(404).json({ error: 'Alert not found' });
+    const alert = alertRes.rows[0];
+
+    const createdAt = new Date(alert.created_at);
+    const timeMin = Math.round((Date.now() - createdAt.getTime()) / 60000);
+
+    await pool.query(
+      `UPDATE siem_alerts SET status = 'resolved', resolved_at = NOW(), updated_at = NOW() WHERE id = $1`,
+      [alertId]
+    );
+
+    await pool.query(
+      `INSERT INTO siem_alert_actions (alert_id, analyst_email, analyst_name, resolution_type, notes, time_to_action_minutes)
+       VALUES ($1,$2,$3,$4,$5,$6)`,
+      [alertId, req.user?.email, req.user?.name ?? req.user?.email, resolution_type, notes ?? null, timeMin]
+    );
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('SIEM resolve:', err);
+    res.status(500).json({ error: 'Failed to resolve alert' });
+  }
+});
+
 // ── Rules ────────────────────────────────────────────────────────────────────
 
 router.get('/rules', async (req, res) => {

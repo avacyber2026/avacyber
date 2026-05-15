@@ -231,6 +231,12 @@ export default function SiemPage() {
   const [selectedAlert, setSelectedAlert] = useState<SiemAlert | null>(null);
   const [investigatingId, setInvestigatingId] = useState<number | null>(null);
 
+  // Resolve modal
+  const [resolveModal, setResolveModal] = useState<number | null>(null);
+  const [resolveType, setResolveType] = useState<"true_positive" | "false_positive" | "benign">("true_positive");
+  const [resolveNotes, setResolveNotes] = useState("");
+  const [resolving, setResolving] = useState(false);
+
   useEffect(() => {
     if (!isAuthenticated && !isLoading) router.push("/");
   }, [isAuthenticated, isLoading, router]);
@@ -331,6 +337,30 @@ export default function SiemPage() {
     } catch {
       toast.error("Failed to update alert");
     }
+  }
+
+  async function submitResolve() {
+    if (resolveModal === null) return;
+    setResolving(true);
+    try {
+      await api.post(`/siem/alerts/${resolveModal}/resolve`, { resolution_type: resolveType, notes: resolveNotes });
+      setAlerts((prev) => prev.map((a) => (a.id === resolveModal ? { ...a, status: "resolved" } : a)));
+      if (selectedAlert?.id === resolveModal) setSelectedAlert(p => p ? { ...p, status: "resolved" } : p);
+      toast.success("Alert resolved — queued for AI QA");
+      setResolveModal(null);
+      setResolveNotes("");
+      setResolveType("true_positive");
+    } catch {
+      toast.error("Failed to resolve alert");
+    } finally {
+      setResolving(false);
+    }
+  }
+
+  function openResolveModal(id: number) {
+    setResolveModal(id);
+    setResolveNotes("");
+    setResolveType("true_positive");
   }
 
   async function triageAlert(id: number) {
@@ -654,7 +684,7 @@ export default function SiemPage() {
                               </button>
                             )}
                             {a.status !== "resolved" && (
-                              <button onClick={() => updateAlertStatus(a.id, "resolved")}
+                              <button onClick={(e) => { e.stopPropagation(); openResolveModal(a.id); }}
                                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500/10 border border-emerald-500/25 text-emerald-500 hover:bg-emerald-500/20 transition-colors whitespace-nowrap">
                                 <MdCheck size={13} /> Resolve
                               </button>
@@ -991,6 +1021,64 @@ export default function SiemPage() {
         </div>
       </div>
 
+      {/* ── Resolve Modal ── */}
+      <AnimatePresence>
+        {resolveModal !== null && (
+          <>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setResolveModal(null)}
+              className="fixed inset-0 bg-black/50 z-40" />
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4">
+              <div className="w-full max-w-md bg-white dark:bg-[#1a1c1a] rounded-2xl shadow-2xl border border-white/20 dark:border-[#2c2f2c] p-6">
+                <h3 className="font-bold text-slate-900 dark:text-white text-lg mb-1">Resolve Alert</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Record your determination — this feeds into AI QA review.</p>
+
+                <div className="mb-4">
+                  <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Resolution Type</div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {(["true_positive", "false_positive", "benign"] as const).map(t => (
+                      <button key={t} onClick={() => setResolveType(t)}
+                        className={`py-2.5 rounded-xl text-xs font-bold border transition-all ${
+                          resolveType === t
+                            ? t === "true_positive" ? "bg-red-500/15 border-red-500/40 text-red-400"
+                              : t === "false_positive" ? "bg-slate-400/15 border-slate-400/40 text-slate-400"
+                              : "bg-emerald-500/15 border-emerald-500/40 text-emerald-500"
+                            : "border-white/60 dark:border-[#2c2f2c] text-slate-500 hover:bg-slate-50 dark:hover:bg-[#2c2f2c]"
+                        }`}>
+                        {t === "true_positive" ? "True Positive" : t === "false_positive" ? "False Positive" : "Benign"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mb-4">
+                  <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Notes</div>
+                  <textarea
+                    value={resolveNotes}
+                    onChange={e => setResolveNotes(e.target.value)}
+                    placeholder="Document your findings, actions taken, evidence…"
+                    rows={3}
+                    className="w-full px-4 py-3 rounded-xl text-sm border border-white/60 dark:border-[#2c2f2c] bg-slate-50 dark:bg-[#1c1e1c] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40 resize-none"
+                  />
+                </div>
+
+                <div className="flex gap-2">
+                  <button onClick={submitResolve} disabled={resolving}
+                    className="flex-1 py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white disabled:opacity-50 flex items-center justify-center gap-2">
+                    {resolving ? <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Resolving…</> : <><MdCheck size={16} /> Resolve & Queue for QA</>}
+                  </button>
+                  <button onClick={() => setResolveModal(null)}
+                    className="px-4 py-2.5 rounded-xl text-sm font-semibold border border-white/60 dark:border-[#2c2f2c] text-slate-600 dark:text-slate-300">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
       {/* ── Alert Detail Panel ── */}
       <AnimatePresence>
         {selectedAlert && (
@@ -1129,7 +1217,7 @@ export default function SiemPage() {
                   </button>
                 )}
                 {selectedAlert.status !== "resolved" && (
-                  <button onClick={() => { updateAlertStatus(selectedAlert.id, "resolved"); setSelectedAlert(p => p ? { ...p, status: "resolved" } : p); }}
+                  <button onClick={() => openResolveModal(selectedAlert.id)}
                     className="flex-1 py-2 rounded-lg text-sm font-semibold bg-emerald-500/10 border border-emerald-500/25 text-emerald-500 hover:bg-emerald-500/20 transition-colors">
                     <span className="flex items-center justify-center gap-1.5"><MdCheck size={15} /> Resolve</span>
                   </button>
