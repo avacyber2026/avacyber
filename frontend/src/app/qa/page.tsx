@@ -243,7 +243,7 @@ export default function QaPage() {
               </div>
               <div>
                 <h1 className="text-2xl font-extrabold tracking-tight text-[#1C1E1C] dark:text-white leading-tight">AI QA</h1>
-                <p className="text-sm text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60">Analyst Quality Assurance</p>
+                <p className="text-sm text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">Analyst Quality Assurance</p>
               </div>
               {stats && stats.pending > 0 && (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/25 text-amber-400 text-xs font-bold">
@@ -427,7 +427,7 @@ export default function QaPage() {
                                             </span>
                                             <div>
                                               <span className="font-semibold text-[#103E36] dark:text-[#F4F3F4]/80 mr-2">{f.category}</span>
-                                              <span className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60">{f.detail}</span>
+                                              <span className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">{f.detail}</span>
                                             </div>
                                           </div>
                                         ))}
@@ -498,7 +498,7 @@ export default function QaPage() {
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
                         <thead>
-                          <tr className="text-left text-xs font-bold uppercase tracking-wider text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 border-b border-white/40 dark:border-[#103E36]">
+                          <tr className="text-left text-xs font-bold uppercase tracking-wider text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 border-b border-white/40 dark:border-[#103E36]">
                             <th className="pb-3 pr-6">Analyst</th>
                             <th className="pb-3 pr-6">Avg Score</th>
                             <th className="pb-3 pr-6">Total</th>
@@ -540,7 +540,7 @@ export default function QaPage() {
                                 <td className="py-3.5 pr-4 text-emerald-500 font-semibold tabular-nums">{s.pass_count}</td>
                                 <td className="py-3.5 pr-4 text-amber-400 font-semibold tabular-nums">{s.flag_count}</td>
                                 <td className="py-3.5 pr-6 text-red-400 font-semibold tabular-nums">{s.fail_count}</td>
-                                <td className="py-3.5 pr-6 text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 tabular-nums">
+                                <td className="py-3.5 pr-6 text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 tabular-nums">
                                   {s.avg_time_min ? `${s.avg_time_min} min` : "—"}
                                 </td>
                                 <td className="py-3.5">
@@ -586,7 +586,7 @@ export default function QaPage() {
                 <h3 className="font-bold text-[#1C1E1C] dark:text-white text-lg mb-1">
                   {decisionModal.type === "approve" ? "Approve QA Review" : "Override QA Review"}
                 </h3>
-                <p className="text-sm text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mb-4">
+                <p className="text-sm text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mb-4">
                   {decisionModal.type === "approve"
                     ? "Confirm AI findings are accurate and the case is closed."
                     : "Override AI findings — provide your reasoning below."}

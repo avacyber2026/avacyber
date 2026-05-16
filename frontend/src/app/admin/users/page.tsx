@@ -384,11 +384,11 @@ export default function AdminUsersPage() {
         <ModalContent className="dark:bg-[#1E2128] dark:text-[#F4F3F4] max-h-[90vh] overflow-y-auto">
           <ModalHeader onClose={() => { onEditUserClose(); setEditUserDraft(null); }}>{t("admin.editUser")}</ModalHeader>
           <ModalBody className="space-y-3">
-            <Text className="text-sm text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("admin.editUserHint")}</Text>
+            <Text className="text-sm text-[#1F6A5C] dark:text-[#F4F3F4]/45">{t("admin.editUserHint")}</Text>
             {editUserDraft ? (
               <>
                 <div>
-                  <Text className="text-xs font-semibold mb-1 text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("auth.email")}</Text>
+                  <Text className="text-xs font-semibold mb-1 text-[#1F6A5C] dark:text-[#F4F3F4]/45">{t("auth.email")}</Text>
                   <Input
                     value={editUserDraft.email}
                     onChange={(e) => setEditUserDraft((d) => (d ? { ...d, email: e.target.value } : d))}
@@ -397,14 +397,14 @@ export default function AdminUsersPage() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <Text className="text-xs font-semibold mb-1 text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("auth.firstName")}</Text>
+                    <Text className="text-xs font-semibold mb-1 text-[#1F6A5C] dark:text-[#F4F3F4]/45">{t("auth.firstName")}</Text>
                     <Input
                       value={editUserDraft.firstName}
                       onChange={(e) => setEditUserDraft((d) => (d ? { ...d, firstName: e.target.value } : d))}
                     />
                   </div>
                   <div>
-                    <Text className="text-xs font-semibold mb-1 text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("auth.lastName")}</Text>
+                    <Text className="text-xs font-semibold mb-1 text-[#1F6A5C] dark:text-[#F4F3F4]/45">{t("auth.lastName")}</Text>
                     <Input
                       value={editUserDraft.lastName}
                       onChange={(e) => setEditUserDraft((d) => (d ? { ...d, lastName: e.target.value } : d))}
@@ -412,21 +412,21 @@ export default function AdminUsersPage() {
                   </div>
                 </div>
                 <div>
-                  <Text className="text-xs font-semibold mb-1 text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("profile.jobTitle")}</Text>
+                  <Text className="text-xs font-semibold mb-1 text-[#1F6A5C] dark:text-[#F4F3F4]/45">{t("profile.jobTitle")}</Text>
                   <Input
                     value={editUserDraft.jobTitle}
                     onChange={(e) => setEditUserDraft((d) => (d ? { ...d, jobTitle: e.target.value } : d))}
                   />
                 </div>
                 <div>
-                  <Text className="text-xs font-semibold mb-1 text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("profile.department")}</Text>
+                  <Text className="text-xs font-semibold mb-1 text-[#1F6A5C] dark:text-[#F4F3F4]/45">{t("profile.department")}</Text>
                   <Input
                     value={editUserDraft.department}
                     onChange={(e) => setEditUserDraft((d) => (d ? { ...d, department: e.target.value } : d))}
                   />
                 </div>
                 <div>
-                  <Text className="text-xs font-semibold mb-1 text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("admin.managerEmail")}</Text>
+                  <Text className="text-xs font-semibold mb-1 text-[#1F6A5C] dark:text-[#F4F3F4]/45">{t("admin.managerEmail")}</Text>
                   <Input
                     type="email"
                     value={editUserDraft.managerEmail}
@@ -434,10 +434,10 @@ export default function AdminUsersPage() {
                     placeholder="manager@company.com"
                     className="w-full"
                   />
-                  <Text className="text-xs text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mt-1">{t("admin.managerEmailHint")}</Text>
+                  <Text className="text-xs text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mt-1">{t("admin.managerEmailHint")}</Text>
                 </div>
                 <div>
-                  <Text className="text-xs font-semibold mb-2 text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("profile.avatarUrl")}</Text>
+                  <Text className="text-xs font-semibold mb-2 text-[#1F6A5C] dark:text-[#F4F3F4]/45">{t("profile.avatarUrl")}</Text>
                   <HStack className="items-start gap-3 flex-wrap">
                     <Avatar
                       size="lg"
@@ -481,7 +481,7 @@ export default function AdminUsersPage() {
                           </Button>
                         ) : null}
                       </HStack>
-                      <Text className="text-xs text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60">{t("admin.avatarUrlOrUploadHint")}</Text>
+                      <Text className="text-xs text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">{t("admin.avatarUrlOrUploadHint")}</Text>
                       <Input
                         value={editUserDraft.avatarUrl}
                         onChange={(e) => setEditUserDraft((d) => (d ? { ...d, avatarUrl: e.target.value } : d))}
@@ -492,7 +492,7 @@ export default function AdminUsersPage() {
                   </HStack>
                 </div>
                 <div>
-                  <Text className="text-xs font-semibold mb-1 text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("admin.allRoles")}</Text>
+                  <Text className="text-xs font-semibold mb-1 text-[#1F6A5C] dark:text-[#F4F3F4]/45">{t("admin.allRoles")}</Text>
                   <Select
                     value={editUserDraft.role}
                     onChange={(role) => setEditUserDraft((d) => (d ? { ...d, role } : d))}
@@ -544,7 +544,7 @@ export default function AdminUsersPage() {
             <Text className="mb-2">
               {t("admin.removeUserQuestion")} <strong>{deletingId != null ? users.find((u) => u.id === deletingId)?.email ?? "?" : ""}</strong>?
             </Text>
-            <Text className="text-[#1F6A5C] dark:text-[#1F6A5C]/60">
+            <Text className="text-[#1F6A5C] dark:text-[#F4F3F4]/45">
               {t("admin.removeUserWarning")}
             </Text>
           </ModalBody>

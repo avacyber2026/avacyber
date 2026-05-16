@@ -310,7 +310,7 @@ export function TicketsSimple() {
             <h1 className="text-2xl font-bold text-[#1C1E1C] dark:text-white">
               Hi{firstName ? `, ${firstName}` : ""}!
             </h1>
-            <p className="text-sm text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mt-0.5">
+            <p className="text-sm text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mt-0.5">
               Report security concerns or respond to requests from the security team.
             </p>
           </div>
@@ -334,14 +334,14 @@ export function TicketsSimple() {
               {fromSocItems.map(x => (
                 <div key={x.id} className="rounded-lg bg-white dark:bg-[#1c1e1c] border border-white/60 dark:border-[#103E36] p-4">
                   <div className="flex items-start gap-3 mb-3">
-                    <div className="w-8 h-8 rounded-lg bg-[#1F6A5C]/10 dark:bg-[#50BFA0]/10 flex items-center justify-center shrink-0 mt-0.5">
-                      {x.type === "Activity Verification" ? <MdOutlineVerified size={16} className="text-[#1F6A5C] dark:text-[#50BFA0]" /> :
-                        x.type === "Security Announcement" ? <MdOutlineMarkEmailRead size={16} className="text-[#1F6A5C] dark:text-[#50BFA0]" /> :
-                        <MdOutlineShield size={16} className="text-[#1F6A5C] dark:text-[#50BFA0]" />}
+                    <div className="w-8 h-8 rounded-lg bg-[#1F6A5C]/10 dark:bg-white/[0.05] flex items-center justify-center shrink-0 mt-0.5">
+                      {x.type === "Activity Verification" ? <MdOutlineVerified size={16} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" /> :
+                        x.type === "Security Announcement" ? <MdOutlineMarkEmailRead size={16} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" /> :
+                        <MdOutlineShield size={16} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" />}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                        <span className="text-xs font-bold uppercase tracking-wide text-[#1F6A5C]/60 dark:text-[#1F6A5C]/70">
+                        <span className="text-xs font-bold uppercase tracking-wide text-[#1F6A5C]/60 dark:text-[#F4F3F4]/55">
                           {x.type === "Activity Verification" ? "Activity Verification" :
                            x.type === "Security Announcement" ? "Security Announcement" : "Request from Security Team"}
                         </span>
@@ -402,8 +402,8 @@ export function TicketsSimple() {
           {myReportItems.length === 0 ? (
             <div className={`${card} p-8 flex flex-col items-center text-center text-[#1F6A5C]/60`}>
               <IoBugOutline size={32} className="mb-2 opacity-40" />
-              <p className="text-sm font-medium text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60">No reports yet</p>
-              <p className="text-xs text-[#1F6A5C]/60 dark:text-[#1F6A5C]/70 mt-1">Click "Report Incident" to submit your first security concern.</p>
+              <p className="text-sm font-medium text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">No reports yet</p>
+              <p className="text-xs text-[#1F6A5C]/60 dark:text-[#F4F3F4]/55 mt-1">Click "Report Incident" to submit your first security concern.</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -416,7 +416,7 @@ export function TicketsSimple() {
                     onClick={() => router.push("/report")}
                     className={`${card} p-4 cursor-pointer hover:border-[#1F6A5C]/30 transition-colors`}>
                     <div className="flex items-start gap-3">
-                      <div className="w-9 h-9 rounded-lg bg-[#F4F3F4] dark:bg-[#1c1e1c] flex items-center justify-center text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 shrink-0">
+                      <div className="w-9 h-9 rounded-lg bg-[#F4F3F4] dark:bg-[#1c1e1c] flex items-center justify-center text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 shrink-0">
                         {cat.icon}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -428,7 +428,7 @@ export function TicketsSimple() {
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 truncate">{String(r.description || "").slice(0, 100)}</p>
+                        <p className="text-xs text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 truncate">{String(r.description || "").slice(0, 100)}</p>
                       </div>
                       <div className="text-right shrink-0">
                         <span className={`text-xs px-2 py-0.5 rounded-full border font-semibold ${isResolved ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/25" : "text-sky-400 bg-sky-400/10 border-sky-400/25"}`}>
@@ -486,7 +486,7 @@ export function TicketsSimple() {
         <div className="flex items-center gap-4 flex-wrap">
           <div>
             <h1 className="text-2xl font-bold text-[#1C1E1C] dark:text-white">Comms</h1>
-            <p className="text-sm text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mt-0.5">Incoming reports and team communications</p>
+            <p className="text-sm text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mt-0.5">Incoming reports and team communications</p>
           </div>
           {/* Stats */}
           <div className="flex items-center gap-3">
@@ -521,13 +521,13 @@ export function TicketsSimple() {
           <button key={tab.key} onClick={() => setSocTab(tab.key)}
             className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px transition-all ${
               socTab === tab.key
-                ? "border-[#1F6A5C] text-[#1F6A5C] dark:text-[#50BFA0]"
-                : "border-transparent text-[#1F6A5C]/60 dark:text-[#1F6A5C]/70 hover:text-[#103E36] dark:hover:text-[#F4F3F4]/60"
+                ? "border-[#1F6A5C] text-[#1F6A5C] dark:text-[#F4F3F4]/55"
+                : "border-transparent text-[#1F6A5C]/60 dark:text-[#F4F3F4]/55 hover:text-[#103E36] dark:hover:text-[#F4F3F4]/60"
             }`}>
             {tab.label}
             {tab.count > 0 && (
               <span className={`text-xs px-1.5 py-0.5 rounded-full font-bold ${
-                socTab === tab.key ? "bg-[#1F6A5C]/15 text-[#1F6A5C] dark:text-[#50BFA0]" : "bg-[#F4F3F4] dark:bg-[#1E2128] text-[#1F6A5C]/60"
+                socTab === tab.key ? "bg-[#1F6A5C]/15 text-[#1F6A5C] dark:text-[#F4F3F4]/55" : "bg-[#F4F3F4] dark:bg-[#1E2128] text-[#1F6A5C]/60"
               }`}>{tab.count}</span>
             )}
           </button>
@@ -548,14 +548,14 @@ export function TicketsSimple() {
       {/* Items list */}
       {socFilteredRows.length === 0 ? (
         <div className={`${card} p-12 flex flex-col items-center text-center`}>
-          <MdOutlineShield size={36} className="mb-3 text-[#F4F3F4]/80 dark:text-[#103E36]" />
+          <MdOutlineShield size={36} className="mb-3 text-[#F4F3F4]/80 dark:text-[#F4F3F4]/65" />
           <p className="text-sm font-medium text-[#1F6A5C]/70">
             {socTab === "from_users" ? "No reports from users yet" :
              socTab === "sent_to_users" ? "No requests sent to users yet" :
              socTab === "team_comms" ? "No comms yet" :
              "No requests found"}
           </p>
-          <p className="text-xs mt-1 text-[#1F6A5C]/60 dark:text-[#1F6A5C]">
+          <p className="text-xs mt-1 text-[#1F6A5C]/60 dark:text-[#F4F3F4]/65">
             {socTab === "sent_to_users" ? 'Click "Send Request" to send an activity verification or announcement.' : ""}
           </p>
         </div>
@@ -582,17 +582,17 @@ export function TicketsSimple() {
                 )}
                 <div className="flex items-start gap-3">
                   <div className="w-9 h-9 rounded-lg bg-[#F4F3F4] dark:bg-[#1c1e1c] flex items-center justify-center text-[#1F6A5C]/60 shrink-0">
-                    {x.type === "Activity Verification" ? <MdOutlineVerified size={17} className="text-[#1F6A5C] dark:text-[#50BFA0]" /> :
-                     x.type === "Security Announcement" ? <MdOutlineMarkEmailRead size={17} className="text-[#1F6A5C] dark:text-[#50BFA0]" /> :
+                    {x.type === "Activity Verification" ? <MdOutlineVerified size={17} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" /> :
+                     x.type === "Security Announcement" ? <MdOutlineMarkEmailRead size={17} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" /> :
                      cat.icon}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                      <span className="text-xs font-bold uppercase tracking-wide text-[#1F6A5C]/60 dark:text-[#1F6A5C]/70">{x.type || "Incident"}</span>
+                      <span className="text-xs font-bold uppercase tracking-wide text-[#1F6A5C]/60 dark:text-[#F4F3F4]/55">{x.type || "Incident"}</span>
                       {x.priority && <span className={`text-xs px-1.5 py-0.5 rounded border font-semibold capitalize ${priorityColor(x.priority)}`}>{x.priority}</span>}
                     </div>
                     <p className="text-sm font-semibold text-[#1C1E1C] dark:text-white truncate">{x.title}</p>
-                    <p className="text-xs text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 truncate mt-0.5">
+                    <p className="text-xs text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 truncate mt-0.5">
                       {x.fromUser && <span className="mr-2 font-mono">{x.fromUser}</span>}
                       {x.text?.slice(0, 80)}{(x.text?.length ?? 0) > 80 ? "…" : ""}
                     </p>

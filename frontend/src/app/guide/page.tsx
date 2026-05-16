@@ -87,7 +87,7 @@ export default function GuidePage() {
                   {a.excerpt ? (
                     <Text className={`text-sm line-clamp-3 mb-3 ${labelColor}`}>{a.excerpt}</Text>
                   ) : null}
-                  <Text className="text-sm font-medium text-[#1F6A5C] dark:text-[#50BFA0]">{t("guide.readMore")} →</Text>
+                  <Text className="text-sm font-medium text-[#1F6A5C] dark:text-[#F4F3F4]/55">{t("guide.readMore")} →</Text>
                   <Text className={`text-xs mt-2 ${labelColor}`}>
                     {t("admin.guideUpdated")}: {new Date(a.updatedAt).toLocaleString()}
                   </Text>

@@ -410,7 +410,7 @@ export default function AdminRequestsPage() {
           </Flex>
           <Flex direction="row" align="center" className="flex-col sm:flex-row gap-3 flex-wrap items-stretch sm:items-center">
             <Flex align="center" gap={2} className="w-full sm:w-auto">
-              <Text as="span" className="text-sm whitespace-nowrap text-[#1F6A5C] dark:text-[#1F6A5C]/60 shrink-0">{t("report.presets")}</Text>
+              <Text as="span" className="text-sm whitespace-nowrap text-[#1F6A5C] dark:text-[#F4F3F4]/45 shrink-0">{t("report.presets")}</Text>
               <Select
                 size="sm"
                 className="w-full sm:w-[130px] min-w-0"
@@ -420,16 +420,16 @@ export default function AdminRequestsPage() {
               />
             </Flex>
             <Flex align="center" gap={2} className="w-full sm:w-auto">
-              <Text as="span" className="text-sm whitespace-nowrap w-[90px] shrink-0 text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("admin.createdFrom")}</Text>
+              <Text as="span" className="text-sm whitespace-nowrap w-[90px] shrink-0 text-[#1F6A5C] dark:text-[#F4F3F4]/45">{t("admin.createdFrom")}</Text>
               <Input type="date" size="sm" className="w-full sm:w-[150px] min-w-0" value={dateFrom} onChange={(e) => { setDateFrom(e.target.value); setFilterPreset("none"); }} />
             </Flex>
             <Flex align="center" gap={2} className="w-full sm:w-auto">
-              <Text as="span" className="text-sm whitespace-nowrap w-[90px] shrink-0 text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("admin.createdTo")}</Text>
+              <Text as="span" className="text-sm whitespace-nowrap w-[90px] shrink-0 text-[#1F6A5C] dark:text-[#F4F3F4]/45">{t("admin.createdTo")}</Text>
               <Input type="date" size="sm" className="w-full sm:w-[150px] min-w-0" value={dateTo} onChange={(e) => { setDateTo(e.target.value); setFilterPreset("none"); }} />
             </Flex>
           </Flex>
           {totalIncidents > 0 && (
-            <Flex className="w-full justify-between items-center text-xs text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60">
+            <Flex className="w-full justify-between items-center text-xs text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">
               <span>
                 {t("admin.showingIncidents")
                 .replace("{from}", String((incidentPage - 1) * INCIDENTS_PER_PAGE + 1))
@@ -550,7 +550,7 @@ export default function AdminRequestsPage() {
               {t("admin.editIncident")}
             </ModalHeader>
             <ModalBody className="space-y-3">
-              <Text className="text-sm text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("admin.editIncidentHint")}</Text>
+              <Text className="text-sm text-[#1F6A5C] dark:text-[#F4F3F4]/45">{t("admin.editIncidentHint")}</Text>
               {incidentDraft ? (
                 <>
                   <div>

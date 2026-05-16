@@ -107,7 +107,7 @@ export default function AdminSettingsPage() {
               <FormLabel className="text-[#103E36] dark:text-[#F4F3F4]/65">
                 {t("admin.onCallPhone")}
               </FormLabel>
-              <Text fontSize="sm" className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mb-2">
+              <Text fontSize="sm" className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mb-2">
                 {t("admin.onCallPhoneDesc")}
               </Text>
               <Input

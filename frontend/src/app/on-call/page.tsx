@@ -40,13 +40,13 @@ export default function OnCallPage() {
             <Button as="a" href={`tel:${phone.replace(/\s/g, "")}`} target="_blank" rel="noopener" size="lg" className="bg-brand-primary text-white hover:bg-brand-primaryDark">
               {t("onCall.callButton")}
             </Button>
-            <Text className="mt-4 text-sm text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60">
+            <Text className="mt-4 text-sm text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">
               {t("onCall.phoneNote")}
             </Text>
           </Box>
           <Box className="p-6 rounded-lg bg-white dark:bg-[#1E2128] border border-[#1F6A5C]/20 dark:border-white/20 max-w-[560px]">
             <Text className="font-semibold mb-2 text-[#103E36] dark:text-[#F4F3F4]">{t("onCall.schedulesTitle")}</Text>
-            <Text className="text-sm text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("onCall.schedulesDesc")}</Text>
+            <Text className="text-sm text-[#1F6A5C] dark:text-[#F4F3F4]/45">{t("onCall.schedulesDesc")}</Text>
           </Box>
         </Box>
       </VStack>

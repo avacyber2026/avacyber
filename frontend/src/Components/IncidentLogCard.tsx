@@ -59,11 +59,11 @@ export function IncidentLogCard({
 
   const defaultFooter = (
     <>
-      <Text fontSize="xs" fontWeight={600} className="uppercase tracking-wide text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mb-2">
+      <Text fontSize="xs" fontWeight={600} className="uppercase tracking-wide text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mb-2">
         {answerHeading}
       </Text>
       {x.answer === "" ? (
-        <Text fontSize="sm" className="text-[#1F6A5C]/60 dark:text-[#1F6A5C]/70 italic">
+        <Text fontSize="sm" className="text-[#1F6A5C]/60 dark:text-[#F4F3F4]/55 italic">
           {emptyAnswerText}
         </Text>
       ) : (
@@ -84,7 +84,7 @@ export function IncidentLogCard({
       <div className="p-5 flex flex-col gap-4">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3">
           <HStack spacing={3} align="flex-start" className="min-w-0 flex-1">
-            <Box className="shrink-0 w-10 h-10 rounded-full bg-[#1F6A5C]/12 dark:bg-[#50BFA0]/15 flex items-center justify-center text-[#1F6A5C] dark:text-[#50BFA0]">
+            <Box className="shrink-0 w-10 h-10 rounded-full bg-[#1F6A5C]/12 dark:bg-white/[0.05] flex items-center justify-center text-[#1F6A5C] dark:text-[#F4F3F4]/55">
               <IoPersonCircleOutline className="w-6 h-6" aria-hidden />
             </Box>
             <div className="min-w-0 flex-1">
@@ -92,24 +92,24 @@ export function IncidentLogCard({
                 {x.fromUser}
               </Text>
               {showRouting && (x.createdBy || x.assignedTo) && (
-                <Text fontSize="xs" className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/70 mt-1 leading-relaxed">
+                <Text fontSize="xs" className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/55 mt-1 leading-relaxed">
                   {x.createdBy && (
                     <>
-                      <span className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60">Created by </span>
+                      <span className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">Created by </span>
                       <span className="font-medium text-[#103E36] dark:text-[#F4F3F4]/80">{x.createdBy}</span>
                     </>
                   )}
                   {x.createdBy && x.assignedTo && <span className="mx-1 text-[#1F6A5C]/60">·</span>}
                   {x.assignedTo && (
                     <>
-                      <span className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60">Assigned to </span>
+                      <span className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">Assigned to </span>
                       <span className="font-medium text-[#103E36] dark:text-[#F4F3F4]/80">{x.assignedTo}</span>
                     </>
                   )}
                 </Text>
               )}
               {when && (
-                <Text fontSize="xs" className="text-[#1F6A5C]/60 dark:text-[#1F6A5C]/70 mt-1">
+                <Text fontSize="xs" className="text-[#1F6A5C]/60 dark:text-[#F4F3F4]/55 mt-1">
                   {when}
                 </Text>
               )}
@@ -132,7 +132,7 @@ export function IncidentLogCard({
             >
               {x.type}
             </span>
-            <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-mono text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 border border-dashed border-[#1F6A5C]/20 dark:border-white/20">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-mono text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 border border-dashed border-[#1F6A5C]/20 dark:border-white/20">
               #{x.id}
             </span>
             {x.siemAlertId ? (

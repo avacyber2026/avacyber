@@ -84,10 +84,10 @@ function MarkdownBody({ source }: { source: string }) {
         "[&_h2]:text-base [&_h2]:font-semibold [&_h2]:text-[#1C1E1C] [&_h2]:dark:text-white [&_h2]:mb-2 [&_h2]:mt-4",
         "[&_h3]:text-sm [&_h3]:font-semibold [&_h3]:text-[#1C1E1C] [&_h3]:dark:text-white [&_h3]:mb-2",
         "[&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-2",
-        "[&_li]:mb-1 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:bg-[#50BFA0]/15 [&_code]:dark:bg-black/40 [&_code]:text-[#0d4f42] [&_code]:dark:text-[#a5e8d4] [&_code]:font-mono [&_code]:text-[13px]",
+        "[&_li]:mb-1 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:bg-[#50BFA0]/15 [&_code]:dark:bg-black/40 [&_code]:text-[#0d4f42] [&_code]:dark:text-[#F4F3F4]/55 [&_code]:font-mono [&_code]:text-[13px]",
         "[&_pre]:bg-[#F4F3F4] [&_pre]:dark:bg-black/35 [&_pre]:p-3 [&_pre]:rounded-lg [&_pre]:overflow-x-auto [&_pre]:mb-3 [&_pre]:border [&_pre]:border-[#1F6A5C]/20 [&_pre]:dark:border-white/10",
         "[&_pre_code]:bg-transparent [&_pre_code]:p-0",
-        "[&_a]:text-[#1F6A5C] [&_a]:dark:text-[#50BFA0] [&_a]:underline [&_strong]:text-[#1C1E1C] [&_strong]:dark:text-white",
+        "[&_a]:text-[#1F6A5C] [&_a]:dark:text-[#F4F3F4]/55 [&_a]:underline [&_strong]:text-[#1C1E1C] [&_strong]:dark:text-white",
       ].join(" ")}
       dangerouslySetInnerHTML={{ __html: html }}
     />
@@ -214,7 +214,7 @@ export function IncidentTimeline({ ticketId, composerName }: IncidentTimelinePro
           />
           <button
             type="button"
-            className="absolute right-3 top-3 p-1 rounded-md text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 hover:text-[#103E36] dark:hover:text-[#F4F3F4]/80 hover:bg-[#F4F3F4] dark:hover:bg-white/5 cursor-pointer"
+            className="absolute right-3 top-3 p-1 rounded-md text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 hover:text-[#103E36] dark:hover:text-[#F4F3F4]/80 hover:bg-[#F4F3F4] dark:hover:bg-white/5 cursor-pointer"
             aria-label={t("tickets.incidentThreadAttach")}
             title={t("tickets.incidentThreadAttach")}
             onClick={() => fileInputRef.current?.click()}
@@ -256,12 +256,12 @@ export function IncidentTimeline({ ticketId, composerName }: IncidentTimelinePro
       </HStack>
 
       {loading ? (
-        <Text className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 text-sm">{t("common.loading")}</Text>
+        <Text className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 text-sm">{t("common.loading")}</Text>
       ) : entries.length === 0 ? (
         <Text className="text-[#1F6A5C]/70 text-sm">{t("tickets.incidentThreadEmpty")}</Text>
       ) : (
         <div className="relative">
-          <div className="absolute left-[19px] top-8 bottom-8 w-px bg-[#50BFA0]/25 dark:bg-[#1F6A5C]/80" aria-hidden />
+          <div className="absolute left-[19px] top-8 bottom-8 w-px bg-[#50BFA0]/25 dark:bg-white/[0.06]" aria-hidden />
           <ul className="space-y-8 relative">
             {entries.map((e) => {
               const label = e.authorName || e.authorEmail || "?";

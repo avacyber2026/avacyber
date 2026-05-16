@@ -116,7 +116,7 @@ function IncidentDetailInner() {
               <span className="px-2.5 py-1 rounded-lg text-xs font-medium border border-amber-500/30 bg-amber-500/10 text-amber-900 dark:text-amber-200">
                 {ticket.priority}
               </span>
-              <span className="px-2.5 py-1 rounded-lg text-xs font-medium border border-[#1F6A5C]/20 dark:border-white/15 text-[#1F6A5C] dark:text-[#1F6A5C]/60">
+              <span className="px-2.5 py-1 rounded-lg text-xs font-medium border border-[#1F6A5C]/20 dark:border-white/15 text-[#1F6A5C] dark:text-[#F4F3F4]/45">
                 {ticket.type}
               </span>
               <span className="text-xs font-mono text-[#1F6A5C]/70">#{ticket.id}</span>
@@ -134,7 +134,7 @@ function IncidentDetailInner() {
               {ticket.title}
             </Text>
             <Box className="rounded-xl border border-[#1F6A5C]/20 dark:border-white/15 bg-white dark:bg-[#1E2128] p-5 mb-2">
-              <Text fontSize="sm" fontWeight={600} className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mb-2">
+              <Text fontSize="sm" fontWeight={600} className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mb-2">
                 {t("tickets.detailDescription")}
               </Text>
               <Text fontSize="sm" className="text-[#103E36] dark:text-[#F4F3F4]/80 whitespace-pre-wrap">
@@ -143,7 +143,7 @@ function IncidentDetailInner() {
               {ticket.attachments && ticket.attachments.length > 0 ? (
                 <>
                   <Divider className="my-4 border-[#1F6A5C]/20 dark:border-white/10" />
-                  <Text fontSize="sm" fontWeight={600} className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mb-2">
+                  <Text fontSize="sm" fontWeight={600} className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mb-2">
                     {t("tickets.attachmentsHeading")}
                   </Text>
                   <ul className="space-y-2">
@@ -151,7 +151,7 @@ function IncidentDetailInner() {
                       <li key={a.id}>
                         <a
                           href={a.url.startsWith("http") ? a.url : `${API_URL}${a.url}`}
-                          className="text-sm text-[#1F6A5C] dark:text-[#50BFA0] underline hover:opacity-90 break-all"
+                          className="text-sm text-[#1F6A5C] dark:text-[#F4F3F4]/55 underline hover:opacity-90 break-all"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
@@ -165,7 +165,7 @@ function IncidentDetailInner() {
               {ticket.answer ? (
                 <>
                   <Divider className="my-4 border-[#1F6A5C]/20 dark:border-white/10" />
-                  <Text fontSize="sm" fontWeight={600} className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mb-2">
+                  <Text fontSize="sm" fontWeight={600} className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mb-2">
                     {t("tickets.detailResponse")}
                   </Text>
                   <Text fontSize="sm" className="text-[#103E36] dark:text-[#F4F3F4]/80 whitespace-pre-wrap">
@@ -196,7 +196,7 @@ function IncidentDetailInner() {
 
             {role && CREATOR_ROLES.includes(role) && ticket.recipients && ticket.recipients.length > 0 && (
               <Box className="rounded-xl border border-[#1F6A5C]/20 dark:border-white/15 bg-white dark:bg-[#1E2128] p-5 mt-4">
-                <Text fontSize="sm" fontWeight={600} className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mb-3">
+                <Text fontSize="sm" fontWeight={600} className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mb-3">
                   {t("tickets.recipientsList")}
                 </Text>
                 <div className="space-y-2">
@@ -209,12 +209,12 @@ function IncidentDetailInner() {
                             {t("tickets.acknowledged")}
                           </span>
                         ) : (
-                          <span className="px-2 py-0.5 rounded text-xs font-medium bg-[#F4F3F4] dark:bg-white/10 text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60">
+                          <span className="px-2 py-0.5 rounded text-xs font-medium bg-[#F4F3F4] dark:bg-white/10 text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">
                             {t("tickets.pending")}
                           </span>
                         )}
                         {rec.replyText && (
-                          <span className="text-xs text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 max-w-[200px] truncate" title={rec.replyText}>
+                          <span className="text-xs text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 max-w-[200px] truncate" title={rec.replyText}>
                             {rec.replyText}
                           </span>
                         )}

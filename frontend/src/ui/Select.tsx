@@ -279,7 +279,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
                 return (
                   <div
                     key={opt.value}
-                    className="px-3 py-2 text-sm text-[#1F6A5C]/60 dark:text-[#1F6A5C]/70 cursor-default"
+                    className="px-3 py-2 text-sm text-[#1F6A5C]/60 dark:text-[#F4F3F4]/55 cursor-default"
                   >
                     {opt.label}
                   </div>
@@ -299,7 +299,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
                   className={[
                     "flex w-full items-center gap-2 px-3 py-2.5 text-left text-sm transition-colors duration-150",
                     isHi
-                      ? "bg-[#1F6A5C]/10 text-[#0d4f42] dark:bg-[#50BFA0]/12 dark:text-[#a5e8d4]"
+                      ? "bg-[#1F6A5C]/10 text-[#0d4f42] dark:bg-white/[0.05] dark:text-[#F4F3F4]/55"
                       : "text-[#103E36] dark:text-[#F4F3F4]/80",
                     "hover:bg-[#F4F3F4]/90 dark:hover:bg-white/[0.07]",
                     isSel && !isHi ? "bg-[#F4F3F4]/50 dark:bg-white/[0.04]" : "",
@@ -310,7 +310,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
                   <span className="flex-1 min-w-0 truncate">{opt.label}</span>
                   {isSel ? (
                     <IoCheckmark
-                      className="shrink-0 text-[#1F6A5C] dark:text-[#50BFA0]"
+                      className="shrink-0 text-[#1F6A5C] dark:text-[#F4F3F4]/55"
                       size={18}
                       aria-hidden
                     />
@@ -352,7 +352,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
         <motion.span
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-          className="shrink-0 text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 group-hover:text-[#103E36] dark:group-hover:text-[#F4F3F4]/80"
+          className="shrink-0 text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 group-hover:text-[#103E36] dark:group-hover:text-[#F4F3F4]/80"
         >
           <IoChevronDown size={18} aria-hidden />
         </motion.span>

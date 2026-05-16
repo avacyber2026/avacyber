@@ -197,7 +197,7 @@ export function ReportSimple() {
                 onChange={(e) => setTimelineComment(e.target.value)}
                 className={style.timelineCommentInput}
               />
-              <FiPaperclip className="shrink-0 text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60" size={20} aria-hidden />
+              <FiPaperclip className="shrink-0 text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45" size={20} aria-hidden />
               <button type="button" className={style.timelinePostBtn}>
                 {t("report.post")}
               </button>

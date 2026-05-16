@@ -31,7 +31,7 @@ export default function IntegrationsPage() {
           <Divider className="mb-6 border-[#1F6A5C]/20 dark:border-white/20" />
           <Box className="p-6 rounded-lg bg-white dark:bg-[#1E2128] border border-[#1F6A5C]/20 dark:border-white/20 mb-6">
             <Text className="font-semibold mb-3">{t("integrations.siemSystems")}</Text>
-            <Text className="text-sm text-[#1F6A5C] dark:text-[#1F6A5C]/60 mb-4">{t("integrations.siemDesc")}</Text>
+            <Text className="text-sm text-[#1F6A5C] dark:text-[#F4F3F4]/45 mb-4">{t("integrations.siemDesc")}</Text>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
               {SIEM_LIST.map((name) => (
                 <Box key={name} className="p-3 rounded-md bg-[#F4F3F4]/50 dark:bg-white/10">
@@ -44,12 +44,12 @@ export default function IntegrationsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Box className="p-6 rounded-lg bg-white dark:bg-[#1E2128] border border-[#1F6A5C]/20 dark:border-white/20">
               <Text className="font-semibold mb-2 text-[#103E36] dark:text-[#F4F3F4]">{t("integrations.createFromEmails")}</Text>
-              <Text className="text-sm text-[#1F6A5C] dark:text-[#1F6A5C]/60 mb-3">{t("integrations.createFromEmailsDesc")}</Text>
+              <Text className="text-sm text-[#1F6A5C] dark:text-[#F4F3F4]/45 mb-3">{t("integrations.createFromEmailsDesc")}</Text>
               <Badge size="sm" colorScheme="gray">{t("dashboard.comingSoon")}</Badge>
             </Box>
             <Box className="p-6 rounded-lg bg-white dark:bg-[#1E2128] border border-[#1F6A5C]/20 dark:border-white/20">
               <Text className="font-semibold mb-2 text-[#103E36] dark:text-[#F4F3F4]">{t("integrations.createFromCalls")}</Text>
-              <Text className="text-sm text-[#1F6A5C] dark:text-[#1F6A5C]/60 mb-3">{t("integrations.createFromCallsDesc")}</Text>
+              <Text className="text-sm text-[#1F6A5C] dark:text-[#F4F3F4]/45 mb-3">{t("integrations.createFromCallsDesc")}</Text>
               <Badge size="sm" colorScheme="gray">{t("dashboard.comingSoon")}</Badge>
             </Box>
           </div>

@@ -104,11 +104,11 @@ export function IncidentCreateForm({ onSuccess }: IncidentCreateFormProps) {
 
   return (
     <Box className="grid grid-cols-1 lg:grid-cols-[1fr,1.2fr] gap-x-8 lg:gap-x-12 gap-y-10 max-w-5xl items-start">
-      <Text fontSize="sm" className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 lg:col-span-2 -mb-4">
+      <Text fontSize="sm" className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 lg:col-span-2 -mb-4">
         {t("report.requiredLegend")}
       </Text>
       {/* Row 1: What's going on — Brief, In-depth, Attach */}
-      <Box className="text-[#1F6A5C] dark:text-[#1F6A5C]/60 text-sm lg:pt-1">
+      <Box className="text-[#1F6A5C] dark:text-[#F4F3F4]/45 text-sm lg:pt-1">
         <Text fontWeight={600} className="text-[#103E36] dark:text-[#F4F3F4] mb-1">
           {t("report.whatsGoingOn")}
         </Text>
@@ -154,8 +154,8 @@ export function IncidentCreateForm({ onSuccess }: IncidentCreateFormProps) {
             }}
             onClick={() => fileInputRef.current?.click()}
           >
-            <IoDocumentAttachOutline className="mx-auto text-[#1F6A5C]/60 dark:text-[#1F6A5C]/70 mb-2" size={28} />
-            <Text fontSize="sm" className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mb-2">
+            <IoDocumentAttachOutline className="mx-auto text-[#1F6A5C]/60 dark:text-[#F4F3F4]/55 mb-2" size={28} />
+            <Text fontSize="sm" className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mb-2">
               {t("report.dragDropFiles")}
             </Text>
             <Button
@@ -185,7 +185,7 @@ export function IncidentCreateForm({ onSuccess }: IncidentCreateFormProps) {
             />
             {attachedFiles.length > 0 && (
               <VStack align="stretch" spacing={2} className="mt-4 text-left border-t border-[#1F6A5C]/20 dark:border-white/15 pt-4">
-                <Text fontSize="xs" fontWeight={600} className="text-[#1F6A5C] dark:text-[#1F6A5C]/60 uppercase tracking-wide">
+                <Text fontSize="xs" fontWeight={600} className="text-[#1F6A5C] dark:text-[#F4F3F4]/45 uppercase tracking-wide">
                   {t("report.selectedFiles")}
                 </Text>
                 <ul className="space-y-2 min-w-0 max-w-full">
@@ -201,7 +201,7 @@ export function IncidentCreateForm({ onSuccess }: IncidentCreateFormProps) {
                         >
                           {file.name}
                         </span>
-                        <span className="shrink-0 text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 tabular-nums text-xs sm:text-sm">
+                        <span className="shrink-0 text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 tabular-nums text-xs sm:text-sm">
                           {formatFileSize(file.size)}
                         </span>
                       </div>
@@ -226,7 +226,7 @@ export function IncidentCreateForm({ onSuccess }: IncidentCreateFormProps) {
       </VStack>
 
       {/* Row 2: Your contact details — Your e-mail, reporter email, hostname */}
-      <Box className="text-[#1F6A5C] dark:text-[#1F6A5C]/60 text-sm items-start">
+      <Box className="text-[#1F6A5C] dark:text-[#F4F3F4]/45 text-sm items-start">
         <Text fontWeight={600} className="text-[#103E36] dark:text-[#F4F3F4] mb-1">
           {t("report.yourContactDetails")}
         </Text>
@@ -264,14 +264,14 @@ export function IncidentCreateForm({ onSuccess }: IncidentCreateFormProps) {
             onChange={(e) => setIncidentAt(e.target.value)}
             className={inputClass}
           />
-          <Text fontSize="xs" className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mt-1">
+          <Text fontSize="xs" className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mt-1">
             {t("report.incidentTimeHint")}
           </Text>
         </Box>
       </VStack>
 
       {/* Row 3: Who should we notify — Report to */}
-      <Box className="text-[#1F6A5C] dark:text-[#1F6A5C]/60 text-sm items-start">
+      <Box className="text-[#1F6A5C] dark:text-[#F4F3F4]/45 text-sm items-start">
         <Text fontWeight={600} className="text-[#103E36] dark:text-[#F4F3F4] mb-1">
           {t("report.whoToNotify")}
         </Text>
@@ -280,7 +280,7 @@ export function IncidentCreateForm({ onSuccess }: IncidentCreateFormProps) {
       <Box className="bg-white dark:bg-[#1E2128] rounded-xl border border-[#1F6A5C]/20 dark:border-white/20 p-6">
         <label className={labelClass}>{t("report.reportTo")}</label>
         <Box className="flex items-center gap-2 rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 bg-white dark:bg-[#1E2128] px-3 py-2">
-          <IoPeopleOutline className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 shrink-0" size={20} />
+          <IoPeopleOutline className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 shrink-0" size={20} />
           <Select
             value={priority}
             onChange={(v) => setPriority(v as "Low" | "Medium" | "High" | "Critical")}
@@ -297,7 +297,7 @@ export function IncidentCreateForm({ onSuccess }: IncidentCreateFormProps) {
       </Box>
 
       {/* Row 4: Notification channels — Notify via + button */}
-      <Box className="text-[#1F6A5C] dark:text-[#1F6A5C]/60 text-sm items-start">
+      <Box className="text-[#1F6A5C] dark:text-[#F4F3F4]/45 text-sm items-start">
         <Text fontWeight={600} className="text-[#103E36] dark:text-[#F4F3F4] mb-1">
           {t("report.notificationChannels")}
         </Text>
@@ -328,7 +328,7 @@ export function IncidentCreateForm({ onSuccess }: IncidentCreateFormProps) {
               </label>
             ))}
           </VStack>
-          <Text fontSize="xs" className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mt-2">
+          <Text fontSize="xs" className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mt-2">
             {t("report.noOnCallNote")}
           </Text>
         </Box>

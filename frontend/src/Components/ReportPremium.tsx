@@ -259,7 +259,7 @@ export function ReportPremium() {
         <Wrap spacing={4}>
           <WrapItem>
             <HStack spacing={2} align="center">
-              <Text as="span" fontSize="sm" className="text-[#1F6A5C] dark:text-[#1F6A5C]/60 whitespace-nowrap">{t("report.presets")}</Text>
+              <Text as="span" fontSize="sm" className="text-[#1F6A5C] dark:text-[#F4F3F4]/45 whitespace-nowrap">{t("report.presets")}</Text>
               <Select
                 size="sm"
                 className={`w-[130px] ${filterInputClass}`}
@@ -271,13 +271,13 @@ export function ReportPremium() {
           </WrapItem>
           <WrapItem>
             <HStack spacing={2} align="center">
-              <Text as="span" fontSize="sm" className="text-[#1F6A5C] dark:text-[#1F6A5C]/60 whitespace-nowrap">{t("report.dateFrom")}</Text>
+              <Text as="span" fontSize="sm" className="text-[#1F6A5C] dark:text-[#F4F3F4]/45 whitespace-nowrap">{t("report.dateFrom")}</Text>
               <Input type="date" size="sm" className={`w-[140px] ${filterInputClass}`} value={filterDateFrom} onChange={(e) => { setFilterDateFrom(e.target.value); setFilterPreset("none"); }} />
             </HStack>
           </WrapItem>
           <WrapItem>
             <HStack spacing={2} align="center">
-              <Text as="span" fontSize="sm" className="text-[#1F6A5C] dark:text-[#1F6A5C]/60 whitespace-nowrap">{t("report.dateTo")}</Text>
+              <Text as="span" fontSize="sm" className="text-[#1F6A5C] dark:text-[#F4F3F4]/45 whitespace-nowrap">{t("report.dateTo")}</Text>
               <Input type="date" size="sm" className={`w-[140px] ${filterInputClass}`} value={filterDateTo} onChange={(e) => { setFilterDateTo(e.target.value); setFilterPreset("none"); }} />
             </HStack>
           </WrapItem>
@@ -318,7 +318,7 @@ export function ReportPremium() {
             />
           </WrapItem>
           <WrapItem>
-            <label className="flex items-center gap-2 text-sm text-[#1F6A5C] dark:text-[#1F6A5C]/60 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-[#1F6A5C] dark:text-[#F4F3F4]/45 cursor-pointer">
               <input type="checkbox" checked={filterSlaBreached} onChange={(e) => setFilterSlaBreached(e.target.checked)} className="rounded border-[#1F6A5C]/25 dark:border-white/30 text-red-500 focus:ring-red-500" />
               SLA Breached
             </label>
@@ -413,7 +413,7 @@ export function ReportPremium() {
                           href={href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[#1F6A5C] dark:text-[#50BFA0] underline underline-offset-2"
+                          className="text-[#1F6A5C] dark:text-[#F4F3F4]/55 underline underline-offset-2"
                         >
                           {a.originalName}
                         </a>
@@ -424,9 +424,9 @@ export function ReportPremium() {
               </div>
             ) : null}
           </div>
-          <VStack align="stretch" spacing={1} className="text-sm text-[#1F6A5C] dark:text-[#1F6A5C]/60 mt-3">
+          <VStack align="stretch" spacing={1} className="text-sm text-[#1F6A5C] dark:text-[#F4F3F4]/45 mt-3">
             <div className="flex flex-wrap gap-2 mb-1">
-              <span className={`px-2 py-0.5 rounded text-xs font-medium ${x.pipelineStatus === 'resolved' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : x.pipelineStatus === 'in_progress' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : x.pipelineStatus === 'ready_gsoc' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300' : 'bg-[#F4F3F4] dark:bg-white/10 text-[#1F6A5C] dark:text-[#1F6A5C]/60'}`}>
+              <span className={`px-2 py-0.5 rounded text-xs font-medium ${x.pipelineStatus === 'resolved' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : x.pipelineStatus === 'in_progress' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : x.pipelineStatus === 'ready_gsoc' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300' : 'bg-[#F4F3F4] dark:bg-white/10 text-[#1F6A5C] dark:text-[#F4F3F4]/45'}`}>
                 {x.pipelineStatus || 'new'}
               </span>
               {x.slaBreached && (

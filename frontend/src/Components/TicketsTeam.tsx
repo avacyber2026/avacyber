@@ -45,7 +45,7 @@ export function TicketsTeam() {
     }
   }
 
-  if (loading) return <Text className="py-4 text-[#1F6A5C] dark:text-[#1F6A5C]/60">Loading...</Text>;
+  if (loading) return <Text className="py-4 text-[#1F6A5C] dark:text-[#F4F3F4]/45">Loading...</Text>;
 
   const optSelected = (opt: string, idx: number) =>
     answer.split("-")[0] === opt && Number(answer.split("-")[1]) === idx;
@@ -63,7 +63,7 @@ export function TicketsTeam() {
           <IncidentLogCard key={x.id} ticket={x} index={i} answerHeading="Response">
             {x.answer === "" ? (
               <VStack spacing={4} align="stretch" className="w-full">
-                <Text fontSize="xs" fontWeight={600} className="uppercase tracking-wide text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60">
+                <Text fontSize="xs" fontWeight={600} className="uppercase tracking-wide text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">
                   Your response
                 </Text>
                 {(x.type === "Activity Verification" || x.type === "Communication Channel") ? (
@@ -76,7 +76,7 @@ export function TicketsTeam() {
                         variant="outline"
                         className={
                           optSelected(opt, i)
-                            ? "border-[#1F6A5C] text-[#1F6A5C] dark:border-[#50BFA0] dark:text-[#50BFA0]"
+                            ? "border-[#1F6A5C] text-[#1F6A5C] dark:border-[#50BFA0] dark:text-[#F4F3F4]/55"
                             : "border-[#1F6A5C]/20 dark:border-white/20"
                         }
                         onClick={() => {
@@ -108,7 +108,7 @@ export function TicketsTeam() {
                       variant="outline"
                       className={
                         optSelected("Acknowledged", i)
-                          ? "border-[#1F6A5C] text-[#1F6A5C] dark:border-[#50BFA0] dark:text-[#50BFA0]"
+                          ? "border-[#1F6A5C] text-[#1F6A5C] dark:border-[#50BFA0] dark:text-[#F4F3F4]/55"
                           : "border-[#1F6A5C]/20 dark:border-white/20"
                       }
                       onClick={() => {
@@ -135,7 +135,7 @@ export function TicketsTeam() {
               </VStack>
             ) : (
               <VStack spacing={2} align="stretch" className="w-full">
-                <Text fontSize="xs" fontWeight={600} className="uppercase tracking-wide text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60">
+                <Text fontSize="xs" fontWeight={600} className="uppercase tracking-wide text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">
                   Your answer
                 </Text>
                 <Text fontSize="sm" className="text-[#103E36] dark:text-[#F4F3F4]/80 whitespace-pre-wrap leading-relaxed">

@@ -72,7 +72,7 @@ export default function NotificationsPage() {
                           {n.ticketId != null && Number.isFinite(Number(n.ticketId)) ? (
                             <Link
                               href={`/tickets/${n.ticketId}`}
-                              className="text-sm font-medium text-[#1F6A5C] dark:text-[#50BFA0] hover:underline"
+                              className="text-sm font-medium text-[#1F6A5C] dark:text-[#F4F3F4]/55 hover:underline"
                             >
                               {t("notifications.openTicket")} →
                             </Link>
@@ -80,7 +80,7 @@ export default function NotificationsPage() {
                           {n.reportId ? (
                             <Link
                               href="/report"
-                              className="text-sm font-medium text-[#1F6A5C] dark:text-[#50BFA0] hover:underline"
+                              className="text-sm font-medium text-[#1F6A5C] dark:text-[#F4F3F4]/55 hover:underline"
                             >
                               {t("notifications.openReport")} →
                             </Link>

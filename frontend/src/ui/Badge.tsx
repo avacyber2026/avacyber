@@ -30,7 +30,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
       brand: "bg-brand-primary/20 text-brand-primary dark:bg-brand-primary/30 dark:text-brand-primaryLight",
     };
     const outlineMap: Record<string, string> = {
-      gray: "border border-[#1F6A5C]/25 dark:border-[#1F6A5C]/60 text-[#103E36] dark:text-[#F4F3F4]/65",
+      gray: "border border-[#1F6A5C]/25 dark:border-white/10 text-[#103E36] dark:text-[#F4F3F4]/65",
       green: "border border-green-300 dark:border-green-600 text-green-700 dark:text-green-300",
       red: "border border-red-300 dark:border-red-600 text-red-700 dark:text-red-300",
       blue: "border border-blue-300 dark:border-blue-600 text-blue-700 dark:text-blue-300",

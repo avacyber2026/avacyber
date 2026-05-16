@@ -116,7 +116,7 @@ export function GlobalSearchBar({ embedded = false }: { embedded?: boolean }) {
       <div className="w-full relative">
         <FiSearch
           size={embedded ? 16 : 14}
-          className={`absolute left-1 top-1/2 -translate-y-1/2 pointer-events-none ${embedded ? "text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60" : "text-[#1F6A5C]/60"}`}
+          className={`absolute left-1 top-1/2 -translate-y-1/2 pointer-events-none ${embedded ? "text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45" : "text-[#1F6A5C]/60"}`}
         />
         <input
           type="text"
@@ -162,7 +162,7 @@ export function GlobalSearchBar({ embedded = false }: { embedded?: boolean }) {
                         {r.type === "report" ? "Report" : "Ticket"}
                       </Badge>
                     </HStack>
-                    {r.subtitle && <Text className="text-xs text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 line-clamp-2">{r.subtitle}</Text>}
+                    {r.subtitle && <Text className="text-xs text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 line-clamp-2">{r.subtitle}</Text>}
                     <Text className="text-xs text-[#1F6A5C]/60 mt-1">ID: {r.id}</Text>
                   </Box>
                 ))}

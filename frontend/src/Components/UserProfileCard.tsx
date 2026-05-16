@@ -61,12 +61,12 @@ export function UserProfileCard({
             {email}
           </Text>
           {nameLine ? (
-            <Text fontSize="xs" className="text-[#1F6A5C] dark:text-[#1F6A5C]/60">
+            <Text fontSize="xs" className="text-[#1F6A5C] dark:text-[#F4F3F4]/45">
               {nameLine}
             </Text>
           ) : null}
           {(jobTitle || department) ? (
-            <Text fontSize="xs" className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/70 noOfLines={2}">
+            <Text fontSize="xs" className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/55 noOfLines={2}">
               {[jobTitle, department].filter(Boolean).join(" · ")}
             </Text>
           ) : null}
@@ -89,7 +89,7 @@ export function UserProfileCard({
             )}
           </HStack>
           {rejectionComment != null && rejectionComment !== "" && (
-            <Text fontSize="xs" noOfLines={2} className="text-[#1F6A5C] dark:text-[#1F6A5C]/60 mt-1">
+            <Text fontSize="xs" noOfLines={2} className="text-[#1F6A5C] dark:text-[#F4F3F4]/45 mt-1">
               {rejectionComment}
             </Text>
           )}

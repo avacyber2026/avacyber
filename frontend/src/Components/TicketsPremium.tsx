@@ -292,7 +292,7 @@ export function TicketsPremium({ onlyLog = false }: TicketsPremiumProps = {}) {
           <Text fontSize="sm" fontWeight={600} className="mb-3">{t("report.filters")}</Text>
           <Wrap spacing={3}>
             <WrapItem>
-              <Text as="span" fontSize="sm" className="mr-2 self-center text-[#1F6A5C] dark:text-[#1F6A5C]/60 shrink-0">{t("report.presets")}</Text>
+              <Text as="span" fontSize="sm" className="mr-2 self-center text-[#1F6A5C] dark:text-[#F4F3F4]/45 shrink-0">{t("report.presets")}</Text>
               <Select
                 size="sm"
                 className="w-full sm:w-[130px] min-w-0"
@@ -302,7 +302,7 @@ export function TicketsPremium({ onlyLog = false }: TicketsPremiumProps = {}) {
               />
             </WrapItem>
             <WrapItem>
-              <Text as="span" fontSize="sm" className="mr-2 self-center text-[#1F6A5C] dark:text-[#1F6A5C]/60 shrink-0">{t("admin.createdFrom")}</Text>
+              <Text as="span" fontSize="sm" className="mr-2 self-center text-[#1F6A5C] dark:text-[#F4F3F4]/45 shrink-0">{t("admin.createdFrom")}</Text>
               <Input
                 type="date"
                 size="sm"
@@ -312,7 +312,7 @@ export function TicketsPremium({ onlyLog = false }: TicketsPremiumProps = {}) {
               />
             </WrapItem>
             <WrapItem>
-              <Text as="span" fontSize="sm" className="mr-2 self-center text-[#1F6A5C] dark:text-[#1F6A5C]/60 shrink-0">{t("admin.createdTo")}</Text>
+              <Text as="span" fontSize="sm" className="mr-2 self-center text-[#1F6A5C] dark:text-[#F4F3F4]/45 shrink-0">{t("admin.createdTo")}</Text>
               <Input
                 type="date"
                 size="sm"
@@ -359,7 +359,7 @@ export function TicketsPremium({ onlyLog = false }: TicketsPremiumProps = {}) {
             </WrapItem>
           </Wrap>
           {totalIncidents > 0 && (
-            <Text fontSize="xs" className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mt-2">
+            <Text fontSize="xs" className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mt-2">
               Showing {(incidentPage - 1) * INCIDENTS_PER_PAGE + 1}–{Math.min(incidentPage * INCIDENTS_PER_PAGE, totalIncidents)} of {totalIncidents} incident{totalIncidents !== 1 ? "s" : ""}
             </Text>
           )}
@@ -379,7 +379,7 @@ export function TicketsPremium({ onlyLog = false }: TicketsPremiumProps = {}) {
         {fetching ? (
           <Text className="py-4">Loading...</Text>
         ) : totalIncidents === 0 ? (
-          <Text className="py-4 text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60">No incidents found.</Text>
+          <Text className="py-4 text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">No incidents found.</Text>
         ) : (
           <>
           {paginatedTickets.map((x, idx) => (
@@ -521,7 +521,7 @@ export function TicketsPremium({ onlyLog = false }: TicketsPremiumProps = {}) {
                   maxLength={255}
                   autoComplete="off"
                 />
-                <Text fontSize="xs" className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mb-1 text-left">
+                <Text fontSize="xs" className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mb-1 text-left">
                   {t("tickets.siemAlertIdHint")}
                 </Text>
               </>
@@ -638,7 +638,7 @@ export function TicketsPremium({ onlyLog = false }: TicketsPremiumProps = {}) {
                     <Box
                       className="p-4 bg-white dark:bg-[#1E2128] rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 shadow-sm hover:shadow-md"
                     >
-                      <Text fontSize="sm" className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mb-1">{label}</Text>
+                      <Text fontSize="sm" className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mb-1">{label}</Text>
                       <Text fontSize="2xl" fontWeight={700} className="mb-2">{analyticsStats[label]}</Text>
                       <Progress
                         value={analyticsMaxTeam ? (analyticsStats[label] / analyticsMaxTeam) * 100 : 0}

@@ -236,7 +236,7 @@ export function EndUserCombobox({
             <div className="px-2 pb-2 shrink-0 border-b border-[#1F6A5C]/20 dark:border-white/10">
               <div className="relative">
                 <FiSearch
-                  className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#1F6A5C]/60 dark:text-[#1F6A5C]/70 pointer-events-none"
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#1F6A5C]/60 dark:text-[#F4F3F4]/55 pointer-events-none"
                   size={16}
                   aria-hidden
                 />
@@ -282,7 +282,7 @@ export function EndUserCombobox({
                       className={[
                         "flex w-full items-center rounded-lg px-3 py-2.5 text-left text-sm font-medium truncate transition-colors duration-150",
                         isHi
-                          ? "bg-[#1F6A5C]/10 text-[#0d4f42] dark:bg-[#50BFA0]/12 dark:text-[#a5e8d4]"
+                          ? "bg-[#1F6A5C]/10 text-[#0d4f42] dark:bg-white/[0.05] dark:text-[#F4F3F4]/55"
                           : "text-[#103E36] dark:text-[#F4F3F4]/80",
                         "hover:bg-[#F4F3F4]/90 dark:hover:bg-white/[0.07]",
                         isSel && !isHi ? "bg-[#F4F3F4]/50 dark:bg-white/[0.04]" : "",
@@ -332,7 +332,7 @@ export function EndUserCombobox({
         <motion.span
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="shrink-0 text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60"
+          className="shrink-0 text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45"
         >
           <IoChevronDown size={18} aria-hidden />
         </motion.span>
