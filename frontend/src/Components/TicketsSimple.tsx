@@ -94,7 +94,7 @@ function sevColor(sev: string) {
   if (s === "critical") return "text-red-500";
   if (s === "high") return "text-orange-400";
   if (s === "medium") return "text-amber-400";
-  return "text-[#1F6A5C]/60";
+  return "text-[#F4F3F4]/45 dark:text-[#F4F3F4]/45";
 }
 
 function normalizeTicketRow(t: Record<string, unknown>): Ticket {
@@ -288,10 +288,10 @@ export function TicketsSimple() {
 
   // ── UI helpers ─────────────────────────────────────────────────────────────
 
-  const card = "rounded-xl border border-white/60 dark:border-[#103E36] bg-white/80 dark:bg-[#1E2128] shadow-sm";
+  const card = "rounded-xl border border-white/60 dark:border-white/8 bg-white/80 dark:bg-[#1E2128] shadow-sm";
 
   if (loading) return (
-    <div className="flex items-center justify-center py-20 text-[#1F6A5C]/60">
+    <div className="flex items-center justify-center py-20 text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45">
       <span className="w-5 h-5 border-2 border-[#1F6A5C]/25 border-t-slate-600 rounded-full animate-spin mr-3" />
       Loading…
     </div>
@@ -310,7 +310,7 @@ export function TicketsSimple() {
             <h1 className="text-2xl font-bold text-[#1C1E1C] dark:text-white">
               Hi{firstName ? `, ${firstName}` : ""}!
             </h1>
-            <p className="text-sm text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mt-0.5">
+            <p className="text-sm text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 mt-0.5">
               Report security concerns or respond to requests from the security team.
             </p>
           </div>
@@ -332,7 +332,7 @@ export function TicketsSimple() {
             </div>
             <div className="space-y-3">
               {fromSocItems.map(x => (
-                <div key={x.id} className="rounded-lg bg-white dark:bg-[#1c1e1c] border border-white/60 dark:border-[#103E36] p-4">
+                <div key={x.id} className="rounded-lg bg-white dark:bg-[#1c1e1c] border border-white/60 dark:border-white/8 p-4">
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-8 h-8 rounded-lg bg-[#1F6A5C]/10 dark:bg-white/[0.05] flex items-center justify-center shrink-0 mt-0.5">
                       {x.type === "Activity Verification" ? <MdOutlineVerified size={16} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" /> :
@@ -341,7 +341,7 @@ export function TicketsSimple() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                        <span className="text-xs font-bold uppercase tracking-wide text-[#1F6A5C]/60 dark:text-[#F4F3F4]/55">
+                        <span className="text-xs font-bold uppercase tracking-wide text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 dark:text-[#F4F3F4]/55">
                           {x.type === "Activity Verification" ? "Activity Verification" :
                            x.type === "Security Announcement" ? "Security Announcement" : "Request from Security Team"}
                         </span>
@@ -359,7 +359,7 @@ export function TicketsSimple() {
                           className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
                             idTicket === x.id && answer === value
                               ? "bg-[#1F6A5C] border-[#1F6A5C] text-white"
-                              : "border-white/60 dark:border-[#103E36] text-[#1F6A5C] dark:text-[#F4F3F4]/60 hover:border-[#1F6A5C]/50"
+                              : "border-white/60 dark:border-white/8 text-[#1F6A5C] dark:text-[#F4F3F4]/60 hover:border-[#1F6A5C]/50"
                           }`}>
                           {label}
                         </button>
@@ -376,7 +376,7 @@ export function TicketsSimple() {
                         className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
                           idTicket === x.id && answer === "Acknowledged"
                             ? "bg-[#1F6A5C] border-[#1F6A5C] text-white"
-                            : "border-white/60 dark:border-[#103E36] text-[#1F6A5C] dark:text-[#F4F3F4]/60"
+                            : "border-white/60 dark:border-white/8 text-[#1F6A5C] dark:text-[#F4F3F4]/60"
                         }`}>
                         Acknowledge
                       </button>
@@ -396,14 +396,14 @@ export function TicketsSimple() {
         <div>
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-bold text-[#103E36] dark:text-[#F4F3F4]/60 uppercase tracking-wide">
-              My Reports {myReportItems.length > 0 && <span className="text-[#1F6A5C]/60 font-normal normal-case tracking-normal">({myReportItems.length})</span>}
+              My Reports {myReportItems.length > 0 && <span className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 font-normal normal-case tracking-normal">({myReportItems.length})</span>}
             </h2>
           </div>
           {myReportItems.length === 0 ? (
-            <div className={`${card} p-8 flex flex-col items-center text-center text-[#1F6A5C]/60`}>
+            <div className={`${card} p-8 flex flex-col items-center text-center text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45`}>
               <IoBugOutline size={32} className="mb-2 opacity-40" />
-              <p className="text-sm font-medium text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">No reports yet</p>
-              <p className="text-xs text-[#1F6A5C]/60 dark:text-[#F4F3F4]/55 mt-1">Click "Report Incident" to submit your first security concern.</p>
+              <p className="text-sm font-medium text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45">No reports yet</p>
+              <p className="text-xs text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 dark:text-[#F4F3F4]/55 mt-1">Click "Report Incident" to submit your first security concern.</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -416,7 +416,7 @@ export function TicketsSimple() {
                     onClick={() => router.push("/report")}
                     className={`${card} p-4 cursor-pointer hover:border-[#1F6A5C]/30 transition-colors`}>
                     <div className="flex items-start gap-3">
-                      <div className="w-9 h-9 rounded-lg bg-[#F4F3F4] dark:bg-[#1c1e1c] flex items-center justify-center text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 shrink-0">
+                      <div className="w-9 h-9 rounded-lg bg-[#F4F3F4] dark:bg-[#1c1e1c] flex items-center justify-center text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 shrink-0">
                         {cat.icon}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -428,13 +428,13 @@ export function TicketsSimple() {
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 truncate">{String(r.description || "").slice(0, 100)}</p>
+                        <p className="text-xs text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 truncate">{String(r.description || "").slice(0, 100)}</p>
                       </div>
                       <div className="text-right shrink-0">
                         <span className={`text-xs px-2 py-0.5 rounded-full border font-semibold ${isResolved ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/25" : "text-sky-400 bg-sky-400/10 border-sky-400/25"}`}>
                           {isResolved ? "Resolved" : pipelineStatus.replace(/_/g, " ")}
                         </span>
-                        <p className="text-xs text-[#1F6A5C]/60 mt-1">{formatRelativeTime(r.createdAt, locale)}</p>
+                        <p className="text-xs text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mt-1">{formatRelativeTime(r.createdAt, locale)}</p>
                       </div>
                     </div>
                   </motion.div>
@@ -459,9 +459,9 @@ export function TicketsSimple() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-[#103E36] dark:text-[#F4F3F4]/60 truncate">{x.title}</p>
-                      <p className="text-xs text-[#1F6A5C]/60">Your response: <span className="font-semibold text-emerald-500">{x.answer}</span></p>
+                      <p className="text-xs text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45">Your response: <span className="font-semibold text-emerald-500">{x.answer}</span></p>
                     </div>
-                    <span className="text-xs text-[#1F6A5C]/60">{formatRelativeTime(x.createdAt, locale)}</span>
+                    <span className="text-xs text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45">{formatRelativeTime(x.createdAt, locale)}</span>
                   </div>
                 </div>
               ))}
@@ -486,11 +486,11 @@ export function TicketsSimple() {
         <div className="flex items-center gap-4 flex-wrap">
           <div>
             <h1 className="text-2xl font-bold text-[#1C1E1C] dark:text-white">Comms</h1>
-            <p className="text-sm text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mt-0.5">Incoming reports and team communications</p>
+            <p className="text-sm text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 mt-0.5">Incoming reports and team communications</p>
           </div>
           {/* Stats */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/60 dark:bg-[#1E2128] border border-white/60 dark:border-[#103E36]">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/60 dark:bg-[#1E2128] border border-white/60 dark:border-white/8">
               <span className="w-2 h-2 rounded-full bg-sky-400" />
               <span className="text-sm font-semibold text-[#103E36] dark:text-[#F4F3F4]/80">{openCount} open</span>
             </div>
@@ -511,7 +511,7 @@ export function TicketsSimple() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-0 border-b border-[#1F6A5C]/20 dark:border-[#103E36]">
+      <div className="flex gap-0 border-b border-[#1F6A5C]/20 dark:border-white/8">
         {([
           { key: "all", label: "All", count: ticketRows.length },
           { key: "from_users", label: "From Users", count: fromUserRows.length },
@@ -522,12 +522,12 @@ export function TicketsSimple() {
             className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px transition-all ${
               socTab === tab.key
                 ? "border-[#1F6A5C] text-[#1F6A5C] dark:text-[#F4F3F4]/55"
-                : "border-transparent text-[#1F6A5C]/60 dark:text-[#F4F3F4]/55 hover:text-[#103E36] dark:hover:text-[#F4F3F4]/60"
+                : "border-transparent text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 dark:text-[#F4F3F4]/55 hover:text-[#103E36] dark:hover:text-[#F4F3F4]/60"
             }`}>
             {tab.label}
             {tab.count > 0 && (
               <span className={`text-xs px-1.5 py-0.5 rounded-full font-bold ${
-                socTab === tab.key ? "bg-[#1F6A5C]/15 text-[#1F6A5C] dark:text-[#F4F3F4]/55" : "bg-[#F4F3F4] dark:bg-[#1E2128] text-[#1F6A5C]/60"
+                socTab === tab.key ? "bg-[#1F6A5C]/15 text-[#1F6A5C] dark:text-[#F4F3F4]/55" : "bg-[#F4F3F4] dark:bg-[#1E2128] text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45"
               }`}>{tab.count}</span>
             )}
           </button>
@@ -536,12 +536,12 @@ export function TicketsSimple() {
 
       {/* Search */}
       <div className="relative max-w-sm">
-        <FiSearch size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#1F6A5C]/60 pointer-events-none" />
+        <FiSearch size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 pointer-events-none" />
         <input
           placeholder="Search…"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="pl-9 pr-3 py-2 w-full rounded-lg text-sm border border-white/60 dark:border-[#103E36] bg-white/60 dark:bg-[#1E2128] text-[#103E36] dark:text-[#F4F3F4]/80 placeholder:text-[#1F6A5C]/60 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40"
+          className="pl-9 pr-3 py-2 w-full rounded-lg text-sm border border-white/60 dark:border-white/8 bg-white/60 dark:bg-[#1E2128] text-[#103E36] dark:text-[#F4F3F4]/80 placeholder:text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40"
         />
       </div>
 
@@ -549,13 +549,13 @@ export function TicketsSimple() {
       {socFilteredRows.length === 0 ? (
         <div className={`${card} p-12 flex flex-col items-center text-center`}>
           <MdOutlineShield size={36} className="mb-3 text-[#F4F3F4]/80 dark:text-[#F4F3F4]/65" />
-          <p className="text-sm font-medium text-[#1F6A5C]/70">
+          <p className="text-sm font-medium text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55">
             {socTab === "from_users" ? "No reports from users yet" :
              socTab === "sent_to_users" ? "No requests sent to users yet" :
              socTab === "team_comms" ? "No comms yet" :
              "No requests found"}
           </p>
-          <p className="text-xs mt-1 text-[#1F6A5C]/60 dark:text-[#F4F3F4]/65">
+          <p className="text-xs mt-1 text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 dark:text-[#F4F3F4]/65">
             {socTab === "sent_to_users" ? 'Click "Send Request" to send an activity verification or announcement.' : ""}
           </p>
         </div>
@@ -581,18 +581,18 @@ export function TicketsSimple() {
                   </div>
                 )}
                 <div className="flex items-start gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-[#F4F3F4] dark:bg-[#1c1e1c] flex items-center justify-center text-[#1F6A5C]/60 shrink-0">
+                  <div className="w-9 h-9 rounded-lg bg-[#F4F3F4] dark:bg-[#1c1e1c] flex items-center justify-center text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 shrink-0">
                     {x.type === "Activity Verification" ? <MdOutlineVerified size={17} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" /> :
                      x.type === "Security Announcement" ? <MdOutlineMarkEmailRead size={17} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" /> :
                      cat.icon}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                      <span className="text-xs font-bold uppercase tracking-wide text-[#1F6A5C]/60 dark:text-[#F4F3F4]/55">{x.type || "Incident"}</span>
+                      <span className="text-xs font-bold uppercase tracking-wide text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 dark:text-[#F4F3F4]/55">{x.type || "Incident"}</span>
                       {x.priority && <span className={`text-xs px-1.5 py-0.5 rounded border font-semibold capitalize ${priorityColor(x.priority)}`}>{x.priority}</span>}
                     </div>
                     <p className="text-sm font-semibold text-[#1C1E1C] dark:text-white truncate">{x.title}</p>
-                    <p className="text-xs text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 truncate mt-0.5">
+                    <p className="text-xs text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 truncate mt-0.5">
                       {x.fromUser && <span className="mr-2 font-mono">{x.fromUser}</span>}
                       {x.text?.slice(0, 80)}{(x.text?.length ?? 0) > 80 ? "…" : ""}
                     </p>
@@ -600,9 +600,9 @@ export function TicketsSimple() {
                   </div>
                   <div className="text-right shrink-0">
                     <span className={`text-xs px-2 py-0.5 rounded-full border font-semibold ${st.cls}`}>{st.label}</span>
-                    <p className="text-xs text-[#1F6A5C]/60 mt-1">{formatRelativeTime(x.createdAt, locale)}</p>
+                    <p className="text-xs text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mt-1">{formatRelativeTime(x.createdAt, locale)}</p>
                     {(x.attachmentCount ?? 0) > 0 && (
-                      <span className="text-xs text-[#1F6A5C]/60 flex items-center gap-0.5 justify-end mt-0.5">
+                      <span className="text-xs text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 flex items-center gap-0.5 justify-end mt-0.5">
                         <IoAttachOutline size={12} />{x.attachmentCount}
                       </span>
                     )}

@@ -236,7 +236,7 @@ export function EndUserCombobox({
             <div className="px-2 pb-2 shrink-0 border-b border-[#1F6A5C]/20 dark:border-white/10">
               <div className="relative">
                 <FiSearch
-                  className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#1F6A5C]/60 dark:text-[#F4F3F4]/55 pointer-events-none"
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 dark:text-[#F4F3F4]/55 pointer-events-none"
                   size={16}
                   aria-hidden
                 />
@@ -249,7 +249,7 @@ export function EndUserCombobox({
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={onKeySearch}
                   placeholder={searchPlaceholder}
-                  className="w-full rounded-lg border border-[#1F6A5C]/20 dark:border-white/15 bg-white dark:bg-[#1E2128] pl-9 pr-3 py-2 text-sm text-[#1C1E1C] dark:text-[#F4F3F4] placeholder:text-[#1F6A5C]/60 dark:placeholder:text-[#1F6A5C]/70 focus:outline-none focus:ring-2 focus:ring-brand-primary/60"
+                  className="w-full rounded-lg border border-[#1F6A5C]/20 dark:border-white/15 bg-white dark:bg-[#1E2128] pl-9 pr-3 py-2 text-sm text-[#1C1E1C] dark:text-[#F4F3F4] placeholder:text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 dark:placeholder:text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 focus:outline-none focus:ring-2 focus:ring-brand-primary/60"
                   autoComplete="off"
                   autoCorrect="off"
                   spellCheck={false}
@@ -261,11 +261,11 @@ export function EndUserCombobox({
               style={{ maxHeight: maxResultsHeight }}
             >
               {loading ? (
-                <div className="px-3 py-4 text-sm text-[#1F6A5C]/70 text-center">…</div>
+                <div className="px-3 py-4 text-sm text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 text-center">…</div>
               ) : users.length === 0 ? (
-                <div className="px-3 py-4 text-sm text-[#1F6A5C]/70 text-center">{emptyListMessage}</div>
+                <div className="px-3 py-4 text-sm text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 text-center">{emptyListMessage}</div>
               ) : filtered.length === 0 ? (
-                <div className="px-3 py-4 text-sm text-[#1F6A5C]/70 text-center">{noMatchMessage}</div>
+                <div className="px-3 py-4 text-sm text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 text-center">{noMatchMessage}</div>
               ) : (
                 filtered.map((u, idx) => {
                   const label = endUserPickerLabelOrFallback(u, "—");
@@ -332,7 +332,7 @@ export function EndUserCombobox({
         <motion.span
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="shrink-0 text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45"
+          className="shrink-0 text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45"
         >
           <IoChevronDown size={18} aria-hidden />
         </motion.span>

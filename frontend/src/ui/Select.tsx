@@ -279,7 +279,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
                 return (
                   <div
                     key={opt.value}
-                    className="px-3 py-2 text-sm text-[#1F6A5C]/60 dark:text-[#F4F3F4]/55 cursor-default"
+                    className="px-3 py-2 text-sm text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 dark:text-[#F4F3F4]/55 cursor-default"
                   >
                     {opt.label}
                   </div>
@@ -352,7 +352,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
         <motion.span
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-          className="shrink-0 text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 group-hover:text-[#103E36] dark:group-hover:text-[#F4F3F4]/80"
+          className="shrink-0 text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 group-hover:text-[#103E36] dark:group-hover:text-[#F4F3F4]/80"
         >
           <IoChevronDown size={18} aria-hidden />
         </motion.span>

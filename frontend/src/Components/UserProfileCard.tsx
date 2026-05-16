@@ -54,7 +54,7 @@ export function UserProfileCard({
     >
       <HStack spacing={3} align="start">
         <Box className="w-10 h-10 rounded-full bg-[#F4F3F4] dark:bg-[#1F6A5C] flex items-center justify-center shrink-0">
-          <Icon as={FaUser} boxSize={5} className="text-[#1F6A5C]/70" />
+          <Icon as={FaUser} boxSize={5} className="text-[#F4F3F4]/55 dark:text-[#F4F3F4]/55" />
         </Box>
         <VStack align="stretch" spacing={1} className="flex-1 min-w-0">
           <Text fontSize="sm" fontWeight={600} noOfLines={1}>
@@ -66,7 +66,7 @@ export function UserProfileCard({
             </Text>
           ) : null}
           {(jobTitle || department) ? (
-            <Text fontSize="xs" className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/55 noOfLines={2}">
+            <Text fontSize="xs" className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/55 noOfLines={2}">
               {[jobTitle, department].filter(Boolean).join(" · ")}
             </Text>
           ) : null}
@@ -83,7 +83,7 @@ export function UserProfileCard({
                 options={roleOptions.map((r) => ({ value: r, label: r }))}
               />
             ) : (
-              <Text fontSize="xs" className="text-[#1F6A5C]/70">
+              <Text fontSize="xs" className="text-[#F4F3F4]/55 dark:text-[#F4F3F4]/55">
                 {role}
               </Text>
             )}

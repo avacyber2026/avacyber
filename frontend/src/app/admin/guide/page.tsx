@@ -223,9 +223,9 @@ export default function AdminGuidePage() {
 
           <div className="rounded-xl border border-[#1F6A5C]/20 dark:border-white/15 bg-white dark:bg-[#1E2128] overflow-hidden">
             {loading ? (
-              <Text className="p-8 text-[#1F6A5C]/70">{t("common.loading")}</Text>
+              <Text className="p-8 text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55">{t("common.loading")}</Text>
             ) : articles.length === 0 ? (
-              <Text className="p-8 text-[#1F6A5C]/70">{t("admin.guideEmptyList")}</Text>
+              <Text className="p-8 text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55">{t("admin.guideEmptyList")}</Text>
             ) : (
               <TableContainer>
                 <Table>

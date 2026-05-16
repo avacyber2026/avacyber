@@ -89,7 +89,7 @@ function UserGrid({
   t: (key: string) => string;
 }) {
   if (loading) return <Text className="py-4">{t("common.loading")}</Text>;
-  if (users.length === 0) return <Text className="py-4 text-[#1F6A5C]/70">{t("admin.noUsersInCategory")}</Text>;
+  if (users.length === 0) return <Text className="py-4 text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55">{t("admin.noUsersInCategory")}</Text>;
   return (
     <SimpleGrid columns={3} spacing={4} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4">
       {users.map((u) => (
@@ -434,7 +434,7 @@ export default function AdminUsersPage() {
                     placeholder="manager@company.com"
                     className="w-full"
                   />
-                  <Text className="text-xs text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mt-1">{t("admin.managerEmailHint")}</Text>
+                  <Text className="text-xs text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 mt-1">{t("admin.managerEmailHint")}</Text>
                 </div>
                 <div>
                   <Text className="text-xs font-semibold mb-2 text-[#1F6A5C] dark:text-[#F4F3F4]/45">{t("profile.avatarUrl")}</Text>
@@ -481,7 +481,7 @@ export default function AdminUsersPage() {
                           </Button>
                         ) : null}
                       </HStack>
-                      <Text className="text-xs text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">{t("admin.avatarUrlOrUploadHint")}</Text>
+                      <Text className="text-xs text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45">{t("admin.avatarUrlOrUploadHint")}</Text>
                       <Input
                         value={editUserDraft.avatarUrl}
                         onChange={(e) => setEditUserDraft((d) => (d ? { ...d, avatarUrl: e.target.value } : d))}

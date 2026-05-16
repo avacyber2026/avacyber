@@ -210,11 +210,11 @@ export function IncidentTimeline({ ticketId, composerName }: IncidentTimelinePro
             onChange={(e) => setDraft(e.target.value)}
             placeholder={t("tickets.incidentThreadPlaceholder")}
             rows={3}
-            className="w-full rounded-xl border border-[#1F6A5C]/20 dark:border-white/15 bg-white dark:bg-[#1C1E1C] text-[#1C1E1C] dark:text-[#F4F3F4] placeholder:text-[#1F6A5C]/70 pr-11 py-3 resize-y min-h-[88px]"
+            className="w-full rounded-xl border border-[#1F6A5C]/20 dark:border-white/15 bg-white dark:bg-[#1C1E1C] text-[#1C1E1C] dark:text-[#F4F3F4] placeholder:text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 pr-11 py-3 resize-y min-h-[88px]"
           />
           <button
             type="button"
-            className="absolute right-3 top-3 p-1 rounded-md text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 hover:text-[#103E36] dark:hover:text-[#F4F3F4]/80 hover:bg-[#F4F3F4] dark:hover:bg-white/5 cursor-pointer"
+            className="absolute right-3 top-3 p-1 rounded-md text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 hover:text-[#103E36] dark:hover:text-[#F4F3F4]/80 hover:bg-[#F4F3F4] dark:hover:bg-white/5 cursor-pointer"
             aria-label={t("tickets.incidentThreadAttach")}
             title={t("tickets.incidentThreadAttach")}
             onClick={() => fileInputRef.current?.click()}
@@ -233,7 +233,7 @@ export function IncidentTimeline({ ticketId, composerName }: IncidentTimelinePro
                   </span>
                   <button
                     type="button"
-                    className="shrink-0 text-[#1F6A5C]/70 hover:text-red-600 dark:hover:text-red-400"
+                    className="shrink-0 text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 hover:text-red-600 dark:hover:text-red-400"
                     aria-label={`Remove ${f.name}`}
                     onClick={() => setPendingFiles((prev) => prev.filter((_, j) => j !== i))}
                   >
@@ -256,9 +256,9 @@ export function IncidentTimeline({ ticketId, composerName }: IncidentTimelinePro
       </HStack>
 
       {loading ? (
-        <Text className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 text-sm">{t("common.loading")}</Text>
+        <Text className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 text-sm">{t("common.loading")}</Text>
       ) : entries.length === 0 ? (
-        <Text className="text-[#1F6A5C]/70 text-sm">{t("tickets.incidentThreadEmpty")}</Text>
+        <Text className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 text-sm">{t("tickets.incidentThreadEmpty")}</Text>
       ) : (
         <div className="relative">
           <div className="absolute left-[19px] top-8 bottom-8 w-px bg-[#50BFA0]/25 dark:bg-white/[0.06]" aria-hidden />
@@ -278,7 +278,7 @@ export function IncidentTimeline({ ticketId, composerName }: IncidentTimelinePro
                       <Text fontWeight={600} className="text-[#1C1E1C] dark:text-white text-sm truncate">
                         {label}
                       </Text>
-                      <Text fontSize="xs" className="text-[#1F6A5C]/70 shrink-0 whitespace-nowrap">
+                      <Text fontSize="xs" className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 shrink-0 whitespace-nowrap">
                         {formatWhen(e.createdAt, locale)}
                       </Text>
                     </HStack>

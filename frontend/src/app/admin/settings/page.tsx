@@ -78,14 +78,14 @@ export default function AdminSettingsPage() {
   if (isAdmin === null) {
     return (
       <VStack className="w-full min-h-screen justify-center items-center bg-[#F4F3F4] dark:bg-[#1C1E1C]">
-        <Text className="text-[#1F6A5C]/70">{t("common.loading")}</Text>
+        <Text className="text-[#F4F3F4]/55 dark:text-[#F4F3F4]/55">{t("common.loading")}</Text>
       </VStack>
     );
   }
   if (!isAdmin) {
     return (
       <VStack className="w-full min-h-screen justify-center items-center bg-[#F4F3F4] dark:bg-[#1C1E1C]">
-        <Text className="text-[#1F6A5C]/70">{t("admin.redirectingLogin")}</Text>
+        <Text className="text-[#F4F3F4]/55 dark:text-[#F4F3F4]/55">{t("admin.redirectingLogin")}</Text>
       </VStack>
     );
   }
@@ -100,14 +100,14 @@ export default function AdminSettingsPage() {
         <Divider className="border-[#1F6A5C]/20 dark:border-white/20 mb-6" />
 
         {loading ? (
-          <Text className="text-[#1F6A5C]/70">{t("common.loading")}</Text>
+          <Text className="text-[#F4F3F4]/55 dark:text-[#F4F3F4]/55">{t("common.loading")}</Text>
         ) : (
           <Box className="w-full max-w-[480px] p-6 rounded-lg bg-white dark:bg-[#1E2128] border border-[#1F6A5C]/20 dark:border-white/20">
             <FormControl className="mb-4">
               <FormLabel className="text-[#103E36] dark:text-[#F4F3F4]/65">
                 {t("admin.onCallPhone")}
               </FormLabel>
-              <Text fontSize="sm" className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mb-2">
+              <Text fontSize="sm" className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 mb-2">
                 {t("admin.onCallPhoneDesc")}
               </Text>
               <Input

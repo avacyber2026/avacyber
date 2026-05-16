@@ -329,14 +329,14 @@ export default function AdminRequestsPage() {
   if (isAdmin === null) {
     return (
       <VStack className="w-full min-h-screen justify-center items-center bg-[#F4F3F4] dark:bg-[#1C1E1C]">
-        <Text className="text-[#1F6A5C]/70">{t("common.loading")}</Text>
+        <Text className="text-[#F4F3F4]/55 dark:text-[#F4F3F4]/55">{t("common.loading")}</Text>
       </VStack>
     );
   }
   if (!isAdmin) {
     return (
       <VStack className="w-full min-h-screen justify-center items-center bg-[#F4F3F4] dark:bg-[#1C1E1C]">
-        <Text className="text-[#1F6A5C]/70">{t("admin.redirectingLogin")}</Text>
+        <Text className="text-[#F4F3F4]/55 dark:text-[#F4F3F4]/55">{t("admin.redirectingLogin")}</Text>
       </VStack>
     );
   }
@@ -358,7 +358,7 @@ export default function AdminRequestsPage() {
           <Flex direction="row" align="center" wrap="wrap" className="flex-col md:flex-row gap-3 flex-wrap items-stretch md:items-center">
             <InputGroup size="sm" className="w-full md:w-[220px] shrink-0">
               <InputLeftElement>
-                <FiSearch className="text-[#1F6A5C]/70" size={16} />
+                <FiSearch className="text-[#F4F3F4]/55 dark:text-[#F4F3F4]/55" size={16} />
               </InputLeftElement>
               <Input
                 placeholder={t("admin.searchPlaceholder")}
@@ -429,7 +429,7 @@ export default function AdminRequestsPage() {
             </Flex>
           </Flex>
           {totalIncidents > 0 && (
-            <Flex className="w-full justify-between items-center text-xs text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">
+            <Flex className="w-full justify-between items-center text-xs text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45">
               <span>
                 {t("admin.showingIncidents")
                 .replace("{from}", String((incidentPage - 1) * INCIDENTS_PER_PAGE + 1))
@@ -444,7 +444,7 @@ export default function AdminRequestsPage() {
         {loading ? (
           <Text className="py-4">{t("common.loading")}</Text>
         ) : totalIncidents === 0 ? (
-          <Text className="py-4 text-[#1F6A5C]/70">
+          <Text className="py-4 text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55">
             {t("admin.noIncidentsFound")}
           </Text>
         ) : (

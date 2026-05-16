@@ -12,23 +12,24 @@ body, button, input, textarea, select {
   letter-spacing: -0.01em;
 }
 
-/* ── Dark mode: GitHub-style white text hierarchy ──────────────────────────
-   Brand-colored text classes (green/teal) become neutral white in dark mode.
-   Explicit dark:text-[#3FFFA3] (mint) and dark:text-[#F4F3F4] classes remain
-   unaffected — they're applied as inline Tailwind utilities and have their own
-   dark: prefix selectors which Tailwind keeps separate from these overrides.
-   ────────────────────────────────────────────────────────────────────────── */
-.dark .text-\[\#1F6A5C\]   { color: rgba(244,243,244,0.55) }
-.dark .text-\[\#50BFA0\]   { color: rgba(244,243,244,0.50) }
-.dark .text-\[\#103E36\]   { color: rgba(244,243,244,0.55) }
-/* opacity variants */
-.dark [class*="text-[#1F6A5C]\/"] { color: rgba(244,243,244,0.45) }
-.dark [class*="text-[#50BFA0]\/"]  { color: rgba(244,243,244,0.45) }
-.dark [class*="text-[#103E36]\/"]  { color: rgba(244,243,244,0.45) }
-/* neutral dark bg tints → transparent white */
-.dark [class*="bg-[#1F6A5C]\/"]   { background-color: rgba(255,255,255,0.05) }
-.dark [class*="border-[#1F6A5C]\/"] { border-color: rgba(255,255,255,0.08) }
-.dark [class*="border-[#50BFA0]\/"] { border-color: rgba(255,255,255,0.08) }
+/* ── Dark mode: all brand green/teal text → white hierarchy ─────────────── */
+/* Exact class names */
+html.dark .text-\[\#1F6A5C\]  { color: rgba(244,243,244,0.55) !important }
+html.dark .text-\[\#50BFA0\]  { color: rgba(244,243,244,0.50) !important }
+html.dark .text-\[\#103E36\]  { color: rgba(244,243,244,0.55) !important }
+/* Opacity variant class names (e.g. text-[#1F6A5C]/60) */
+html.dark [class*="text-[#1F6A5C]"] { color: rgba(244,243,244,0.50) !important }
+html.dark [class*="text-[#50BFA0]"] { color: rgba(244,243,244,0.45) !important }
+html.dark [class*="text-[#103E36]"] { color: rgba(244,243,244,0.50) !important }
+/* Exception: mint highlights keep their color */
+html.dark [class*="text-[#3FFFA3]"] { color: #3FFFA3 !important }
+/* Neutral bg tints in dark */
+html.dark [class*="bg-[#1F6A5C]"]   { background-color: rgba(255,255,255,0.05) !important }
+html.dark [class*="bg-[#50BFA0]"]   { background-color: rgba(255,255,255,0.05) !important }
+html.dark [class*="border-[#1F6A5C]"] { border-color: rgba(255,255,255,0.08) !important }
+html.dark [class*="border-[#50BFA0]"] { border-color: rgba(255,255,255,0.08) !important }
+/* Gradient buttons keep their forest green — only plain bg-[#103E36] surfaces
+   are neutralised. These are fixed directly in the component files. */
 
 /* Side menu: hide scrollbars (scroll still works) */
 .app-sidebar-nav-scroll {

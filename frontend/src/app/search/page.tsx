@@ -106,7 +106,7 @@ function SearchPageContent() {
           <Divider className="mb-6 border-[#1F6A5C]/20 dark:border-white/20" />
           <form onSubmit={handleSearch} className="mb-6">
             <InputGroup size="lg" className="max-w-[400px]">
-              <InputLeftElement className="text-[#1F6A5C]/60 pointer-events-none">
+              <InputLeftElement className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 pointer-events-none">
                 <FiSearch size={18} />
               </InputLeftElement>
               <Input
@@ -118,7 +118,7 @@ function SearchPageContent() {
             </InputGroup>
           </form>
           {loading ? (
-            <Text className="text-[#1F6A5C]/70">{t("profile.loading")}</Text>
+            <Text className="text-[#F4F3F4]/55 dark:text-[#F4F3F4]/55">{t("profile.loading")}</Text>
           ) : results.length > 0 ? (
             <VStack align="stretch" spacing={3}>
               {results.map((r) => (
@@ -132,16 +132,16 @@ function SearchPageContent() {
                         {r.type === "report" ? "Report" : "Ticket"}
                       </Badge>
                     </HStack>
-                    {r.subtitle && <Text fontSize="sm" className="text-[#1F6A5C]/70 line-clamp-2">{r.subtitle}</Text>}
-                    <Text fontSize="xs" className="text-[#1F6A5C]/60">ID: {r.id}</Text>
+                    {r.subtitle && <Text fontSize="sm" className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 line-clamp-2">{r.subtitle}</Text>}
+                    <Text fontSize="xs" className="text-[#F4F3F4]/45 dark:text-[#F4F3F4]/45">ID: {r.id}</Text>
                   </Box>
                 </Link>
               ))}
             </VStack>
           ) : query.trim() ? (
-            <Text className="text-[#1F6A5C]/70">{t("common.noResults")}</Text>
+            <Text className="text-[#F4F3F4]/55 dark:text-[#F4F3F4]/55">{t("common.noResults")}</Text>
           ) : (
-            <Text className="text-[#1F6A5C]/70">{t("common.enterQuery")}</Text>
+            <Text className="text-[#F4F3F4]/55 dark:text-[#F4F3F4]/55">{t("common.enterQuery")}</Text>
           )}
         </Box>
       </VStack>
@@ -154,7 +154,7 @@ export default function SearchPage() {
     <Suspense fallback={
       <>
         <SideMenu />
-        <VStack className="w-full min-h-screen justify-center"><Text className="text-[#1F6A5C]/70">...</Text></VStack>
+        <VStack className="w-full min-h-screen justify-center"><Text className="text-[#F4F3F4]/55 dark:text-[#F4F3F4]/55">...</Text></VStack>
       </>
     }>
       <SearchPageContent />

@@ -63,7 +63,7 @@ export function TicketsTeam() {
           <IncidentLogCard key={x.id} ticket={x} index={i} answerHeading="Response">
             {x.answer === "" ? (
               <VStack spacing={4} align="stretch" className="w-full">
-                <Text fontSize="xs" fontWeight={600} className="uppercase tracking-wide text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">
+                <Text fontSize="xs" fontWeight={600} className="uppercase tracking-wide text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45">
                   Your response
                 </Text>
                 {(x.type === "Activity Verification" || x.type === "Communication Channel") ? (
@@ -135,7 +135,7 @@ export function TicketsTeam() {
               </VStack>
             ) : (
               <VStack spacing={2} align="stretch" className="w-full">
-                <Text fontSize="xs" fontWeight={600} className="uppercase tracking-wide text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">
+                <Text fontSize="xs" fontWeight={600} className="uppercase tracking-wide text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45">
                   Your answer
                 </Text>
                 <Text fontSize="sm" className="text-[#103E36] dark:text-[#F4F3F4]/80 whitespace-pre-wrap leading-relaxed">

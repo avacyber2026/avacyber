@@ -74,7 +74,7 @@ export default function GuideArticlePage() {
   if (!isAuthenticated && !isLoading) return null;
 
   const textColor = colorMode === "dark" ? "text-[#F4F3F4]" : "text-[#103E36]";
-  const labelColor = colorMode === "dark" ? "text-[#1F6A5C]/60" : "text-[#1F6A5C]";
+  const labelColor = colorMode === "dark" ? "text-[#F4F3F4]/45 dark:text-[#F4F3F4]/45" : "text-[#1F6A5C]";
 
   return (
     <>

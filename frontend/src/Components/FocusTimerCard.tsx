@@ -344,7 +344,7 @@ export function FocusTimerCard({ isDark, glassClass }: Props) {
   return (
     <div className={`rounded-lg p-6 ${glassClass}`}>
       <Text className="text-sm font-bold text-[#1C1E1C] dark:text-white mb-0.5">{t("dashboard.focusTimer")}</Text>
-      <Text className="text-xs text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mb-1.5">{t("dashboard.focusTimerDragHint")}</Text>
+      <Text className="text-xs text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 mb-1.5">{t("dashboard.focusTimerDragHint")}</Text>
       <div className="relative mx-auto w-[160px] select-none touch-none overflow-visible">
         <div className="relative h-[160px] w-full overflow-visible">
         <svg
@@ -402,7 +402,7 @@ export function FocusTimerCard({ isDark, glassClass }: Props) {
           <Text className="text-2xl font-mono font-semibold text-[#1C1E1C] dark:text-white tabular-nums px-1">
             {formatMmSs(centerSec)}
           </Text>
-          <Text className="text-xs text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mt-0.5">{subLabel}</Text>
+          <Text className="text-xs text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 mt-0.5">{subLabel}</Text>
         </div>
         </div>
       </div>
@@ -419,7 +419,7 @@ export function FocusTimerCard({ isDark, glassClass }: Props) {
           icon={<FaRedoAlt />}
           onClick={resetAll}
           variant="outline"
-          className="rounded-full border-[#1F6A5C]/25 dark:border-[#103E36]"
+          className="rounded-full border-[#1F6A5C]/25 dark:border-white/8"
         />
       </HStack>
     </div>

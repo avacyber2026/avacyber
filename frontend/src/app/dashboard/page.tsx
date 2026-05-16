@@ -455,7 +455,7 @@ export default function DashboardPage() {
                     {loading ? "—" : `${stats.resolvedRate}%`}
                   </div>
                 </div>
-                <div className="p-4 border-t border-white/40 dark:border-[#103E36]">
+                <div className="p-4 border-t border-white/40 dark:border-white/8">
                   <button
                     type="button"
                     onClick={() => setExpandedProfile((e) => !e)}
@@ -472,7 +472,7 @@ export default function DashboardPage() {
                       >
                         <Icon as={IoGitPullRequestSharp} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" />
                         {t("dashboard.goToTickets")}
-                        <Icon as={IoChevronForward} className="ml-auto text-[#1F6A5C]/60" />
+                        <Icon as={IoChevronForward} className="ml-auto text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45" />
                       </Link>
                       <Link
                         href="/report"
@@ -480,7 +480,7 @@ export default function DashboardPage() {
                       >
                         <Icon as={IoDocumentTextOutline} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" />
                         {t("dashboard.goToReport")}
-                        <Icon as={IoChevronForward} className="ml-auto text-[#1F6A5C]/60" />
+                        <Icon as={IoChevronForward} className="ml-auto text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45" />
                       </Link>
                     </div>
                   )}
@@ -498,7 +498,7 @@ export default function DashboardPage() {
                   <Text className="text-lg font-bold text-[#1C1E1C] dark:text-white">{t("dashboard.progress")}</Text>
                   <Text className="text-2xl font-light text-[#1F6A5C] dark:text-[#F4F3F4]/55 tabular-nums">
                     {loading ? "—" : itemsThisWeek}{" "}
-                    <span className="text-sm font-medium text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">{t("dashboard.hoursThisWeek")}</span>
+                    <span className="text-sm font-medium text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45">{t("dashboard.hoursThisWeek")}</span>
                   </Text>
                 </div>
                 <Box className="h-[280px]">
@@ -524,7 +524,7 @@ export default function DashboardPage() {
                             <div
                               className={`rounded-lg px-3 py-2 border ${isDark ? "bg-[#103E36] border-[#103E36] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)]" : "bg-white border-[#1F6A5C]/20 shadow-xl"}`}
                             >
-                              <p className="text-xs font-semibold text-[#1F6A5C]/70 mb-1">{label}</p>
+                              <p className="text-xs font-semibold text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 mb-1">{label}</p>
                               {payload.map((p, i) => (
                                 <p key={i} className="text-sm text-[#1C1E1C] dark:text-[#F4F3F4]">
                                   {p.name}: {p.value}
@@ -571,7 +571,7 @@ export default function DashboardPage() {
                         <Tooltip
                           contentStyle={{
                             background: isDark ? "#103E36" : "#fff",
-                            border: `1px solid ${isDark ? "#103E36" : "#e2e8f0"}`,
+                            border: `1px solid ${isDark ? "rgba(255,255,255,0.08)" : "#e5e7eb"}`,
                             borderRadius: "8px",
                           }}
                         />
@@ -617,7 +617,7 @@ export default function DashboardPage() {
                     <button
                       type="button"
                       onClick={() => setWeekOffset((w) => w - 1)}
-                      className="px-3 py-1 rounded-full bg-white/70 dark:bg-[#1E2128] text-sm font-medium text-[#103E36] dark:text-[#F4F3F4]/80 border border-white/80 dark:border-[#103E36]"
+                      className="px-3 py-1 rounded-full bg-white/70 dark:bg-[#1E2128] text-sm font-medium text-[#103E36] dark:text-[#F4F3F4]/80 border border-white/80 dark:border-white/8"
                     >
                       ←
                     </button>
@@ -625,7 +625,7 @@ export default function DashboardPage() {
                     <button
                       type="button"
                       onClick={() => setWeekOffset((w) => w + 1)}
-                      className="px-3 py-1 rounded-full bg-white/70 dark:bg-[#1E2128] text-sm font-medium text-[#103E36] dark:text-[#F4F3F4]/80 border border-white/80 dark:border-[#103E36]"
+                      className="px-3 py-1 rounded-full bg-white/70 dark:bg-[#1E2128] text-sm font-medium text-[#103E36] dark:text-[#F4F3F4]/80 border border-white/80 dark:border-white/8"
                     >
                       →
                     </button>
@@ -647,7 +647,7 @@ export default function DashboardPage() {
                         className={`text-center rounded-lg py-3 px-1 border transition-all ${
                           isToday
                             ? "bg-gradient-to-br from-[#103E36] to-[#1F6A5C] text-white border-transparent shadow-lg dark:shadow-[0_4px_18px_-4px_rgba(0,0,0,0.32)] scale-[1.02]"
-                            : "bg-white/50 dark:bg-[#1E2128]/55 border-white/60 dark:border-[#103E36] text-[#103E36] dark:text-[#F4F3F4]/80"
+                            : "bg-white/50 dark:bg-[#1E2128]/55 border-white/60 dark:border-white/8 text-[#103E36] dark:text-[#F4F3F4]/80"
                         }`}
                       >
                         <div className="text-xs font-medium opacity-80">{d.toLocaleDateString(undefined, { weekday: "short" })}</div>
@@ -659,7 +659,7 @@ export default function DashboardPage() {
                 <Text className="text-sm font-semibold text-[#103E36] dark:text-[#F4F3F4]/80 mb-3">{t("dashboard.activityChart")}</Text>
                 <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
                   {weekEvents.length === 0 ? (
-                    <Text className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 text-sm py-4 text-center">{t("dashboard.noRecent")}</Text>
+                    <Text className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 text-sm py-4 text-center">{t("dashboard.noRecent")}</Text>
                   ) : (
                     weekEvents.slice(0, 12).map((ev) => (
                       <Link
@@ -671,7 +671,7 @@ export default function DashboardPage() {
                         }
                         className={`flex items-center gap-3 rounded-lg px-4 py-3 border transition-all hover:shadow-md dark:hover:shadow-[0_2px_12px_-2px_rgba(0,0,0,0.22)] ${
                           ev.resolved
-                            ? "bg-[#F4F3F4]/80 dark:bg-[#1E2128]/70 border-[#1F6A5C]/20 dark:border-[#103E36]"
+                            ? "bg-[#F4F3F4]/80 dark:bg-[#1E2128]/70 border-[#1F6A5C]/20 dark:border-white/8"
                             : "bg-gradient-to-r from-[#1F6A5C]/12 to-[#50BFA0]/10 border-[#1F6A5C]/25 dark:border-white/10"
                         }`}
                       >
@@ -686,7 +686,7 @@ export default function DashboardPage() {
                         </div>
                         <div className="min-w-0 flex-1">
                           <Text className="font-medium text-[#1C1E1C] dark:text-white truncate">{ev.title}</Text>
-                          <Text className="text-xs text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">{formatTime(ev.at.toISOString())}</Text>
+                          <Text className="text-xs text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45">{formatTime(ev.at.toISOString())}</Text>
                         </div>
                         {ev.resolved ? (
                           <Icon as={IoCheckmarkCircle} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55 text-xl shrink-0" />
@@ -714,13 +714,13 @@ export default function DashboardPage() {
                 </div>
                 <div className="space-y-2">
                   {recentItems.length === 0 ? (
-                    <Text className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 text-sm py-6 text-center">{t("dashboard.noRecent")}</Text>
+                    <Text className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 text-sm py-6 text-center">{t("dashboard.noRecent")}</Text>
                   ) : (
                     recentItems.map((row) => (
                       <Link
                         key={row.id}
                         href={row.href}
-                        className="flex items-center gap-3 rounded-lg px-3 py-3 border border-white/50 dark:border-[#103E36] bg-white/40 dark:bg-[#1E2128]/40 hover:bg-white/70 dark:hover:bg-white/[0.06] transition-colors"
+                        className="flex items-center gap-3 rounded-lg px-3 py-3 border border-white/50 dark:border-white/8 bg-white/40 dark:bg-[#1E2128]/40 hover:bg-white/70 dark:hover:bg-white/[0.06] transition-colors"
                       >
                         <div className="w-9 h-9 rounded-md bg-gradient-to-br from-[#103E36]/25 to-[#50BFA0]/30 dark:from-[#103E36]/40 dark:to-[#1F6A5C]/35 flex items-center justify-center shrink-0">
                           <Icon
@@ -730,7 +730,7 @@ export default function DashboardPage() {
                         </div>
                         <div className="min-w-0 flex-1">
                           <Text className="font-medium text-[#1C1E1C] dark:text-white text-sm truncate">{row.title}</Text>
-                          <Text className="text-xs text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">{row.sub}</Text>
+                          <Text className="text-xs text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45">{row.sub}</Text>
                         </div>
                         <div
                           className={`w-8 h-8 rounded-full border-2 flex items-center justify-center shrink-0 ${

@@ -91,7 +91,7 @@ export function ModalHeader({
       {onClose && (
         <button
           onClick={onClose}
-          className="p-1 rounded hover:bg-[#F4F3F4] dark:hover:bg-white/10 text-[#1F6A5C]/70 hover:text-[#103E36] dark:text-[#F4F3F4]/45 dark:hover:text-white"
+          className="p-1 rounded hover:bg-[#F4F3F4] dark:hover:bg-white/10 text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 hover:text-[#103E36] dark:text-[#F4F3F4]/45 dark:hover:text-white"
           aria-label="Close"
         >
           ×

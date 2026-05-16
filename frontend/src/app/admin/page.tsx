@@ -21,7 +21,7 @@ export default function AdminPage() {
 
   return (
     <VStack className="w-full min-h-screen justify-center items-center bg-[#F4F3F4] dark:bg-[#1C1E1C]">
-      <Text className="text-[#1F6A5C]/70">{t("common.loading")}</Text>
+      <Text className="text-[#F4F3F4]/55 dark:text-[#F4F3F4]/55">{t("common.loading")}</Text>
     </VStack>
   );
 }

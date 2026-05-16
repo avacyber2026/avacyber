@@ -40,7 +40,7 @@ export default function OnCallPage() {
             <Button as="a" href={`tel:${phone.replace(/\s/g, "")}`} target="_blank" rel="noopener" size="lg" className="bg-brand-primary text-white hover:bg-brand-primaryDark">
               {t("onCall.callButton")}
             </Button>
-            <Text className="mt-4 text-sm text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">
+            <Text className="mt-4 text-sm text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45">
               {t("onCall.phoneNote")}
             </Text>
           </Box>

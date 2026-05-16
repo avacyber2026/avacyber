@@ -59,11 +59,11 @@ export function IncidentLogCard({
 
   const defaultFooter = (
     <>
-      <Text fontSize="xs" fontWeight={600} className="uppercase tracking-wide text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mb-2">
+      <Text fontSize="xs" fontWeight={600} className="uppercase tracking-wide text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 mb-2">
         {answerHeading}
       </Text>
       {x.answer === "" ? (
-        <Text fontSize="sm" className="text-[#1F6A5C]/60 dark:text-[#F4F3F4]/55 italic">
+        <Text fontSize="sm" className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 dark:text-[#F4F3F4]/55 italic">
           {emptyAnswerText}
         </Text>
       ) : (
@@ -92,24 +92,24 @@ export function IncidentLogCard({
                 {x.fromUser}
               </Text>
               {showRouting && (x.createdBy || x.assignedTo) && (
-                <Text fontSize="xs" className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/55 mt-1 leading-relaxed">
+                <Text fontSize="xs" className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/55 mt-1 leading-relaxed">
                   {x.createdBy && (
                     <>
-                      <span className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">Created by </span>
+                      <span className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45">Created by </span>
                       <span className="font-medium text-[#103E36] dark:text-[#F4F3F4]/80">{x.createdBy}</span>
                     </>
                   )}
-                  {x.createdBy && x.assignedTo && <span className="mx-1 text-[#1F6A5C]/60">·</span>}
+                  {x.createdBy && x.assignedTo && <span className="mx-1 text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45">·</span>}
                   {x.assignedTo && (
                     <>
-                      <span className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">Assigned to </span>
+                      <span className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45">Assigned to </span>
                       <span className="font-medium text-[#103E36] dark:text-[#F4F3F4]/80">{x.assignedTo}</span>
                     </>
                   )}
                 </Text>
               )}
               {when && (
-                <Text fontSize="xs" className="text-[#1F6A5C]/60 dark:text-[#F4F3F4]/55 mt-1">
+                <Text fontSize="xs" className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 dark:text-[#F4F3F4]/55 mt-1">
                   {when}
                 </Text>
               )}
@@ -132,7 +132,7 @@ export function IncidentLogCard({
             >
               {x.type}
             </span>
-            <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-mono text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 border border-dashed border-[#1F6A5C]/20 dark:border-white/20">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-mono text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 border border-dashed border-[#1F6A5C]/20 dark:border-white/20">
               #{x.id}
             </span>
             {x.siemAlertId ? (

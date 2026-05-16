@@ -81,7 +81,7 @@ export function StructuredAnswerPanel({ ticket, onAnswered }: StructuredAnswerPa
       )}
 
       <div className="mb-4">
-        <Text fontSize="xs" className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mb-1">
+        <Text fontSize="xs" className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 mb-1">
           {t("tickets.optionalComment")}
         </Text>
         <Textarea

@@ -188,7 +188,7 @@ export function SocIncidentCreateForm({ onSuccess }: SocIncidentCreateFormProps)
 
   return (
     <Box className="grid grid-cols-1 lg:grid-cols-[1fr,1.2fr] gap-x-8 lg:gap-x-12 gap-y-10 max-w-5xl items-start">
-      <Text fontSize="sm" className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 lg:col-span-2 -mb-4">
+      <Text fontSize="sm" className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 lg:col-span-2 -mb-4">
         {t("report.requiredLegend")}
       </Text>
 
@@ -241,8 +241,8 @@ export function SocIncidentCreateForm({ onSuccess }: SocIncidentCreateFormProps)
             }}
             onClick={() => fileInputRef.current?.click()}
           >
-            <IoDocumentAttachOutline className="mx-auto text-[#1F6A5C]/60 dark:text-[#F4F3F4]/55 mb-2" size={28} />
-            <Text fontSize="sm" className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mb-2">
+            <IoDocumentAttachOutline className="mx-auto text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 dark:text-[#F4F3F4]/55 mb-2" size={28} />
+            <Text fontSize="sm" className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 mb-2">
               {t("report.dragDropFiles")}
             </Text>
             <Button
@@ -291,13 +291,13 @@ export function SocIncidentCreateForm({ onSuccess }: SocIncidentCreateFormProps)
                         >
                           {file.name}
                         </span>
-                        <span className="shrink-0 text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 tabular-nums text-xs sm:text-sm">
+                        <span className="shrink-0 text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 tabular-nums text-xs sm:text-sm">
                           {formatFileSize(file.size)}
                         </span>
                       </div>
                       <button
                         type="button"
-                        className="shrink-0 self-end p-0.5 rounded text-[#1F6A5C]/70 hover:text-red-600 dark:hover:text-red-400 focus:outline-none focus:ring-2 focus:ring-brand-primary sm:self-center"
+                        className="shrink-0 self-end p-0.5 rounded text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 hover:text-red-600 dark:hover:text-red-400 focus:outline-none focus:ring-2 focus:ring-brand-primary sm:self-center"
                         aria-label={t("report.removeFile")}
                         onClick={(e) => {
                           e.stopPropagation();
@@ -325,7 +325,7 @@ export function SocIncidentCreateForm({ onSuccess }: SocIncidentCreateFormProps)
         <Box>
           <label className={labelClass}>{t("tickets.socAssignTo")} *</label>
           <Box className="flex items-center gap-2 rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 bg-white dark:bg-[#1E2128] px-3 py-2">
-            <IoPeopleOutline className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 shrink-0" size={20} />
+            <IoPeopleOutline className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 shrink-0" size={20} />
             <Select
               value={recipientTo}
               onChange={(v) => setRecipientTo(v as RecipientValue | "")}
@@ -386,7 +386,7 @@ export function SocIncidentCreateForm({ onSuccess }: SocIncidentCreateFormProps)
               className={inputClass}
               maxLength={255}
             />
-            <Text fontSize="xs" className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mt-1">
+            <Text fontSize="xs" className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 mt-1">
               {t("tickets.siemAlertIdHint")}
             </Text>
           </Box>
@@ -402,7 +402,7 @@ export function SocIncidentCreateForm({ onSuccess }: SocIncidentCreateFormProps)
       <Box className="bg-white dark:bg-[#1E2128] rounded-xl border border-[#1F6A5C]/20 dark:border-white/20 p-6">
         <label className={labelClass}>{t("admin.priority")}</label>
         <Box className="flex items-center gap-2 rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 bg-white dark:bg-[#1E2128] px-3 py-2 mt-1">
-          <IoPeopleOutline className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 shrink-0" size={20} />
+          <IoPeopleOutline className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 shrink-0" size={20} />
           <Select
             value={priority}
             onChange={(v) => setPriority(v as "Low" | "Medium" | "High")}
@@ -450,12 +450,12 @@ export function SocIncidentCreateForm({ onSuccess }: SocIncidentCreateFormProps)
                 />
                 <span>{label}</span>
                 {key === "critical" && (
-                  <IoInformationCircleOutline className="text-[#1F6A5C]/60" size={16} title={t("report.noOnCallNote")} />
+                  <IoInformationCircleOutline className="text-[#F4F3F4]/45 dark:text-[#F4F3F4]/45" size={16} title={t("report.noOnCallNote")} />
                 )}
               </label>
             ))}
           </VStack>
-          <Text fontSize="xs" className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mt-2">
+          <Text fontSize="xs" className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 mt-2">
             {t("report.noOnCallNote")}
           </Text>
         </Box>

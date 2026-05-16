@@ -359,7 +359,7 @@ export function TicketsPremium({ onlyLog = false }: TicketsPremiumProps = {}) {
             </WrapItem>
           </Wrap>
           {totalIncidents > 0 && (
-            <Text fontSize="xs" className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mt-2">
+            <Text fontSize="xs" className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 mt-2">
               Showing {(incidentPage - 1) * INCIDENTS_PER_PAGE + 1}–{Math.min(incidentPage * INCIDENTS_PER_PAGE, totalIncidents)} of {totalIncidents} incident{totalIncidents !== 1 ? "s" : ""}
             </Text>
           )}
@@ -379,7 +379,7 @@ export function TicketsPremium({ onlyLog = false }: TicketsPremiumProps = {}) {
         {fetching ? (
           <Text className="py-4">Loading...</Text>
         ) : totalIncidents === 0 ? (
-          <Text className="py-4 text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45">No incidents found.</Text>
+          <Text className="py-4 text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45">No incidents found.</Text>
         ) : (
           <>
           {paginatedTickets.map((x, idx) => (
@@ -521,7 +521,7 @@ export function TicketsPremium({ onlyLog = false }: TicketsPremiumProps = {}) {
                   maxLength={255}
                   autoComplete="off"
                 />
-                <Text fontSize="xs" className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mb-1 text-left">
+                <Text fontSize="xs" className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 mb-1 text-left">
                   {t("tickets.siemAlertIdHint")}
                 </Text>
               </>
@@ -571,7 +571,7 @@ export function TicketsPremium({ onlyLog = false }: TicketsPremiumProps = {}) {
                 <Wrap spacing={4}>
                   <WrapItem>
                     <VStack align="start" spacing={1}>
-                      <Text fontSize="xs" className="text-[#1F6A5C]/70">Time range: from</Text>
+                      <Text fontSize="xs" className="text-[#F4F3F4]/55 dark:text-[#F4F3F4]/55">Time range: from</Text>
                       <Input
                         type="date"
                         size="sm"
@@ -583,7 +583,7 @@ export function TicketsPremium({ onlyLog = false }: TicketsPremiumProps = {}) {
                   </WrapItem>
                   <WrapItem>
                     <VStack align="start" spacing={1}>
-                      <Text fontSize="xs" className="text-[#1F6A5C]/70">Time range: to</Text>
+                      <Text fontSize="xs" className="text-[#F4F3F4]/55 dark:text-[#F4F3F4]/55">Time range: to</Text>
                       <Input
                         type="date"
                         size="sm"
@@ -595,7 +595,7 @@ export function TicketsPremium({ onlyLog = false }: TicketsPremiumProps = {}) {
                   </WrapItem>
                   <WrapItem>
                     <VStack align="start" spacing={1}>
-                      <Text fontSize="xs" className="text-[#1F6A5C]/70">Status</Text>
+                      <Text fontSize="xs" className="text-[#F4F3F4]/55 dark:text-[#F4F3F4]/55">Status</Text>
                       <Select
                         size="sm"
                         className="w-[160px]"
@@ -619,7 +619,7 @@ export function TicketsPremium({ onlyLog = false }: TicketsPremiumProps = {}) {
                     </Button>
                   </WrapItem>
                 </Wrap>
-                <Text fontSize="xs" className="text-[#1F6A5C]/70 mt-2">
+                <Text fontSize="xs" className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 mt-2">
                   {analyticsDateFrom || analyticsDateTo ? `Date: ${analyticsDateFrom || "…"} – ${analyticsDateTo || "…"}` : "Date: all time"}
                   {analyticsStatus ? ` · Status: ${analyticsStatus}` : " · Status: all"}
                 </Text>
@@ -638,7 +638,7 @@ export function TicketsPremium({ onlyLog = false }: TicketsPremiumProps = {}) {
                     <Box
                       className="p-4 bg-white dark:bg-[#1E2128] rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 shadow-sm hover:shadow-md"
                     >
-                      <Text fontSize="sm" className="text-[#1F6A5C]/70 dark:text-[#F4F3F4]/45 mb-1">{label}</Text>
+                      <Text fontSize="sm" className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 mb-1">{label}</Text>
                       <Text fontSize="2xl" fontWeight={700} className="mb-2">{analyticsStats[label]}</Text>
                       <Progress
                         value={analyticsMaxTeam ? (analyticsStats[label] / analyticsMaxTeam) * 100 : 0}
@@ -660,14 +660,14 @@ export function TicketsPremium({ onlyLog = false }: TicketsPremiumProps = {}) {
                     <Box key={status} className="mb-3">
                       <div className="flex justify-between mb-1">
                         <Text fontSize="sm" fontWeight={500}>{status}</Text>
-                        <Text fontSize="sm" className="text-[#1F6A5C]/70">{count}</Text>
+                        <Text fontSize="sm" className="text-[#F4F3F4]/55 dark:text-[#F4F3F4]/55">{count}</Text>
                       </div>
                       <Progress value={pct} size="sm" colorScheme="green" borderRadius="full" />
                     </Box>
                   );
                 })}
                 {analyticsTotal === 0 && (
-                  <Text fontSize="sm" className="text-[#1F6A5C]/70">No incidents in the selected period.</Text>
+                  <Text fontSize="sm" className="text-[#F4F3F4]/55 dark:text-[#F4F3F4]/55">No incidents in the selected period.</Text>
                 )}
               </Box>
             </Box>
