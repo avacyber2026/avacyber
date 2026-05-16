@@ -35,7 +35,7 @@ interface AppSidebarProps {
 }
 
 const S = {
-  bg: "#0B1F1A",
+  bg: "#103E36",
   borderRight: "rgba(63,255,163,0.08)",
   divider: "rgba(255,255,255,0.06)",
   mint: "#3FFFA3",

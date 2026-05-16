@@ -341,7 +341,7 @@ export default function AdminUsersPage() {
     <>
       <VStack className="w-full min-h-screen items-stretch">
         <AdminSidebar />
-        <Stack className={`${style.main} bg-[#F4F3F4] dark:bg-[#131C18]`} as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <Stack className={`${style.main} bg-[#F4F3F4] dark:bg-[#1C1E1C]`} as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <HStack className="justify-between flex-wrap gap-2 mb-4">
             <Text className="text-2xl font-semibold text-[#103E36] dark:text-[#F4F3F4]">
               {t("admin.users")}
@@ -381,7 +381,7 @@ export default function AdminUsersPage() {
       </VStack>
 
       <Modal isOpen={isEditUserOpen} onClose={() => { onEditUserClose(); setEditUserDraft(null); }} size="lg">
-        <ModalContent className="dark:bg-[#1B2620] dark:text-[#F4F3F4] max-h-[90vh] overflow-y-auto">
+        <ModalContent className="dark:bg-[#103E36] dark:text-[#F4F3F4] max-h-[90vh] overflow-y-auto">
           <ModalHeader onClose={() => { onEditUserClose(); setEditUserDraft(null); }}>{t("admin.editUser")}</ModalHeader>
           <ModalBody className="space-y-3">
             <Text className="text-sm text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("admin.editUserHint")}</Text>

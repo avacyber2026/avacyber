@@ -36,7 +36,7 @@ export function Thead({ children }: { children: React.ReactNode }) {
 
 export function Tbody({ children }: { children: React.ReactNode }) {
   return (
-    <tbody className="divide-y divide-[#1F6A5C]/15 dark:divide-white/20 bg-white dark:bg-[#1B2620]">
+    <tbody className="divide-y divide-[#1F6A5C]/15 dark:divide-white/20 bg-white dark:bg-[#103E36]">
       {children}
     </tbody>
   );

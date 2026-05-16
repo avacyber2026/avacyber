@@ -29,7 +29,7 @@ export default function ReportPage() {
     <main>
         <VStack className="w-full min-h-screen">
         <SideMenu />
-        <Stack className={`${style.main} bg-[#F4F3F4] dark:bg-[#131C18]`} as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <Stack className={`${style.main} bg-[#F4F3F4] dark:bg-[#1C1E1C]`} as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center mb-4">
             <p className={style.title}>{data === "End-User" ? t("report.title") : t("report.reportedTitle")}</p>
             <Button as={Link} href="/tickets/new" size="sm" className="bg-green-600 hover:bg-green-700 text-white">{t("report.createNewIncident")}</Button>

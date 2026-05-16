@@ -121,7 +121,7 @@ export function DrawerContent({
   bg?: string;
   color?: string;
 }) {
-  const bgClass = bg === "sidebar.bg" ? "bg-[#F4F3F4] dark:bg-[#131C18]" : "bg-white dark:bg-[#1B2620]";
+  const bgClass = bg === "sidebar.bg" ? "bg-[#F4F3F4] dark:bg-[#1C1E1C]" : "bg-white dark:bg-[#103E36]";
   const colorClass = color === "sidebar.textPrimary" ? "text-[#103E36] dark:text-white" : "";
   return (
     <div

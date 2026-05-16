@@ -77,14 +77,14 @@ export default function AdminSettingsPage() {
 
   if (isAdmin === null) {
     return (
-      <VStack className="w-full min-h-screen justify-center items-center bg-[#F4F3F4] dark:bg-[#131C18]">
+      <VStack className="w-full min-h-screen justify-center items-center bg-[#F4F3F4] dark:bg-[#1C1E1C]">
         <Text className="text-[#1F6A5C]/70">{t("common.loading")}</Text>
       </VStack>
     );
   }
   if (!isAdmin) {
     return (
-      <VStack className="w-full min-h-screen justify-center items-center bg-[#F4F3F4] dark:bg-[#131C18]">
+      <VStack className="w-full min-h-screen justify-center items-center bg-[#F4F3F4] dark:bg-[#1C1E1C]">
         <Text className="text-[#1F6A5C]/70">{t("admin.redirectingLogin")}</Text>
       </VStack>
     );
@@ -93,7 +93,7 @@ export default function AdminSettingsPage() {
   return (
     <VStack className="w-full min-h-screen items-stretch">
       <AdminSidebar />
-      <Box className={`${style.main} bg-[#F4F3F4] dark:bg-[#131C18] p-6 overflow-x-hidden`} as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+      <Box className={`${style.main} bg-[#F4F3F4] dark:bg-[#1C1E1C] p-6 overflow-x-hidden`} as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
         <Text className="text-2xl font-semibold mb-4 text-[#103E36] dark:text-[#F4F3F4]">
           {t("admin.settings")}
         </Text>
@@ -102,7 +102,7 @@ export default function AdminSettingsPage() {
         {loading ? (
           <Text className="text-[#1F6A5C]/70">{t("common.loading")}</Text>
         ) : (
-          <Box className="w-full max-w-[480px] p-6 rounded-lg bg-white dark:bg-[#1B2620] border border-[#1F6A5C]/20 dark:border-white/20">
+          <Box className="w-full max-w-[480px] p-6 rounded-lg bg-white dark:bg-[#103E36] border border-[#1F6A5C]/20 dark:border-white/20">
             <FormControl className="mb-4">
               <FormLabel className="text-[#103E36] dark:text-[#F4F3F4]/65">
                 {t("admin.onCallPhone")}

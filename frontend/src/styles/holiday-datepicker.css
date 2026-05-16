@@ -50,7 +50,7 @@
 
 .dark .holiday-datepicker-calendar.react-datepicker {
   border-color: rgb(255 255 255 / 0.12);
-  background: #1B2620;
+  background: #103E36;
   color: #f3f4f6;
 }
 
@@ -177,7 +177,7 @@
 }
 
 .dark .holiday-datepicker-calendar .react-datepicker__time-container .react-datepicker__time {
-  background: #1B2620;
+  background: #103E36;
 }
 
 .holiday-datepicker-calendar .react-datepicker__time-list-item {

@@ -47,7 +47,7 @@ export function Modal({ isOpen, onClose, children, size = "md" }: ModalProps) {
         aria-hidden="true"
       />
       <div
-        className={`relative bg-white dark:bg-[#1B2620] rounded-lg shadow-xl ${sizeClasses} w-full max-h-[90vh] overflow-auto`}
+        className={`relative bg-white dark:bg-[#103E36] rounded-lg shadow-xl ${sizeClasses} w-full max-h-[90vh] overflow-auto`}
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"

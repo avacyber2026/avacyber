@@ -13,6 +13,9 @@ const config: Config = {
   darkMode: "class",
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["var(--font-rethink)", "Rethink Sans", "Inter", "system-ui", "sans-serif"],
+      },
       colors: {
         brand: {
           primary: "#1F6A5C",

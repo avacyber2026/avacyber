@@ -235,7 +235,7 @@ export function FocusTimerCard({ isDark, glassClass }: Props) {
   const hy = 60 - 52 * Math.cos(alpha);
 
   const strokeColor = isDark ? "#50BFA0" : "#1F6A5C";
-  const trackColor = isDark ? "#192420" : "#e2e8f0";
+  const trackColor = isDark ? "#103E36" : "#e2e8f0";
 
   const centerSec =
     phase === "setting" ? selectedSec : phase === "done" ? 0 : remainingSec;
@@ -419,7 +419,7 @@ export function FocusTimerCard({ isDark, glassClass }: Props) {
           icon={<FaRedoAlt />}
           onClick={resetAll}
           variant="outline"
-          className="rounded-full border-[#1F6A5C]/25 dark:border-[#192420]"
+          className="rounded-full border-[#1F6A5C]/25 dark:border-[#103E36]"
         />
       </HStack>
     </div>

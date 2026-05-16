@@ -4,6 +4,12 @@
 
 :root {
   --app-sidebar-width: 240px;
+  --font-brand: var(--font-rethink), "Rethink Sans", Inter, system-ui, sans-serif;
+}
+
+body, button, input, textarea, select {
+  font-family: var(--font-brand);
+  letter-spacing: -0.01em;
 }
 
 /* Side menu: hide scrollbars (scroll still works) */
@@ -60,7 +66,7 @@ html:not(.dark) [class*="subtitle"] {
 
 .dark .main,
 .dark [class*="main"] {
-  background: #131C18 !important;
+  background: #1C1E1C !important;
 }
 
 .dark [class*="createTicketBlock"] {
@@ -71,7 +77,7 @@ html:not(.dark) [class*="subtitle"] {
 .dark [class*="simpleTicketBlock"],
 .dark [class*="simpleUserTicket"] {
   border-color: rgba(255, 255, 255, 0.06);
-  background: #1B2620;
+  background: #103E36;
   color: #f3f4f6;
 }
 
@@ -81,7 +87,7 @@ html:not(.dark) [class*="subtitle"] {
 .dark [class*="createTicketBlock"] textarea,
 .dark [class*="createReportBlock"] input,
 .dark [class*="createReportBlock"] textarea {
-  background: #0F1713 !important;
+  background: #1C1E1C !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
   color: #f4f3f4 !important;
 }
@@ -91,12 +97,12 @@ html:not(.dark) [class*="subtitle"] {
 .dark [class*="createTicketBlock"] textarea::placeholder,
 .dark [class*="createReportBlock"] input::placeholder,
 .dark [class*="createReportBlock"] textarea::placeholder {
-  color: #9ca3af !important;
+  color: #50BFA0 !important;
 }
 
 .dark [class*="userSelect"],
 .dark [class*="userSelectButton"] {
-  background: #0F1713 !important;
+  background: #1C1E1C !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
   color: #f4f3f4 !important;
 }
@@ -107,7 +113,7 @@ html:not(.dark) [class*="subtitle"] {
 .dark [class*="priorityBlock"],
 .dark [class*="emptyCircle"] {
   border-color: rgba(255, 255, 255, 0.08) !important;
-  background: #0F1713 !important;
+  background: #1C1E1C !important;
   color: #f4f3f4 !important;
 }
 .dark [class*="completeCircle"],
@@ -141,13 +147,13 @@ html:not(.dark) [class*="subtitle"] {
 }
 
 .dark [class*="card"] {
-  background: #1B2620 !important;
-  border-color: rgba(255, 255, 255, 0.06) !important;
-  color: #f3f4f6 !important;
+  background: #103E36 !important;
+  border-color: rgba(63, 255, 163, 0.10) !important;
+  color: #F4F3F4 !important;
 }
 .dark [class*="form"] input,
 .dark [class*="form"] [class*="input"] {
-  background: #0F1713 !important;
+  background: #1C1E1C !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
   color: #f4f3f4 !important;
 }
@@ -215,13 +221,13 @@ html:not(.dark) [class*="subtitle"] {
 .dark [data-admin] input,
 .dark [data-admin] select,
 .dark [data-admin] textarea {
-  background: #0F1713 !important;
+  background: #1C1E1C !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
   color: #f4f3f4 !important;
 }
 .dark [data-admin] input::placeholder,
 .dark [data-admin] textarea::placeholder {
-  color: #9ca3af !important;
+  color: #50BFA0 !important;
 }
 
 /* Admin auth page: keep light form (authPageRoot) even inside data-admin */

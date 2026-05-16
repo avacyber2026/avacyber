@@ -14,7 +14,7 @@ import {
 } from "react-icons/io5";
 
 const inputClass =
-  "w-full rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 bg-white dark:bg-[#192420] text-[#103E36] dark:text-white placeholder-[#1F6A5C]/50 dark:placeholder-[#1F6A5C]/50 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary transition-colors";
+  "w-full rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 bg-white dark:bg-[#103E36] text-[#103E36] dark:text-white placeholder-[#1F6A5C]/50 dark:placeholder-[#1F6A5C]/50 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary transition-colors";
 const textareaClass = inputClass + " min-h-[120px] p-3 resize-y";
 const labelClass = "text-sm font-semibold text-[#103E36] dark:text-[#F4F3F4]/65 mb-1 block";
 
@@ -114,7 +114,7 @@ export function IncidentCreateForm({ onSuccess }: IncidentCreateFormProps) {
         </Text>
         <Text fontSize="sm">{t("report.whatsGoingOnDesc")}</Text>
       </Box>
-      <VStack align="stretch" spacing={4} className="bg-white dark:bg-[#1B2620] rounded-xl border border-[#1F6A5C]/20 dark:border-white/20 p-6">
+      <VStack align="stretch" spacing={4} className="bg-white dark:bg-[#103E36] rounded-xl border border-[#1F6A5C]/20 dark:border-white/20 p-6">
         <Box>
           <label className={labelClass}>{t("report.briefDescription")} *</label>
           <Input
@@ -232,7 +232,7 @@ export function IncidentCreateForm({ onSuccess }: IncidentCreateFormProps) {
         </Text>
         <Text fontSize="sm">{t("report.yourContactDetailsDesc")}</Text>
       </Box>
-      <VStack align="stretch" spacing={4} className="bg-white dark:bg-[#1B2620] rounded-xl border border-[#1F6A5C]/20 dark:border-white/20 p-6">
+      <VStack align="stretch" spacing={4} className="bg-white dark:bg-[#103E36] rounded-xl border border-[#1F6A5C]/20 dark:border-white/20 p-6">
         <Box>
           <label className={labelClass}>{t("report.yourEmail")}</label>
           <Input value={email} readOnly className={inputClass + " opacity-90"} />
@@ -277,9 +277,9 @@ export function IncidentCreateForm({ onSuccess }: IncidentCreateFormProps) {
         </Text>
         <Text fontSize="sm">{t("report.whoToNotifyDesc")}</Text>
       </Box>
-      <Box className="bg-white dark:bg-[#1B2620] rounded-xl border border-[#1F6A5C]/20 dark:border-white/20 p-6">
+      <Box className="bg-white dark:bg-[#103E36] rounded-xl border border-[#1F6A5C]/20 dark:border-white/20 p-6">
         <label className={labelClass}>{t("report.reportTo")}</label>
-        <Box className="flex items-center gap-2 rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 bg-white dark:bg-[#192420] px-3 py-2">
+        <Box className="flex items-center gap-2 rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 bg-white dark:bg-[#103E36] px-3 py-2">
           <IoPeopleOutline className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 shrink-0" size={20} />
           <Select
             value={priority}
@@ -303,7 +303,7 @@ export function IncidentCreateForm({ onSuccess }: IncidentCreateFormProps) {
         </Text>
         <Text fontSize="sm">{t("report.notificationChannelsDesc")}</Text>
       </Box>
-      <VStack align="stretch" spacing={4} className="bg-white dark:bg-[#1B2620] rounded-xl border border-[#1F6A5C]/20 dark:border-white/20 p-6">
+      <VStack align="stretch" spacing={4} className="bg-white dark:bg-[#103E36] rounded-xl border border-[#1F6A5C]/20 dark:border-white/20 p-6">
         <Box>
           <label className={labelClass}>{t("report.notifyVia")}</label>
           <VStack align="stretch" spacing={2} className="mt-2">

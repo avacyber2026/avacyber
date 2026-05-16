@@ -210,7 +210,7 @@ export function IncidentTimeline({ ticketId, composerName }: IncidentTimelinePro
             onChange={(e) => setDraft(e.target.value)}
             placeholder={t("tickets.incidentThreadPlaceholder")}
             rows={3}
-            className="w-full rounded-xl border border-[#1F6A5C]/20 dark:border-white/15 bg-white dark:bg-[#131C18] text-[#1C1E1C] dark:text-[#F4F3F4] placeholder:text-[#1F6A5C]/70 pr-11 py-3 resize-y min-h-[88px]"
+            className="w-full rounded-xl border border-[#1F6A5C]/20 dark:border-white/15 bg-white dark:bg-[#1C1E1C] text-[#1C1E1C] dark:text-[#F4F3F4] placeholder:text-[#1F6A5C]/70 pr-11 py-3 resize-y min-h-[88px]"
           />
           <button
             type="button"
@@ -249,7 +249,7 @@ export function IncidentTimeline({ ticketId, composerName }: IncidentTimelinePro
           onClick={post}
           isLoading={posting}
           disabled={!draft.trim() && pendingFiles.length === 0}
-          className="h-10 px-5 rounded-lg bg-[#103E36] dark:bg-[#192420] hover:bg-[#103E36] dark:hover:bg-[#353835] text-white border border-[#1F6A5C] dark:border-white/10"
+          className="h-10 px-5 rounded-lg bg-[#103E36] dark:bg-[#103E36] hover:bg-[#103E36] dark:hover:bg-[#353835] text-white border border-[#1F6A5C] dark:border-white/10"
         >
           {t("tickets.incidentThreadPost")}
         </Button>
@@ -269,7 +269,7 @@ export function IncidentTimeline({ ticketId, composerName }: IncidentTimelinePro
               return (
                 <li key={e.id} className="flex gap-4">
                   <div className="relative z-[1] shrink-0 w-10 flex justify-center">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold text-white bg-gradient-to-br from-amber-600 to-orange-700 ring-4 ring-[#F4F3F4] dark:ring-[#131C18]">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold text-white bg-gradient-to-br from-amber-600 to-orange-700 ring-4 ring-[#F4F3F4] dark:ring-[#1C1E1C]">
                       {ini}
                     </div>
                   </div>
@@ -282,7 +282,7 @@ export function IncidentTimeline({ ticketId, composerName }: IncidentTimelinePro
                         {formatWhen(e.createdAt, locale)}
                       </Text>
                     </HStack>
-                    <div className="rounded-xl border border-[#1F6A5C]/20 dark:border-white/10 bg-[#F4F3F4]/50 dark:bg-[#1B2620] px-4 py-4 shadow-inner">
+                    <div className="rounded-xl border border-[#1F6A5C]/20 dark:border-white/10 bg-[#F4F3F4]/50 dark:bg-[#103E36] px-4 py-4 shadow-inner">
                       <MarkdownBody source={e.body} />
                     </div>
                   </div>

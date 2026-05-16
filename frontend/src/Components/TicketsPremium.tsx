@@ -288,7 +288,7 @@ export function TicketsPremium({ onlyLog = false }: TicketsPremiumProps = {}) {
     <>
       {(status === "Security Manager" || status === "GSOC") && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
-        <Box className="mb-4 p-4 bg-white dark:bg-[#1B2620] rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 overflow-x-hidden">
+        <Box className="mb-4 p-4 bg-white dark:bg-[#103E36] rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 overflow-x-hidden">
           <Text fontSize="sm" fontWeight={600} className="mb-3">{t("report.filters")}</Text>
           <Wrap spacing={3}>
             <WrapItem>
@@ -566,7 +566,7 @@ export function TicketsPremium({ onlyLog = false }: TicketsPremiumProps = {}) {
           <TabPanel index={2}>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
             <Box className="py-4">
-              <Box className="mb-6 p-4 bg-white dark:bg-[#1B2620] rounded-lg border border-[#1F6A5C]/20 dark:border-white/20">
+              <Box className="mb-6 p-4 bg-white dark:bg-[#103E36] rounded-lg border border-[#1F6A5C]/20 dark:border-white/20">
                 <Text fontSize="sm" fontWeight={600} className="mb-3">Filters</Text>
                 <Wrap spacing={4}>
                   <WrapItem>
@@ -636,7 +636,7 @@ export function TicketsPremium({ onlyLog = false }: TicketsPremiumProps = {}) {
                     whileHover={{ y: -2 }}
                   >
                     <Box
-                      className="p-4 bg-white dark:bg-[#1B2620] rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 shadow-sm hover:shadow-md"
+                      className="p-4 bg-white dark:bg-[#103E36] rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 shadow-sm hover:shadow-md"
                     >
                       <Text fontSize="sm" className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mb-1">{label}</Text>
                       <Text fontSize="2xl" fontWeight={700} className="mb-2">{analyticsStats[label]}</Text>
@@ -652,7 +652,7 @@ export function TicketsPremium({ onlyLog = false }: TicketsPremiumProps = {}) {
               </SimpleGrid>
 
               <Text className={`${style.subtitle} text-xl mb-3`}>By status</Text>
-              <Box className="p-4 bg-white dark:bg-[#1B2620] rounded-lg border border-[#1F6A5C]/20 dark:border-white/20">
+              <Box className="p-4 bg-white dark:bg-[#103E36] rounded-lg border border-[#1F6A5C]/20 dark:border-white/20">
                 {["New", "Active", "Resolved"].map((status) => {
                   const count = analyticsByStatus[status] ?? 0;
                   const pct = analyticsTotal ? (count / analyticsTotal) * 100 : 0;

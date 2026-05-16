@@ -227,7 +227,7 @@ export default function SettingsPage() {
       <SideMenu />
       <VStack className="w-full min-h-screen" align="stretch">
         <Box
-          className={`${style.main} bg-[#F4F3F4] dark:bg-[#131C18] p-6`}
+          className={`${style.main} bg-[#F4F3F4] dark:bg-[#1C1E1C] p-6`}
           as={motion.div}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -250,7 +250,7 @@ export default function SettingsPage() {
                 </Text>
               </Box>
 
-              <Box className="p-6 rounded-lg bg-white dark:bg-[#1B2620] border border-[#1F6A5C]/20 dark:border-white/20 shadow-sm">
+              <Box className="p-6 rounded-lg bg-white dark:bg-[#103E36] border border-[#1F6A5C]/20 dark:border-white/20 shadow-sm">
                   <Text fontWeight={600} fontSize="lg" className={`mb-4 ${textColor}`}>
                     {t("profile.editProfile")}
                   </Text>
@@ -384,7 +384,7 @@ export default function SettingsPage() {
                 </Text>
               </Box>
 
-              <Box className="p-6 rounded-lg bg-white dark:bg-[#1B2620] border border-[#1F6A5C]/20 dark:border-white/20 shadow-sm">
+              <Box className="p-6 rounded-lg bg-white dark:bg-[#103E36] border border-[#1F6A5C]/20 dark:border-white/20 shadow-sm">
                   <HStack spacing={3} className="mb-4">
                     <button
                       type="button"

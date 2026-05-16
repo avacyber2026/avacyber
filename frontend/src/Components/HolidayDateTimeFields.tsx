@@ -56,7 +56,7 @@ const HolidayPickerTrigger = forwardRef<HTMLButtonElement, TriggerProps>(functio
       className={[
         "flex h-[2.75rem] w-full min-w-0 items-center gap-2 rounded-md border px-2.5 py-0 text-left text-sm transition-colors sm:text-base",
         "border-[#1F6A5C]/20 bg-white text-[#103E36] hover:border-[#1F6A5C]/40 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-0",
-        "dark:border-white/20 dark:bg-[#192420] dark:text-[#F4F3F4] dark:hover:border-[#50BFA0]/35",
+        "dark:border-white/20 dark:bg-[#103E36] dark:text-[#F4F3F4] dark:hover:border-[#50BFA0]/35",
         reserveClearSpace ? "pr-9" : "pr-2.5",
         disabled ? "cursor-not-allowed opacity-50 hover:border-[#1F6A5C]/20 dark:hover:border-white/20" : "cursor-pointer",
         className,

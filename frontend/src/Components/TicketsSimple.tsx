@@ -288,7 +288,7 @@ export function TicketsSimple() {
 
   // ── UI helpers ─────────────────────────────────────────────────────────────
 
-  const card = "rounded-xl border border-white/60 dark:border-[#192420] bg-white/80 dark:bg-[#1B2620] shadow-sm";
+  const card = "rounded-xl border border-white/60 dark:border-[#103E36] bg-white/80 dark:bg-[#103E36] shadow-sm";
 
   if (loading) return (
     <div className="flex items-center justify-center py-20 text-[#1F6A5C]/60">
@@ -332,7 +332,7 @@ export function TicketsSimple() {
             </div>
             <div className="space-y-3">
               {fromSocItems.map(x => (
-                <div key={x.id} className="rounded-lg bg-white dark:bg-[#1c1e1c] border border-white/60 dark:border-[#192420] p-4">
+                <div key={x.id} className="rounded-lg bg-white dark:bg-[#1c1e1c] border border-white/60 dark:border-[#103E36] p-4">
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-8 h-8 rounded-lg bg-[#1F6A5C]/10 dark:bg-[#50BFA0]/10 flex items-center justify-center shrink-0 mt-0.5">
                       {x.type === "Activity Verification" ? <MdOutlineVerified size={16} className="text-[#1F6A5C] dark:text-[#50BFA0]" /> :
@@ -359,7 +359,7 @@ export function TicketsSimple() {
                           className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
                             idTicket === x.id && answer === value
                               ? "bg-[#1F6A5C] border-[#1F6A5C] text-white"
-                              : "border-white/60 dark:border-[#192420] text-[#1F6A5C] dark:text-[#F4F3F4]/60 hover:border-[#1F6A5C]/50"
+                              : "border-white/60 dark:border-[#103E36] text-[#1F6A5C] dark:text-[#F4F3F4]/60 hover:border-[#1F6A5C]/50"
                           }`}>
                           {label}
                         </button>
@@ -376,7 +376,7 @@ export function TicketsSimple() {
                         className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
                           idTicket === x.id && answer === "Acknowledged"
                             ? "bg-[#1F6A5C] border-[#1F6A5C] text-white"
-                            : "border-white/60 dark:border-[#192420] text-[#1F6A5C] dark:text-[#F4F3F4]/60"
+                            : "border-white/60 dark:border-[#103E36] text-[#1F6A5C] dark:text-[#F4F3F4]/60"
                         }`}>
                         Acknowledge
                       </button>
@@ -490,7 +490,7 @@ export function TicketsSimple() {
           </div>
           {/* Stats */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/60 dark:bg-[#1B2620] border border-white/60 dark:border-[#192420]">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/60 dark:bg-[#103E36] border border-white/60 dark:border-[#103E36]">
               <span className="w-2 h-2 rounded-full bg-sky-400" />
               <span className="text-sm font-semibold text-[#103E36] dark:text-[#F4F3F4]/80">{openCount} open</span>
             </div>
@@ -511,7 +511,7 @@ export function TicketsSimple() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-0 border-b border-[#1F6A5C]/20 dark:border-[#192420]">
+      <div className="flex gap-0 border-b border-[#1F6A5C]/20 dark:border-[#103E36]">
         {([
           { key: "all", label: "All", count: ticketRows.length },
           { key: "from_users", label: "From Users", count: fromUserRows.length },
@@ -527,7 +527,7 @@ export function TicketsSimple() {
             {tab.label}
             {tab.count > 0 && (
               <span className={`text-xs px-1.5 py-0.5 rounded-full font-bold ${
-                socTab === tab.key ? "bg-[#1F6A5C]/15 text-[#1F6A5C] dark:text-[#50BFA0]" : "bg-[#F4F3F4] dark:bg-[#192420] text-[#1F6A5C]/60"
+                socTab === tab.key ? "bg-[#1F6A5C]/15 text-[#1F6A5C] dark:text-[#50BFA0]" : "bg-[#F4F3F4] dark:bg-[#103E36] text-[#1F6A5C]/60"
               }`}>{tab.count}</span>
             )}
           </button>
@@ -541,7 +541,7 @@ export function TicketsSimple() {
           placeholder="Search…"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="pl-9 pr-3 py-2 w-full rounded-lg text-sm border border-white/60 dark:border-[#192420] bg-white/60 dark:bg-[#1B2620] text-[#103E36] dark:text-[#F4F3F4]/80 placeholder:text-[#1F6A5C]/60 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40"
+          className="pl-9 pr-3 py-2 w-full rounded-lg text-sm border border-white/60 dark:border-[#103E36] bg-white/60 dark:bg-[#103E36] text-[#103E36] dark:text-[#F4F3F4]/80 placeholder:text-[#1F6A5C]/60 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40"
         />
       </div>
 

@@ -57,7 +57,7 @@ export function StructuredAnswerPanel({ ticket, onAnswered }: StructuredAnswerPa
   }
 
   return (
-    <Box className="rounded-xl border border-[#1F6A5C]/20 dark:border-white/15 bg-white dark:bg-[#1B2620] p-5 mt-4">
+    <Box className="rounded-xl border border-[#1F6A5C]/20 dark:border-white/15 bg-white dark:bg-[#103E36] p-5 mt-4">
       <Text fontSize="sm" fontWeight={600} className="text-[#103E36] dark:text-[#F4F3F4]/65 mb-3">
         {isAnnouncement ? t("tickets.acknowledgePrompt") : t("tickets.verificationPrompt")}
       </Text>
@@ -89,7 +89,7 @@ export function StructuredAnswerPanel({ ticket, onAnswered }: StructuredAnswerPa
           onChange={(e) => setComment(e.target.value)}
           placeholder={t("tickets.commentPlaceholder")}
           rows={2}
-          className="w-full rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 bg-white dark:bg-[#192420] text-[#103E36] dark:text-white placeholder-[#1F6A5C]/50 dark:placeholder-[#1F6A5C]/50 focus:outline-none focus:ring-2 focus:ring-brand-primary text-sm p-3 resize-y"
+          className="w-full rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 bg-white dark:bg-[#103E36] text-[#103E36] dark:text-white placeholder-[#1F6A5C]/50 dark:placeholder-[#1F6A5C]/50 focus:outline-none focus:ring-2 focus:ring-brand-primary text-sm p-3 resize-y"
         />
       </div>
 

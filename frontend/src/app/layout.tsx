@@ -1,7 +1,15 @@
 import type { Metadata, Viewport } from "next";
+import { Rethink_Sans } from "next/font/google";
 import "@/styles/globals.css";
 import { Providers } from "./providers";
 import { Toaster } from "react-hot-toast";
+
+const rethinkSans = Rethink_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-rethink",
+  display: "swap",
+});
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -11,7 +19,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "AVA cyber",
-  description: "AVA cyber — security operations platform",
+  description: "AVA cyber — Clarity in Security and Compliance",
 };
 
 export default function RootLayout({
@@ -20,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={rethinkSans.variable} suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -28,7 +36,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="bg-[#F4F3F4] dark:bg-[#131C18] text-[#103E36] dark:text-[#F4F3F4]">
+      <body className={`${rethinkSans.className} bg-[#F4F3F4] dark:bg-[#1C1E1C] text-[#1C1E1C] dark:text-[#F4F3F4]`}>
         <Providers>{children}</Providers>
         <Toaster
           position="top-center"
@@ -36,8 +44,9 @@ export default function RootLayout({
           toastOptions={{
             duration: 4000,
             style: {
-              background: "#1B2620",
-              color: "#f3f4f6",
+              background: "#103E36",
+              color: "#F4F3F4",
+              fontFamily: "var(--font-rethink), system-ui, sans-serif",
             },
           }}
         />

@@ -79,7 +79,7 @@ export function IncidentLogCard({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: Math.min(index * 0.04, 0.4) }}
-      className="w-full rounded-xl border border-[#1F6A5C]/20 dark:border-white/15 bg-white dark:bg-[#1B2620] shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden"
+      className="w-full rounded-xl border border-[#1F6A5C]/20 dark:border-white/15 bg-white dark:bg-[#103E36] shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden"
     >
       <div className="p-5 flex flex-col gap-4">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3">

@@ -343,7 +343,7 @@ export default function DashboardPage() {
     <>
       <SideMenu />
       <VStack className="w-full min-h-screen items-stretch">
-        <div className={`${reportLayout.main} min-h-screen bg-[#F4F3F4] dark:bg-[#131C18] relative z-0`}>
+        <div className={`${reportLayout.main} min-h-screen bg-[#F4F3F4] dark:bg-[#1C1E1C] relative z-0`}>
           <Box className="relative px-4 pb-12 pt-4 md:px-6 lg:px-8 max-w-[1600px] mx-auto w-full">
             {/* Hero */}
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="mb-8">
@@ -373,7 +373,7 @@ export default function DashboardPage() {
                         <span>{m.label}</span>
                         <span className="tabular-nums">{loading ? "—" : `${m.v}%`}</span>
                       </div>
-                      <div className="h-3 rounded-full bg-[#50BFA0]/15 dark:bg-[#192420] overflow-hidden">
+                      <div className="h-3 rounded-full bg-[#50BFA0]/15 dark:bg-[#103E36] overflow-hidden">
                         <div
                           className={`h-full rounded-full transition-all duration-1000 ease-out ${dash.stripedBar}`}
                           style={{ width: loading ? "0%" : `${m.v}%`, background: m.bg }}
@@ -447,7 +447,7 @@ export default function DashboardPage() {
                       )}
                     </div>
                   </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-[#131C18]/92 to-transparent">
+                  <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-[#1C1E1C]/92 to-transparent">
                     <Text className="text-white font-bold text-xl">{displayName}</Text>
                     <Text className="text-[#b8e8dd] text-sm">{role ?? t("dashboard.profileCardRole")}</Text>
                   </div>
@@ -455,7 +455,7 @@ export default function DashboardPage() {
                     {loading ? "—" : `${stats.resolvedRate}%`}
                   </div>
                 </div>
-                <div className="p-4 border-t border-white/40 dark:border-[#192420]">
+                <div className="p-4 border-t border-white/40 dark:border-[#103E36]">
                   <button
                     type="button"
                     onClick={() => setExpandedProfile((e) => !e)}
@@ -468,7 +468,7 @@ export default function DashboardPage() {
                     <div className="space-y-1 pt-1">
                       <Link
                         href="/tickets"
-                        className="flex items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-white/60 dark:hover:bg-[#192420] transition-colors text-[#103E36] dark:text-[#F4F3F4]/80"
+                        className="flex items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-white/60 dark:hover:bg-[#103E36] transition-colors text-[#103E36] dark:text-[#F4F3F4]/80"
                       >
                         <Icon as={IoGitPullRequestSharp} className="text-[#1F6A5C] dark:text-[#50BFA0]" />
                         {t("dashboard.goToTickets")}
@@ -476,7 +476,7 @@ export default function DashboardPage() {
                       </Link>
                       <Link
                         href="/report"
-                        className="flex items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-white/60 dark:hover:bg-[#192420] transition-colors text-[#103E36] dark:text-[#F4F3F4]/80"
+                        className="flex items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-white/60 dark:hover:bg-[#103E36] transition-colors text-[#103E36] dark:text-[#F4F3F4]/80"
                       >
                         <Icon as={IoDocumentTextOutline} className="text-[#1F6A5C] dark:text-[#50BFA0]" />
                         {t("dashboard.goToReport")}
@@ -522,7 +522,7 @@ export default function DashboardPage() {
                         content={({ active, payload, label }) =>
                           active && payload?.length ? (
                             <div
-                              className={`rounded-lg px-3 py-2 border ${isDark ? "bg-[#1B2620] border-[#192420] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)]" : "bg-white border-[#1F6A5C]/20 shadow-xl"}`}
+                              className={`rounded-lg px-3 py-2 border ${isDark ? "bg-[#103E36] border-[#103E36] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)]" : "bg-white border-[#1F6A5C]/20 shadow-xl"}`}
                             >
                               <p className="text-xs font-semibold text-[#1F6A5C]/70 mb-1">{label}</p>
                               {payload.map((p, i) => (
@@ -565,13 +565,13 @@ export default function DashboardPage() {
                           dataKey="value"
                         >
                           {statusData.map((entry, index) => (
-                            <Cell key={`c-${index}`} fill={entry.color} stroke={isDark ? "#1B2620" : "#fff"} strokeWidth={2} />
+                            <Cell key={`c-${index}`} fill={entry.color} stroke={isDark ? "#103E36" : "#fff"} strokeWidth={2} />
                           ))}
                         </Pie>
                         <Tooltip
                           contentStyle={{
-                            background: isDark ? "#1B2620" : "#fff",
-                            border: `1px solid ${isDark ? "#192420" : "#e2e8f0"}`,
+                            background: isDark ? "#103E36" : "#fff",
+                            border: `1px solid ${isDark ? "#103E36" : "#e2e8f0"}`,
                             borderRadius: "8px",
                           }}
                         />
@@ -583,7 +583,7 @@ export default function DashboardPage() {
 
                 <div className={`rounded-lg p-5 ${dash.glass}`}>
                   <Text className="text-sm font-bold text-[#1C1E1C] dark:text-white mb-3">{t("dashboard.pipelineTitle")}</Text>
-                  <div className="flex h-4 rounded-full overflow-hidden shadow-inner bg-[#50BFA0]/15 dark:bg-[#192420]">
+                  <div className="flex h-4 rounded-full overflow-hidden shadow-inner bg-[#50BFA0]/15 dark:bg-[#103E36]">
                     {pipeline.map((seg) => (
                       <div
                         key={seg.key}
@@ -617,7 +617,7 @@ export default function DashboardPage() {
                     <button
                       type="button"
                       onClick={() => setWeekOffset((w) => w - 1)}
-                      className="px-3 py-1 rounded-full bg-white/70 dark:bg-[#192420] text-sm font-medium text-[#103E36] dark:text-[#F4F3F4]/80 border border-white/80 dark:border-[#192420]"
+                      className="px-3 py-1 rounded-full bg-white/70 dark:bg-[#103E36] text-sm font-medium text-[#103E36] dark:text-[#F4F3F4]/80 border border-white/80 dark:border-[#103E36]"
                     >
                       ←
                     </button>
@@ -625,7 +625,7 @@ export default function DashboardPage() {
                     <button
                       type="button"
                       onClick={() => setWeekOffset((w) => w + 1)}
-                      className="px-3 py-1 rounded-full bg-white/70 dark:bg-[#192420] text-sm font-medium text-[#103E36] dark:text-[#F4F3F4]/80 border border-white/80 dark:border-[#192420]"
+                      className="px-3 py-1 rounded-full bg-white/70 dark:bg-[#103E36] text-sm font-medium text-[#103E36] dark:text-[#F4F3F4]/80 border border-white/80 dark:border-[#103E36]"
                     >
                       →
                     </button>
@@ -647,7 +647,7 @@ export default function DashboardPage() {
                         className={`text-center rounded-lg py-3 px-1 border transition-all ${
                           isToday
                             ? "bg-gradient-to-br from-[#103E36] to-[#1F6A5C] text-white border-transparent shadow-lg dark:shadow-[0_4px_18px_-4px_rgba(0,0,0,0.32)] scale-[1.02]"
-                            : "bg-white/50 dark:bg-[#192420]/55 border-white/60 dark:border-[#192420] text-[#103E36] dark:text-[#F4F3F4]/80"
+                            : "bg-white/50 dark:bg-[#103E36]/55 border-white/60 dark:border-[#103E36] text-[#103E36] dark:text-[#F4F3F4]/80"
                         }`}
                       >
                         <div className="text-xs font-medium opacity-80">{d.toLocaleDateString(undefined, { weekday: "short" })}</div>
@@ -671,7 +671,7 @@ export default function DashboardPage() {
                         }
                         className={`flex items-center gap-3 rounded-lg px-4 py-3 border transition-all hover:shadow-md dark:hover:shadow-[0_2px_12px_-2px_rgba(0,0,0,0.22)] ${
                           ev.resolved
-                            ? "bg-[#F4F3F4]/80 dark:bg-[#192420]/70 border-[#1F6A5C]/20 dark:border-[#192420]"
+                            ? "bg-[#F4F3F4]/80 dark:bg-[#103E36]/70 border-[#1F6A5C]/20 dark:border-[#103E36]"
                             : "bg-gradient-to-r from-[#1F6A5C]/12 to-[#50BFA0]/10 border-[#1F6A5C]/25 dark:border-[#50BFA0]/35"
                         }`}
                       >
@@ -720,7 +720,7 @@ export default function DashboardPage() {
                       <Link
                         key={row.id}
                         href={row.href}
-                        className="flex items-center gap-3 rounded-lg px-3 py-3 border border-white/50 dark:border-[#192420] bg-white/40 dark:bg-[#192420]/40 hover:bg-white/70 dark:hover:bg-[#192420] transition-colors"
+                        className="flex items-center gap-3 rounded-lg px-3 py-3 border border-white/50 dark:border-[#103E36] bg-white/40 dark:bg-[#103E36]/40 hover:bg-white/70 dark:hover:bg-[#103E36] transition-colors"
                       >
                         <div className="w-9 h-9 rounded-md bg-gradient-to-br from-[#103E36]/25 to-[#50BFA0]/30 dark:from-[#103E36]/40 dark:to-[#1F6A5C]/35 flex items-center justify-center shrink-0">
                           <Icon
