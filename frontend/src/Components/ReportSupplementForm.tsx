@@ -57,8 +57,8 @@ export function ReportSupplementForm({ report, onSupplemented }: ReportSupplemen
     }
   }
 
-  const inputClass = "w-full rounded-lg border border-gray-200 dark:border-white/20 bg-white dark:bg-[#192420] text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary text-sm";
-  const labelClass = "text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 block";
+  const inputClass = "w-full rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 bg-white dark:bg-[#192420] text-[#103E36] dark:text-white placeholder-[#1F6A5C]/50 dark:placeholder-[#1F6A5C]/50 focus:outline-none focus:ring-2 focus:ring-brand-primary text-sm";
+  const labelClass = "text-sm font-semibold text-[#103E36] dark:text-[#F4F3F4]/65 mb-1 block";
 
   return (
     <Box className="rounded-xl border-2 border-amber-500/40 bg-amber-50 dark:bg-amber-900/10 p-5 mt-4">

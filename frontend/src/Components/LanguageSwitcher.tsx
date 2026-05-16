@@ -36,21 +36,21 @@ export function LanguageSwitcher({
     <Icon
       as={IoGlobeOutline}
       boxSize={compact ? 5 : 4}
-      className={forSidebar && !isAuth ? "text-slate-600 dark:text-gray-200" : undefined}
+      className={forSidebar && !isAuth ? "text-[#1F6A5C] dark:text-[#F4F3F4]/80" : undefined}
     />
   );
 
   const sidebarBtnClass = compact
-    ? "h-9 w-9 min-w-0 gap-0 justify-center rounded-md border border-slate-200/90 bg-white/95 text-slate-800 shadow-sm hover:bg-white dark:border-[#192420] dark:bg-[#192420] dark:text-gray-100 dark:hover:bg-[#353835] dark:hover:border-[#3d413d]"
-    : "h-9 min-h-9 px-3 gap-2 rounded-md border border-slate-200/90 bg-white/95 text-slate-800 shadow-sm hover:bg-white dark:border-[#192420] dark:bg-[#192420] dark:text-gray-100 dark:hover:bg-[#353835] dark:hover:border-[#3d413d]";
+    ? "h-9 w-9 min-w-0 gap-0 justify-center rounded-md border border-[#1F6A5C]/20/90 bg-white/95 text-[#1C1E1C] shadow-sm hover:bg-white dark:border-[#192420] dark:bg-[#192420] dark:text-[#F4F3F4] dark:hover:bg-[#353835] dark:hover:border-[#3d413d]"
+    : "h-9 min-h-9 px-3 gap-2 rounded-md border border-[#1F6A5C]/20/90 bg-white/95 text-[#1C1E1C] shadow-sm hover:bg-white dark:border-[#192420] dark:bg-[#192420] dark:text-[#F4F3F4] dark:hover:bg-[#353835] dark:hover:border-[#3d413d]";
 
   const sidebarListClass =
-    "bg-white text-slate-800 border border-slate-200 shadow-xl ring-1 ring-black/5 rounded-md dark:bg-[#1B2620] dark:text-gray-100 dark:border-[#192420] dark:ring-white/5 z-[200]";
+    "bg-white text-[#1C1E1C] border border-[#1F6A5C]/20 shadow-xl ring-1 ring-black/5 rounded-md dark:bg-[#1B2620] dark:text-[#F4F3F4] dark:border-[#192420] dark:ring-white/5 z-[200]";
 
-  const itemSidebar = "text-slate-800 hover:bg-slate-100 dark:text-gray-100 dark:hover:bg-[#192420]";
+  const itemSidebar = "text-[#1C1E1C] hover:bg-[#F4F3F4] dark:text-[#F4F3F4] dark:hover:bg-[#192420]";
 
   const defaultBtn =
-    "text-gray-700 dark:text-gray-300 hover:bg-brand-primary/10 dark:hover:bg-brand-primary/20 hover:text-brand-primary";
+    "text-[#103E36] dark:text-[#F4F3F4]/65 hover:bg-brand-primary/10 dark:hover:bg-brand-primary/20 hover:text-brand-primary";
 
   return (
     <Menu>

@@ -30,7 +30,7 @@ export const InputLeftElement = forwardRef<
 >(({ className = "", children, width, height, ...props }, ref) => (
   <div
     ref={ref}
-    className={`absolute left-0 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none text-gray-500 ${className}`}
+    className={`absolute left-0 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none text-[#1F6A5C]/70 ${className}`}
     style={{ width: width ?? "2.5rem", height: height ?? "calc(100% - 4px)" }}
     {...props}
   >

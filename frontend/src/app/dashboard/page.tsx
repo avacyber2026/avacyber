@@ -347,10 +347,10 @@ export default function DashboardPage() {
           <Box className="relative px-4 pb-12 pt-4 md:px-6 lg:px-8 max-w-[1600px] mx-auto w-full">
             {/* Hero */}
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="mb-8">
-              <Text className="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-1">
+              <Text className="text-3xl md:text-4xl font-extrabold tracking-tight text-[#1C1E1C] dark:text-white mb-1">
                 {t("dashboard.welcomeBack")}, {welcomeShort}
               </Text>
-              <Text className="text-slate-600 dark:text-slate-300 text-base md:text-lg">{t("dashboard.subtitle")}</Text>
+              <Text className="text-[#1F6A5C] dark:text-[#F4F3F4]/60 text-base md:text-lg">{t("dashboard.subtitle")}</Text>
             </motion.div>
 
             {/* Metric bars + big stats */}
@@ -369,11 +369,11 @@ export default function DashboardPage() {
                     { label: t("dashboard.metricPulse"), v: stats.pulse, bg: "linear-gradient(90deg,#50BFA0,#103E36)" },
                   ].map((m) => (
                     <div key={m.label}>
-                      <div className="flex justify-between text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
+                      <div className="flex justify-between text-sm font-medium text-[#103E36] dark:text-[#F4F3F4]/80 mb-1.5">
                         <span>{m.label}</span>
                         <span className="tabular-nums">{loading ? "—" : `${m.v}%`}</span>
                       </div>
-                      <div className="h-3 rounded-full bg-slate-200/80 dark:bg-[#192420] overflow-hidden">
+                      <div className="h-3 rounded-full bg-[#50BFA0]/15/80 dark:bg-[#192420] overflow-hidden">
                         <div
                           className={`h-full rounded-full transition-all duration-1000 ease-out ${dash.stripedBar}`}
                           style={{ width: loading ? "0%" : `${m.v}%`, background: m.bg }}
@@ -416,10 +416,10 @@ export default function DashboardPage() {
                       >
                         <Icon as={c.icon} className="text-white text-xl" />
                       </div>
-                      <Text className="text-2xl md:text-3xl font-light tabular-nums text-slate-900 dark:text-white shrink-0">
+                      <Text className="text-2xl md:text-3xl font-light tabular-nums text-[#1C1E1C] dark:text-white shrink-0">
                         {c.n}
                       </Text>
-                      <Text className="text-xs md:text-sm text-slate-600 dark:text-slate-300 font-medium leading-snug mt-1 px-0.5 w-full">
+                      <Text className="text-xs md:text-sm text-[#1F6A5C] dark:text-[#F4F3F4]/60 font-medium leading-snug mt-1 px-0.5 w-full">
                         {c.lab}
                       </Text>
                     </div>
@@ -459,7 +459,7 @@ export default function DashboardPage() {
                   <button
                     type="button"
                     onClick={() => setExpandedProfile((e) => !e)}
-                    className="w-full flex items-center justify-between text-left py-2 text-slate-700 dark:text-slate-200 font-medium"
+                    className="w-full flex items-center justify-between text-left py-2 text-[#103E36] dark:text-[#F4F3F4]/80 font-medium"
                   >
                     {t("dashboard.quickLinks")}
                     <Icon as={expandedProfile ? IoChevronDown : IoChevronForward} />
@@ -468,19 +468,19 @@ export default function DashboardPage() {
                     <div className="space-y-1 pt-1">
                       <Link
                         href="/tickets"
-                        className="flex items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-white/60 dark:hover:bg-[#192420] transition-colors text-slate-700 dark:text-slate-200"
+                        className="flex items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-white/60 dark:hover:bg-[#192420] transition-colors text-[#103E36] dark:text-[#F4F3F4]/80"
                       >
                         <Icon as={IoGitPullRequestSharp} className="text-[#1F6A5C] dark:text-[#50BFA0]" />
                         {t("dashboard.goToTickets")}
-                        <Icon as={IoChevronForward} className="ml-auto text-slate-400" />
+                        <Icon as={IoChevronForward} className="ml-auto text-[#1F6A5C]/60" />
                       </Link>
                       <Link
                         href="/report"
-                        className="flex items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-white/60 dark:hover:bg-[#192420] transition-colors text-slate-700 dark:text-slate-200"
+                        className="flex items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-white/60 dark:hover:bg-[#192420] transition-colors text-[#103E36] dark:text-[#F4F3F4]/80"
                       >
                         <Icon as={IoDocumentTextOutline} className="text-[#1F6A5C] dark:text-[#50BFA0]" />
                         {t("dashboard.goToReport")}
-                        <Icon as={IoChevronForward} className="ml-auto text-slate-400" />
+                        <Icon as={IoChevronForward} className="ml-auto text-[#1F6A5C]/60" />
                       </Link>
                     </div>
                   )}
@@ -495,10 +495,10 @@ export default function DashboardPage() {
                 className={`lg:col-span-5 rounded-lg p-6 ${dash.glass}`}
               >
                 <div className="flex items-baseline justify-between mb-4">
-                  <Text className="text-lg font-bold text-slate-900 dark:text-white">{t("dashboard.progress")}</Text>
+                  <Text className="text-lg font-bold text-[#1C1E1C] dark:text-white">{t("dashboard.progress")}</Text>
                   <Text className="text-2xl font-light text-[#1F6A5C] dark:text-[#50BFA0] tabular-nums">
                     {loading ? "—" : itemsThisWeek}{" "}
-                    <span className="text-sm font-medium text-slate-500 dark:text-slate-400">{t("dashboard.hoursThisWeek")}</span>
+                    <span className="text-sm font-medium text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60">{t("dashboard.hoursThisWeek")}</span>
                   </Text>
                 </div>
                 <Box className="h-[280px]">
@@ -522,11 +522,11 @@ export default function DashboardPage() {
                         content={({ active, payload, label }) =>
                           active && payload?.length ? (
                             <div
-                              className={`rounded-lg px-3 py-2 border ${isDark ? "bg-[#1B2620] border-[#192420] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)]" : "bg-white border-slate-200 shadow-xl"}`}
+                              className={`rounded-lg px-3 py-2 border ${isDark ? "bg-[#1B2620] border-[#192420] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)]" : "bg-white border-[#1F6A5C]/20 shadow-xl"}`}
                             >
-                              <p className="text-xs font-semibold text-slate-500 mb-1">{label}</p>
+                              <p className="text-xs font-semibold text-[#1F6A5C]/70 mb-1">{label}</p>
                               {payload.map((p, i) => (
-                                <p key={i} className="text-sm text-slate-800 dark:text-slate-100">
+                                <p key={i} className="text-sm text-[#1C1E1C] dark:text-[#F4F3F4]">
                                   {p.name}: {p.value}
                                 </p>
                               ))}
@@ -551,7 +551,7 @@ export default function DashboardPage() {
                 <FocusTimerCard isDark={isDark} glassClass={dash.glass} />
 
                 <div className={`rounded-lg p-5 flex-1 min-h-[200px] ${dash.glass}`}>
-                  <Text className="text-sm font-bold text-slate-800 dark:text-white mb-2">{t("dashboard.closureOverview")}</Text>
+                  <Text className="text-sm font-bold text-[#1C1E1C] dark:text-white mb-2">{t("dashboard.closureOverview")}</Text>
                   <Box className="h-[180px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
@@ -582,8 +582,8 @@ export default function DashboardPage() {
                 </div>
 
                 <div className={`rounded-lg p-5 ${dash.glass}`}>
-                  <Text className="text-sm font-bold text-slate-800 dark:text-white mb-3">{t("dashboard.pipelineTitle")}</Text>
-                  <div className="flex h-4 rounded-full overflow-hidden shadow-inner bg-slate-200/50 dark:bg-[#192420]">
+                  <Text className="text-sm font-bold text-[#1C1E1C] dark:text-white mb-3">{t("dashboard.pipelineTitle")}</Text>
+                  <div className="flex h-4 rounded-full overflow-hidden shadow-inner bg-[#50BFA0]/15/50 dark:bg-[#192420]">
                     {pipeline.map((seg) => (
                       <div
                         key={seg.key}
@@ -593,7 +593,7 @@ export default function DashboardPage() {
                       />
                     ))}
                   </div>
-                  <div className="flex flex-wrap gap-3 mt-3 text-xs text-slate-600 dark:text-slate-300">
+                  <div className="flex flex-wrap gap-3 mt-3 text-xs text-[#1F6A5C] dark:text-[#F4F3F4]/60">
                     {pipeline.map((seg) => (
                       <span key={seg.key} className="flex items-center gap-1">
                         <span className="w-2 h-2 rounded-full" style={{ background: seg.color }} />
@@ -612,20 +612,20 @@ export default function DashboardPage() {
                 className={`lg:col-span-8 rounded-lg p-6 ${dash.glass}`}
               >
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-                  <Text className="text-lg font-bold text-slate-900 dark:text-white">{t("dashboard.thisWeek")}</Text>
+                  <Text className="text-lg font-bold text-[#1C1E1C] dark:text-white">{t("dashboard.thisWeek")}</Text>
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
                       onClick={() => setWeekOffset((w) => w - 1)}
-                      className="px-3 py-1 rounded-full bg-white/70 dark:bg-[#192420] text-sm font-medium text-slate-700 dark:text-slate-200 border border-white/80 dark:border-[#192420]"
+                      className="px-3 py-1 rounded-full bg-white/70 dark:bg-[#192420] text-sm font-medium text-[#103E36] dark:text-[#F4F3F4]/80 border border-white/80 dark:border-[#192420]"
                     >
                       ←
                     </button>
-                    <span className="text-sm font-semibold text-slate-700 dark:text-slate-200 min-w-[140px] text-center">{weekLabel}</span>
+                    <span className="text-sm font-semibold text-[#103E36] dark:text-[#F4F3F4]/80 min-w-[140px] text-center">{weekLabel}</span>
                     <button
                       type="button"
                       onClick={() => setWeekOffset((w) => w + 1)}
-                      className="px-3 py-1 rounded-full bg-white/70 dark:bg-[#192420] text-sm font-medium text-slate-700 dark:text-slate-200 border border-white/80 dark:border-[#192420]"
+                      className="px-3 py-1 rounded-full bg-white/70 dark:bg-[#192420] text-sm font-medium text-[#103E36] dark:text-[#F4F3F4]/80 border border-white/80 dark:border-[#192420]"
                     >
                       →
                     </button>
@@ -647,7 +647,7 @@ export default function DashboardPage() {
                         className={`text-center rounded-lg py-3 px-1 border transition-all ${
                           isToday
                             ? "bg-gradient-to-br from-[#103E36] to-[#1F6A5C] text-white border-transparent shadow-lg dark:shadow-[0_4px_18px_-4px_rgba(0,0,0,0.32)] scale-[1.02]"
-                            : "bg-white/50 dark:bg-[#192420]/55 border-white/60 dark:border-[#192420] text-slate-700 dark:text-slate-200"
+                            : "bg-white/50 dark:bg-[#192420]/55 border-white/60 dark:border-[#192420] text-[#103E36] dark:text-[#F4F3F4]/80"
                         }`}
                       >
                         <div className="text-xs font-medium opacity-80">{d.toLocaleDateString(undefined, { weekday: "short" })}</div>
@@ -656,10 +656,10 @@ export default function DashboardPage() {
                     );
                   })}
                 </div>
-                <Text className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-3">{t("dashboard.activityChart")}</Text>
+                <Text className="text-sm font-semibold text-[#103E36] dark:text-[#F4F3F4]/80 mb-3">{t("dashboard.activityChart")}</Text>
                 <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
                   {weekEvents.length === 0 ? (
-                    <Text className="text-slate-500 dark:text-slate-400 text-sm py-4 text-center">{t("dashboard.noRecent")}</Text>
+                    <Text className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 text-sm py-4 text-center">{t("dashboard.noRecent")}</Text>
                   ) : (
                     weekEvents.slice(0, 12).map((ev) => (
                       <Link
@@ -671,7 +671,7 @@ export default function DashboardPage() {
                         }
                         className={`flex items-center gap-3 rounded-lg px-4 py-3 border transition-all hover:shadow-md dark:hover:shadow-[0_2px_12px_-2px_rgba(0,0,0,0.22)] ${
                           ev.resolved
-                            ? "bg-slate-100/80 dark:bg-[#192420]/70 border-slate-200/80 dark:border-[#192420]"
+                            ? "bg-[#F4F3F4]/80 dark:bg-[#192420]/70 border-[#1F6A5C]/20/80 dark:border-[#192420]"
                             : "bg-gradient-to-r from-[#1F6A5C]/12 to-[#50BFA0]/10 border-[#1F6A5C]/25 dark:border-[#50BFA0]/35"
                         }`}
                       >
@@ -685,8 +685,8 @@ export default function DashboardPage() {
                           <Icon as={ev.kind === "ticket" ? IoGitPullRequestSharp : IoDocumentTextOutline} />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <Text className="font-medium text-slate-900 dark:text-white truncate">{ev.title}</Text>
-                          <Text className="text-xs text-slate-500 dark:text-slate-400">{formatTime(ev.at.toISOString())}</Text>
+                          <Text className="font-medium text-[#1C1E1C] dark:text-white truncate">{ev.title}</Text>
+                          <Text className="text-xs text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60">{formatTime(ev.at.toISOString())}</Text>
                         </div>
                         {ev.resolved ? (
                           <Icon as={IoCheckmarkCircle} className="text-[#1F6A5C] dark:text-[#50BFA0] text-xl shrink-0" />
@@ -707,14 +707,14 @@ export default function DashboardPage() {
                 className={`lg:col-span-4 rounded-lg p-6 ${dash.glass}`}
               >
                 <div className="flex items-center justify-between mb-5 gap-2">
-                  <Text className="text-lg font-bold text-slate-900 dark:text-white">{t("dashboard.latestItems")}</Text>
+                  <Text className="text-lg font-bold text-[#1C1E1C] dark:text-white">{t("dashboard.latestItems")}</Text>
                   <span className="text-xs font-mono tabular-nums shrink-0 text-[#1F6A5C] dark:text-[#50BFA0] bg-[#1F6A5C]/10 dark:bg-[#50BFA0]/12 px-3 py-1 rounded-full border border-[#1F6A5C]/20 dark:border-[#50BFA0]/25">
                     {trackedLine}
                   </span>
                 </div>
                 <div className="space-y-2">
                   {recentItems.length === 0 ? (
-                    <Text className="text-slate-500 dark:text-slate-400 text-sm py-6 text-center">{t("dashboard.noRecent")}</Text>
+                    <Text className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 text-sm py-6 text-center">{t("dashboard.noRecent")}</Text>
                   ) : (
                     recentItems.map((row) => (
                       <Link
@@ -729,14 +729,14 @@ export default function DashboardPage() {
                           />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <Text className="font-medium text-slate-900 dark:text-white text-sm truncate">{row.title}</Text>
-                          <Text className="text-xs text-slate-500 dark:text-slate-400">{row.sub}</Text>
+                          <Text className="font-medium text-[#1C1E1C] dark:text-white text-sm truncate">{row.title}</Text>
+                          <Text className="text-xs text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60">{row.sub}</Text>
                         </div>
                         <div
                           className={`w-8 h-8 rounded-full border-2 flex items-center justify-center shrink-0 ${
                             row.resolved
                               ? "border-[#1F6A5C] dark:border-[#50BFA0] bg-[#1F6A5C]/10 dark:bg-[#50BFA0]/15"
-                              : "border-slate-300 dark:border-[#3d4240]"
+                              : "border-[#1F6A5C]/25 dark:border-[#3d4240]"
                           }`}
                         >
                           {row.resolved && <Icon as={IoCheckmarkCircle} className="text-[#1F6A5C] dark:text-[#50BFA0]" />}

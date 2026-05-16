@@ -67,7 +67,7 @@ export function AlertDialogHeader({
 }) {
   return (
     <div
-      className={`text-lg font-semibold text-gray-900 dark:text-white mb-2 ${className}`}
+      className={`text-lg font-semibold text-[#1C1E1C] dark:text-white mb-2 ${className}`}
     >
       {children}
     </div>

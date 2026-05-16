@@ -59,7 +59,7 @@ export function SidebarHoverTooltip({ label, children, enabled }: SidebarHoverTo
       ? createPortal(
           <div
             role="tooltip"
-            className="pointer-events-none fixed z-[9999] max-w-[min(240px,calc(100vw-24px))] -translate-y-1/2 rounded-lg border border-white/15 bg-slate-900/95 px-3 py-2 text-left text-xs font-medium leading-snug text-white shadow-lg backdrop-blur-sm dark:border-gray-600 dark:bg-gray-100/95 dark:text-gray-900"
+            className="pointer-events-none fixed z-[9999] max-w-[min(240px,calc(100vw-24px))] -translate-y-1/2 rounded-lg border border-white/15 bg-[#103E36]/95 px-3 py-2 text-left text-xs font-medium leading-snug text-white shadow-lg backdrop-blur-sm dark:border-[#1F6A5C]/60 dark:bg-[#F4F3F4]/95 dark:text-[#1C1E1C]"
             style={{ top: coords.top, left: coords.left }}
           >
             {label}

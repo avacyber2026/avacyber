@@ -100,31 +100,31 @@ function SearchPageContent() {
       <SideMenu />
       <VStack className="w-full min-h-screen" align="stretch">
         <Box className={`${style.main} bg-[#F4F3F4] dark:bg-[#131C18] p-6`} as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <Text fontSize="2xl" fontWeight={700} className="mb-4 text-gray-800 dark:text-gray-100">
+          <Text fontSize="2xl" fontWeight={700} className="mb-4 text-[#103E36] dark:text-[#F4F3F4]">
             {t("common.searchTitle")}
           </Text>
-          <Divider className="mb-6 border-gray-200 dark:border-white/20" />
+          <Divider className="mb-6 border-[#1F6A5C]/20 dark:border-white/20" />
           <form onSubmit={handleSearch} className="mb-6">
             <InputGroup size="lg" className="max-w-[400px]">
-              <InputLeftElement className="text-gray-400 pointer-events-none">
+              <InputLeftElement className="text-[#1F6A5C]/60 pointer-events-none">
                 <FiSearch size={18} />
               </InputLeftElement>
               <Input
                 placeholder={t("common.searchPlaceholder")}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="pl-10 bg-white dark:bg-[#1B2620] border-gray-200 dark:border-white/20"
+                className="pl-10 bg-white dark:bg-[#1B2620] border-[#1F6A5C]/20 dark:border-white/20"
               />
             </InputGroup>
           </form>
           {loading ? (
-            <Text className="text-gray-500">{t("profile.loading")}</Text>
+            <Text className="text-[#1F6A5C]/70">{t("profile.loading")}</Text>
           ) : results.length > 0 ? (
             <VStack align="stretch" spacing={3}>
               {results.map((r) => (
                 <Link key={`${r.type}-${r.id}`} href={r.link}>
                   <Box
-                    className="p-4 rounded-lg bg-white dark:bg-[#1B2620] border border-gray-200 dark:border-white/20 hover:border-brand-primary hover:shadow-sm transition-colors"
+                    className="p-4 rounded-lg bg-white dark:bg-[#1B2620] border border-[#1F6A5C]/20 dark:border-white/20 hover:border-brand-primary hover:shadow-sm transition-colors"
                   >
                     <HStack justify="between" className="mb-1">
                       <Text fontWeight={600}>{r.title}</Text>
@@ -132,16 +132,16 @@ function SearchPageContent() {
                         {r.type === "report" ? "Report" : "Ticket"}
                       </Badge>
                     </HStack>
-                    {r.subtitle && <Text fontSize="sm" className="text-gray-500 line-clamp-2">{r.subtitle}</Text>}
-                    <Text fontSize="xs" className="text-gray-400">ID: {r.id}</Text>
+                    {r.subtitle && <Text fontSize="sm" className="text-[#1F6A5C]/70 line-clamp-2">{r.subtitle}</Text>}
+                    <Text fontSize="xs" className="text-[#1F6A5C]/60">ID: {r.id}</Text>
                   </Box>
                 </Link>
               ))}
             </VStack>
           ) : query.trim() ? (
-            <Text className="text-gray-500">{t("common.noResults")}</Text>
+            <Text className="text-[#1F6A5C]/70">{t("common.noResults")}</Text>
           ) : (
-            <Text className="text-gray-500">{t("common.enterQuery")}</Text>
+            <Text className="text-[#1F6A5C]/70">{t("common.enterQuery")}</Text>
           )}
         </Box>
       </VStack>
@@ -154,7 +154,7 @@ export default function SearchPage() {
     <Suspense fallback={
       <>
         <SideMenu />
-        <VStack className="w-full min-h-screen justify-center"><Text className="text-gray-500">...</Text></VStack>
+        <VStack className="w-full min-h-screen justify-center"><Text className="text-[#1F6A5C]/70">...</Text></VStack>
       </>
     }>
       <SearchPageContent />

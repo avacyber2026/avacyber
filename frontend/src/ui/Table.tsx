@@ -24,19 +24,19 @@ export function Table({
   variant?: string;
 }) {
   return (
-    <table className={`min-w-full divide-y divide-gray-200 dark:divide-white/20 ${className}`}>
+    <table className={`min-w-full divide-y divide-[#1F6A5C]/15 dark:divide-white/20 ${className}`}>
       {children}
     </table>
   );
 }
 
 export function Thead({ children }: { children: React.ReactNode }) {
-  return <thead className="bg-gray-50 dark:bg-gray-800/50">{children}</thead>;
+  return <thead className="bg-[#F4F3F4]/50 dark:bg-[#103E36]/50">{children}</thead>;
 }
 
 export function Tbody({ children }: { children: React.ReactNode }) {
   return (
-    <tbody className="divide-y divide-gray-200 dark:divide-white/20 bg-white dark:bg-[#1B2620]">
+    <tbody className="divide-y divide-[#1F6A5C]/15 dark:divide-white/20 bg-white dark:bg-[#1B2620]">
       {children}
     </tbody>
   );
@@ -62,7 +62,7 @@ export function Th({
   return (
     <th
       scope="col"
-      className={`px-4 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider ${className}`}
+      className={`px-4 py-3 text-left text-xs font-medium text-[#1F6A5C] dark:text-[#F4F3F4]/65 uppercase tracking-wider ${className}`}
     >
       {children}
     </th>
@@ -78,7 +78,7 @@ export function Td({
 }) {
   return (
     <td
-      className={`px-4 py-3 text-sm text-gray-800 dark:text-gray-100 ${className}`}
+      className={`px-4 py-3 text-sm text-[#103E36] dark:text-[#F4F3F4] ${className}`}
     >
       {children}
     </td>

@@ -34,7 +34,7 @@ function TicketsPageContent() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <Divider className="my-4 border-gray-200 dark:border-white/20" />
+            <Divider className="my-4 border-[#1F6A5C]/20 dark:border-white/20" />
             <div className={style.container}>
               <TicketsSimple />
             </div>

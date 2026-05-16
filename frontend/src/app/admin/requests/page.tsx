@@ -329,14 +329,14 @@ export default function AdminRequestsPage() {
   if (isAdmin === null) {
     return (
       <VStack className="w-full min-h-screen justify-center items-center bg-[#F4F3F4] dark:bg-[#131C18]">
-        <Text className="text-gray-500">{t("common.loading")}</Text>
+        <Text className="text-[#1F6A5C]/70">{t("common.loading")}</Text>
       </VStack>
     );
   }
   if (!isAdmin) {
     return (
       <VStack className="w-full min-h-screen justify-center items-center bg-[#F4F3F4] dark:bg-[#131C18]">
-        <Text className="text-gray-500">{t("admin.redirectingLogin")}</Text>
+        <Text className="text-[#1F6A5C]/70">{t("admin.redirectingLogin")}</Text>
       </VStack>
     );
   }
@@ -345,20 +345,20 @@ export default function AdminRequestsPage() {
     <VStack className="w-full min-h-screen items-stretch">
       <AdminSidebar />
       <Stack className={`${style.main} bg-[#F4F3F4] dark:bg-[#131C18] overflow-x-hidden`} as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-        <Text className="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+        <Text className="text-2xl font-semibold mb-4 text-[#103E36] dark:text-[#F4F3F4]">
           {t("admin.incidentLists")}
         </Text>
-        <Divider className="border-gray-200 dark:border-white/20 mb-4" />
+        <Divider className="border-[#1F6A5C]/20 dark:border-white/20 mb-4" />
 
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.05 }}>
-        <VStack align="stretch" spacing={4} className="mb-4 p-4 bg-white dark:bg-[#1B2620] rounded-lg border border-gray-200 dark:border-white/20 overflow-x-hidden">
-          <Text className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+        <VStack align="stretch" spacing={4} className="mb-4 p-4 bg-white dark:bg-[#1B2620] rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 overflow-x-hidden">
+          <Text className="text-sm font-semibold text-[#103E36] dark:text-[#F4F3F4]/80">
             {t("report.filters")}
           </Text>
           <Flex direction="row" align="center" wrap="wrap" className="flex-col md:flex-row gap-3 flex-wrap items-stretch md:items-center">
             <InputGroup size="sm" className="w-full md:w-[220px] shrink-0">
               <InputLeftElement>
-                <FiSearch className="text-gray-500" size={16} />
+                <FiSearch className="text-[#1F6A5C]/70" size={16} />
               </InputLeftElement>
               <Input
                 placeholder={t("admin.searchPlaceholder")}
@@ -410,7 +410,7 @@ export default function AdminRequestsPage() {
           </Flex>
           <Flex direction="row" align="center" className="flex-col sm:flex-row gap-3 flex-wrap items-stretch sm:items-center">
             <Flex align="center" gap={2} className="w-full sm:w-auto">
-              <Text as="span" className="text-sm whitespace-nowrap text-gray-600 dark:text-gray-400 shrink-0">{t("report.presets")}</Text>
+              <Text as="span" className="text-sm whitespace-nowrap text-[#1F6A5C] dark:text-[#1F6A5C]/60 shrink-0">{t("report.presets")}</Text>
               <Select
                 size="sm"
                 className="w-full sm:w-[130px] min-w-0"
@@ -420,16 +420,16 @@ export default function AdminRequestsPage() {
               />
             </Flex>
             <Flex align="center" gap={2} className="w-full sm:w-auto">
-              <Text as="span" className="text-sm whitespace-nowrap w-[90px] shrink-0 text-gray-600 dark:text-gray-400">{t("admin.createdFrom")}</Text>
+              <Text as="span" className="text-sm whitespace-nowrap w-[90px] shrink-0 text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("admin.createdFrom")}</Text>
               <Input type="date" size="sm" className="w-full sm:w-[150px] min-w-0" value={dateFrom} onChange={(e) => { setDateFrom(e.target.value); setFilterPreset("none"); }} />
             </Flex>
             <Flex align="center" gap={2} className="w-full sm:w-auto">
-              <Text as="span" className="text-sm whitespace-nowrap w-[90px] shrink-0 text-gray-600 dark:text-gray-400">{t("admin.createdTo")}</Text>
+              <Text as="span" className="text-sm whitespace-nowrap w-[90px] shrink-0 text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("admin.createdTo")}</Text>
               <Input type="date" size="sm" className="w-full sm:w-[150px] min-w-0" value={dateTo} onChange={(e) => { setDateTo(e.target.value); setFilterPreset("none"); }} />
             </Flex>
           </Flex>
           {totalIncidents > 0 && (
-            <Flex className="w-full justify-between items-center text-xs text-gray-500 dark:text-gray-400">
+            <Flex className="w-full justify-between items-center text-xs text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60">
               <span>
                 {t("admin.showingIncidents")
                 .replace("{from}", String((incidentPage - 1) * INCIDENTS_PER_PAGE + 1))
@@ -444,12 +444,12 @@ export default function AdminRequestsPage() {
         {loading ? (
           <Text className="py-4">{t("common.loading")}</Text>
         ) : totalIncidents === 0 ? (
-          <Text className="py-4 text-gray-500">
+          <Text className="py-4 text-[#1F6A5C]/70">
             {t("admin.noIncidentsFound")}
           </Text>
         ) : (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
-          <TableContainer className="whitespace-normal overflow-x-auto max-w-full bg-white dark:bg-[#1B2620] rounded-lg border border-gray-200 dark:border-white/20">
+          <TableContainer className="whitespace-normal overflow-x-auto max-w-full bg-white dark:bg-[#1B2620] rounded-lg border border-[#1F6A5C]/20 dark:border-white/20">
             <Table>
               <Thead>
                 <Tr>
@@ -540,7 +540,7 @@ export default function AdminRequestsPage() {
           }}
           size="xl"
         >
-          <ModalContent className="dark:bg-[#1B2620] dark:text-gray-100 max-h-[92vh] w-full min-w-0 overflow-y-auto">
+          <ModalContent className="dark:bg-[#1B2620] dark:text-[#F4F3F4] max-h-[92vh] w-full min-w-0 overflow-y-auto">
             <ModalHeader
               onClose={() => {
                 onEditClose();
@@ -550,7 +550,7 @@ export default function AdminRequestsPage() {
               {t("admin.editIncident")}
             </ModalHeader>
             <ModalBody className="space-y-3">
-              <Text className="text-sm text-gray-600 dark:text-gray-400">{t("admin.editIncidentHint")}</Text>
+              <Text className="text-sm text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("admin.editIncidentHint")}</Text>
               {incidentDraft ? (
                 <>
                   <div>
@@ -570,7 +570,7 @@ export default function AdminRequestsPage() {
                       onChange={(e) =>
                         setIncidentDraft((d) => (d ? { ...d, text: e.target.value } : d))
                       }
-                      className="w-full rounded-lg border border-gray-200 dark:border-white/20 bg-white dark:bg-[#192420] px-3 py-2 text-sm"
+                      className="w-full rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 bg-white dark:bg-[#192420] px-3 py-2 text-sm"
                     />
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -638,7 +638,7 @@ export default function AdminRequestsPage() {
                       onChange={(e) =>
                         setIncidentDraft((d) => (d ? { ...d, answer: e.target.value } : d))
                       }
-                      className="w-full rounded-lg border border-gray-200 dark:border-white/20 bg-white dark:bg-[#192420] px-3 py-2 text-sm"
+                      className="w-full rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 bg-white dark:bg-[#192420] px-3 py-2 text-sm"
                     />
                   </div>
                   <div>

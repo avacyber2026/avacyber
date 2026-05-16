@@ -10,7 +10,7 @@ import { setAdminAuthCookie } from "@/lib/authCookies";
 import styles from "@/styles/Auth.module.css";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-const inputStyles = "w-full h-[52px] !rounded-[18px] border border-gray-200 bg-white text-[15px] placeholder-gray-400 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 focus:outline-none";
+const inputStyles = "w-full h-[52px] !rounded-[18px] border border-[#1F6A5C]/20 bg-white text-[15px] placeholder-[#1F6A5C]/50 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 focus:outline-none";
 
 interface AdminLoginFormProps {
   onSuccess: () => void;
@@ -93,7 +93,7 @@ export function AdminLoginForm({ onSuccess }: AdminLoginFormProps) {
       </main>
 
       <Box
-        className="authPageFooter fixed bottom-0 left-0 right-0 py-3 px-4 bg-white/90 border-t border-gray-200 text-center text-sm text-gray-600 z-[5]"
+        className="authPageFooter fixed bottom-0 left-0 right-0 py-3 px-4 bg-white/90 border-t border-[#1F6A5C]/20 text-center text-sm text-[#1F6A5C] z-[5]"
       >
         {t("admin.adminOnlyNote")}{" "}
         <Link href="/" style={{ color: "#2563eb", fontWeight: 600, textDecoration: "underline" }}>

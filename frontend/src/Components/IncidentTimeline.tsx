@@ -79,15 +79,15 @@ function MarkdownBody({ source }: { source: string }) {
   return (
     <div
       className={[
-        "incident-md text-sm text-gray-700 dark:text-gray-200 leading-relaxed",
-        "[&_h1]:text-lg [&_h1]:font-bold [&_h1]:text-gray-900 [&_h1]:dark:text-white [&_h1]:mb-3 [&_h1]:mt-1",
-        "[&_h2]:text-base [&_h2]:font-semibold [&_h2]:text-gray-900 [&_h2]:dark:text-white [&_h2]:mb-2 [&_h2]:mt-4",
-        "[&_h3]:text-sm [&_h3]:font-semibold [&_h3]:text-gray-900 [&_h3]:dark:text-white [&_h3]:mb-2",
+        "incident-md text-sm text-[#103E36] dark:text-[#F4F3F4]/80 leading-relaxed",
+        "[&_h1]:text-lg [&_h1]:font-bold [&_h1]:text-[#1C1E1C] [&_h1]:dark:text-white [&_h1]:mb-3 [&_h1]:mt-1",
+        "[&_h2]:text-base [&_h2]:font-semibold [&_h2]:text-[#1C1E1C] [&_h2]:dark:text-white [&_h2]:mb-2 [&_h2]:mt-4",
+        "[&_h3]:text-sm [&_h3]:font-semibold [&_h3]:text-[#1C1E1C] [&_h3]:dark:text-white [&_h3]:mb-2",
         "[&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-2",
-        "[&_li]:mb-1 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:bg-gray-200/90 [&_code]:dark:bg-black/40 [&_code]:text-[#0d4f42] [&_code]:dark:text-[#a5e8d4] [&_code]:font-mono [&_code]:text-[13px]",
-        "[&_pre]:bg-gray-100 [&_pre]:dark:bg-black/35 [&_pre]:p-3 [&_pre]:rounded-lg [&_pre]:overflow-x-auto [&_pre]:mb-3 [&_pre]:border [&_pre]:border-gray-200 [&_pre]:dark:border-white/10",
+        "[&_li]:mb-1 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:bg-[#50BFA0]/15/90 [&_code]:dark:bg-black/40 [&_code]:text-[#0d4f42] [&_code]:dark:text-[#a5e8d4] [&_code]:font-mono [&_code]:text-[13px]",
+        "[&_pre]:bg-[#F4F3F4] [&_pre]:dark:bg-black/35 [&_pre]:p-3 [&_pre]:rounded-lg [&_pre]:overflow-x-auto [&_pre]:mb-3 [&_pre]:border [&_pre]:border-[#1F6A5C]/20 [&_pre]:dark:border-white/10",
         "[&_pre_code]:bg-transparent [&_pre_code]:p-0",
-        "[&_a]:text-[#1F6A5C] [&_a]:dark:text-[#50BFA0] [&_a]:underline [&_strong]:text-gray-900 [&_strong]:dark:text-white",
+        "[&_a]:text-[#1F6A5C] [&_a]:dark:text-[#50BFA0] [&_a]:underline [&_strong]:text-[#1C1E1C] [&_strong]:dark:text-white",
       ].join(" ")}
       dangerouslySetInnerHTML={{ __html: html }}
     />
@@ -184,7 +184,7 @@ export function IncidentTimeline({ ticketId, composerName }: IncidentTimelinePro
 
   return (
     <Box className="mt-10">
-      <Text fontSize="lg" fontWeight={700} className="text-gray-900 dark:text-white mb-4">
+      <Text fontSize="lg" fontWeight={700} className="text-[#1C1E1C] dark:text-white mb-4">
         {t("tickets.incidentThreadTitle")}
       </Text>
 
@@ -210,11 +210,11 @@ export function IncidentTimeline({ ticketId, composerName }: IncidentTimelinePro
             onChange={(e) => setDraft(e.target.value)}
             placeholder={t("tickets.incidentThreadPlaceholder")}
             rows={3}
-            className="w-full rounded-xl border border-gray-200 dark:border-white/15 bg-white dark:bg-[#131C18] text-gray-900 dark:text-gray-100 placeholder:text-gray-500 pr-11 py-3 resize-y min-h-[88px]"
+            className="w-full rounded-xl border border-[#1F6A5C]/20 dark:border-white/15 bg-white dark:bg-[#131C18] text-[#1C1E1C] dark:text-[#F4F3F4] placeholder:text-[#1F6A5C]/70 pr-11 py-3 resize-y min-h-[88px]"
           />
           <button
             type="button"
-            className="absolute right-3 top-3 p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer"
+            className="absolute right-3 top-3 p-1 rounded-md text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 hover:text-[#103E36] dark:hover:text-[#F4F3F4]/80 hover:bg-[#F4F3F4] dark:hover:bg-white/5 cursor-pointer"
             aria-label={t("tickets.incidentThreadAttach")}
             title={t("tickets.incidentThreadAttach")}
             onClick={() => fileInputRef.current?.click()}
@@ -226,14 +226,14 @@ export function IncidentTimeline({ ticketId, composerName }: IncidentTimelinePro
               {pendingFiles.map((f, i) => (
                 <li
                   key={`${fileDedupeKey(f)}-${i}`}
-                  className="inline-flex items-center gap-1 max-w-full rounded-md border border-gray-200 dark:border-white/15 bg-gray-50 dark:bg-white/5 px-2 py-1"
+                  className="inline-flex items-center gap-1 max-w-full rounded-md border border-[#1F6A5C]/20 dark:border-white/15 bg-[#F4F3F4]/50 dark:bg-white/5 px-2 py-1"
                 >
-                  <span className="truncate text-gray-700 dark:text-gray-200" title={f.name}>
+                  <span className="truncate text-[#103E36] dark:text-[#F4F3F4]/80" title={f.name}>
                     {f.name}
                   </span>
                   <button
                     type="button"
-                    className="shrink-0 text-gray-500 hover:text-red-600 dark:hover:text-red-400"
+                    className="shrink-0 text-[#1F6A5C]/70 hover:text-red-600 dark:hover:text-red-400"
                     aria-label={`Remove ${f.name}`}
                     onClick={() => setPendingFiles((prev) => prev.filter((_, j) => j !== i))}
                   >
@@ -249,19 +249,19 @@ export function IncidentTimeline({ ticketId, composerName }: IncidentTimelinePro
           onClick={post}
           isLoading={posting}
           disabled={!draft.trim() && pendingFiles.length === 0}
-          className="h-10 px-5 rounded-lg bg-gray-800 dark:bg-[#192420] hover:bg-gray-900 dark:hover:bg-[#353835] text-white border border-gray-700 dark:border-white/10"
+          className="h-10 px-5 rounded-lg bg-[#103E36] dark:bg-[#192420] hover:bg-[#103E36] dark:hover:bg-[#353835] text-white border border-[#1F6A5C] dark:border-white/10"
         >
           {t("tickets.incidentThreadPost")}
         </Button>
       </HStack>
 
       {loading ? (
-        <Text className="text-gray-500 dark:text-gray-400 text-sm">{t("common.loading")}</Text>
+        <Text className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 text-sm">{t("common.loading")}</Text>
       ) : entries.length === 0 ? (
-        <Text className="text-gray-500 text-sm">{t("tickets.incidentThreadEmpty")}</Text>
+        <Text className="text-[#1F6A5C]/70 text-sm">{t("tickets.incidentThreadEmpty")}</Text>
       ) : (
         <div className="relative">
-          <div className="absolute left-[19px] top-8 bottom-8 w-px bg-gray-300 dark:bg-gray-600/80" aria-hidden />
+          <div className="absolute left-[19px] top-8 bottom-8 w-px bg-[#50BFA0]/25 dark:bg-[#1F6A5C]/80" aria-hidden />
           <ul className="space-y-8 relative">
             {entries.map((e) => {
               const label = e.authorName || e.authorEmail || "?";
@@ -275,14 +275,14 @@ export function IncidentTimeline({ ticketId, composerName }: IncidentTimelinePro
                   </div>
                   <div className="flex-1 min-w-0 pt-0.5">
                     <HStack justify="space-between" align="flex-start" className="gap-2 mb-2">
-                      <Text fontWeight={600} className="text-gray-900 dark:text-white text-sm truncate">
+                      <Text fontWeight={600} className="text-[#1C1E1C] dark:text-white text-sm truncate">
                         {label}
                       </Text>
-                      <Text fontSize="xs" className="text-gray-500 shrink-0 whitespace-nowrap">
+                      <Text fontSize="xs" className="text-[#1F6A5C]/70 shrink-0 whitespace-nowrap">
                         {formatWhen(e.createdAt, locale)}
                       </Text>
                     </HStack>
-                    <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#1B2620] px-4 py-4 shadow-inner">
+                    <div className="rounded-xl border border-[#1F6A5C]/20 dark:border-white/10 bg-[#F4F3F4]/50 dark:bg-[#1B2620] px-4 py-4 shadow-inner">
                       <MarkdownBody source={e.body} />
                     </div>
                   </div>

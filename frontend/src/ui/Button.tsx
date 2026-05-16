@@ -54,8 +54,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       variant === "solid"
         ? "bg-brand-primary text-white hover:bg-brand-primaryDark dark:bg-brand-primary dark:text-white dark:hover:bg-brand-primaryDark"
         : variant === "outline"
-        ? "border border-gray-200 dark:border-white/20 text-gray-800 dark:text-white hover:bg-gray-50 dark:hover:bg-white/10 dark:hover:border-white/30"
-        : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10";
+        ? "border border-[#1F6A5C]/20 dark:border-white/20 text-[#103E36] dark:text-white hover:bg-[#F4F3F4]/50 dark:hover:bg-white/10 dark:hover:border-white/30"
+        : "text-[#103E36] dark:text-[#F4F3F4]/80 hover:bg-[#F4F3F4] dark:hover:bg-white/10";
     const cls = `${base} ${sizeClasses} ${variantClasses} ${className}`;
     return (
       <Comp

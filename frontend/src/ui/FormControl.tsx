@@ -35,7 +35,7 @@ export const FormLabel = forwardRef<
   return (
     <label
       ref={ref}
-      className={`block ${sizeCls} font-medium text-gray-700 dark:text-gray-300 mb-1 ${className}`}
+      className={`block ${sizeCls} font-medium text-[#103E36] dark:text-[#F4F3F4]/65 mb-1 ${className}`}
       {...props}
     >
       {children}

@@ -83,15 +83,15 @@ export function ModalHeader({
 }) {
   return (
     <div
-      className={`flex items-center justify-between p-4 border-b border-gray-200 dark:border-white/10 ${className}`}
+      className={`flex items-center justify-between p-4 border-b border-[#1F6A5C]/20 dark:border-white/10 ${className}`}
     >
-      <div className="text-lg font-semibold text-gray-900 dark:text-white">
+      <div className="text-lg font-semibold text-[#1C1E1C] dark:text-white">
         {children}
       </div>
       {onClose && (
         <button
           onClick={onClose}
-          className="p-1 rounded hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
+          className="p-1 rounded hover:bg-[#F4F3F4] dark:hover:bg-white/10 text-[#1F6A5C]/70 hover:text-[#103E36] dark:text-[#1F6A5C]/60 dark:hover:text-white"
           aria-label="Close"
         >
           ×
@@ -120,7 +120,7 @@ export function ModalFooter({
 }) {
   return (
     <div
-      className={`flex items-center justify-end gap-2 p-4 border-t border-gray-200 dark:border-white/10 ${className}`}
+      className={`flex items-center justify-end gap-2 p-4 border-t border-[#1F6A5C]/20 dark:border-white/10 ${className}`}
     >
       {children}
     </div>
@@ -131,7 +131,7 @@ export function ModalCloseButton({ onClose }: { onClose: () => void }) {
   return (
     <button
       onClick={onClose}
-      className="absolute top-2 right-2 p-1 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10"
+      className="absolute top-2 right-2 p-1 rounded cursor-pointer hover:bg-[#F4F3F4] dark:hover:bg-white/10"
       aria-label="Close"
     >
       ×

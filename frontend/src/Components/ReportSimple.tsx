@@ -131,7 +131,7 @@ export function ReportSimple() {
                 <p style={{ fontWeight: 600, fontSize: 14 }}>{r.subject}</p>
                 <p style={{ fontSize: 12, color: "#666" }}>{String(r.description || "").slice(0, 100)}…</p>
                 {r.pipelineStatus && (
-                  <span className={`inline-block mt-1 px-2 py-0.5 rounded text-xs font-medium ${r.pipelineStatus === 'resolved' ? 'bg-green-100 text-green-700' : r.pipelineStatus === 'awaiting_user_info' ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-600'}`}>
+                  <span className={`inline-block mt-1 px-2 py-0.5 rounded text-xs font-medium ${r.pipelineStatus === 'resolved' ? 'bg-green-100 text-green-700' : r.pipelineStatus === 'awaiting_user_info' ? 'bg-amber-100 text-amber-700' : 'bg-[#F4F3F4] text-[#1F6A5C]'}`}>
                     {r.pipelineStatus}
                   </span>
                 )}
@@ -197,7 +197,7 @@ export function ReportSimple() {
                 onChange={(e) => setTimelineComment(e.target.value)}
                 className={style.timelineCommentInput}
               />
-              <FiPaperclip className="shrink-0 text-gray-500 dark:text-gray-400" size={20} aria-hidden />
+              <FiPaperclip className="shrink-0 text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60" size={20} aria-hidden />
               <button type="button" className={style.timelinePostBtn}>
                 {t("report.post")}
               </button>
@@ -230,7 +230,7 @@ export function ReportSimple() {
                           <p style={{ fontWeight: 600, margin: 0 }}>{x.title}</p>
                           <p className={style.timelineTextPreview}>{String(x.text || "").slice(0, 120)}{(x.text || "").length > 120 ? "…" : ""}</p>
                         </div>
-                        <Divider className="border-gray-200 dark:border-white/20" />
+                        <Divider className="border-[#1F6A5C]/20 dark:border-white/20" />
                         <div className={style.line}>
                           <p><b>{t("report.statusLabel")}</b></p>
                           <p>{isResolved ? t("report.resolved") : t("report.inWork")}</p>

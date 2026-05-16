@@ -32,7 +32,7 @@ function statusStyles(s: string): string {
   if (u.includes("updated")) return "bg-violet-500/12 text-violet-800 dark:text-violet-200 border-violet-500/25";
   if (u.includes("new")) return "bg-sky-500/12 text-sky-800 dark:text-sky-200 border-sky-500/25";
   if (u.includes("active")) return "bg-amber-500/12 text-amber-900 dark:text-amber-200 border-amber-500/25";
-  return "bg-gray-500/10 text-gray-800 dark:text-gray-200 border-gray-500/20";
+  return "bg-[#F4F3F4]/500/10 text-[#103E36] dark:text-[#F4F3F4]/80 border-[#1F6A5C]/50/20";
 }
 
 export interface IncidentLogCardProps {
@@ -59,15 +59,15 @@ export function IncidentLogCard({
 
   const defaultFooter = (
     <>
-      <Text fontSize="xs" fontWeight={600} className="uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
+      <Text fontSize="xs" fontWeight={600} className="uppercase tracking-wide text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mb-2">
         {answerHeading}
       </Text>
       {x.answer === "" ? (
-        <Text fontSize="sm" className="text-gray-400 dark:text-gray-500 italic">
+        <Text fontSize="sm" className="text-[#1F6A5C]/60 dark:text-[#1F6A5C]/70 italic">
           {emptyAnswerText}
         </Text>
       ) : (
-        <Text fontSize="sm" className="text-gray-700 dark:text-gray-200 whitespace-pre-wrap leading-relaxed">
+        <Text fontSize="sm" className="text-[#103E36] dark:text-[#F4F3F4]/80 whitespace-pre-wrap leading-relaxed">
           {x.answer}
         </Text>
       )}
@@ -79,7 +79,7 @@ export function IncidentLogCard({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: Math.min(index * 0.04, 0.4) }}
-      className="w-full rounded-xl border border-gray-200 dark:border-white/15 bg-white dark:bg-[#1B2620] shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden"
+      className="w-full rounded-xl border border-[#1F6A5C]/20 dark:border-white/15 bg-white dark:bg-[#1B2620] shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden"
     >
       <div className="p-5 flex flex-col gap-4">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3">
@@ -88,28 +88,28 @@ export function IncidentLogCard({
               <IoPersonCircleOutline className="w-6 h-6" aria-hidden />
             </Box>
             <div className="min-w-0 flex-1">
-              <Text fontSize="sm" fontWeight={600} className="text-gray-600 dark:text-gray-300 break-all sm:break-words" title={x.fromUser}>
+              <Text fontSize="sm" fontWeight={600} className="text-[#1F6A5C] dark:text-[#F4F3F4]/65 break-all sm:break-words" title={x.fromUser}>
                 {x.fromUser}
               </Text>
               {showRouting && (x.createdBy || x.assignedTo) && (
-                <Text fontSize="xs" className="text-gray-500 dark:text-gray-500 mt-1 leading-relaxed">
+                <Text fontSize="xs" className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/70 mt-1 leading-relaxed">
                   {x.createdBy && (
                     <>
-                      <span className="text-gray-500 dark:text-gray-400">Created by </span>
-                      <span className="font-medium text-gray-800 dark:text-gray-200">{x.createdBy}</span>
+                      <span className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60">Created by </span>
+                      <span className="font-medium text-[#103E36] dark:text-[#F4F3F4]/80">{x.createdBy}</span>
                     </>
                   )}
-                  {x.createdBy && x.assignedTo && <span className="mx-1 text-gray-400">·</span>}
+                  {x.createdBy && x.assignedTo && <span className="mx-1 text-[#1F6A5C]/60">·</span>}
                   {x.assignedTo && (
                     <>
-                      <span className="text-gray-500 dark:text-gray-400">Assigned to </span>
-                      <span className="font-medium text-gray-800 dark:text-gray-200">{x.assignedTo}</span>
+                      <span className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60">Assigned to </span>
+                      <span className="font-medium text-[#103E36] dark:text-[#F4F3F4]/80">{x.assignedTo}</span>
                     </>
                   )}
                 </Text>
               )}
               {when && (
-                <Text fontSize="xs" className="text-gray-400 dark:text-gray-500 mt-1">
+                <Text fontSize="xs" className="text-[#1F6A5C]/60 dark:text-[#1F6A5C]/70 mt-1">
                   {when}
                 </Text>
               )}
@@ -127,12 +127,12 @@ export function IncidentLogCard({
               {x.status}
             </span>
             <span
-              className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium border border-gray-200 dark:border-white/15 bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 max-w-[220px] truncate"
+              className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium border border-[#1F6A5C]/20 dark:border-white/15 bg-[#F4F3F4]/50 dark:bg-white/5 text-[#103E36] dark:text-[#F4F3F4]/65 max-w-[220px] truncate"
               title={x.type}
             >
               {x.type}
             </span>
-            <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-mono text-gray-500 dark:text-gray-400 border border-dashed border-gray-200 dark:border-white/20">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-mono text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 border border-dashed border-[#1F6A5C]/20 dark:border-white/20">
               #{x.id}
             </span>
             {x.siemAlertId ? (
@@ -148,15 +148,15 @@ export function IncidentLogCard({
         </div>
 
         <div>
-          <Text fontSize="lg" fontWeight={700} className="text-gray-900 dark:text-gray-100 mb-2 leading-snug">
+          <Text fontSize="lg" fontWeight={700} className="text-[#1C1E1C] dark:text-[#F4F3F4] mb-2 leading-snug">
             {x.title}
           </Text>
-          <Text fontSize="sm" className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
+          <Text fontSize="sm" className="text-[#1F6A5C] dark:text-[#F4F3F4]/65 whitespace-pre-wrap leading-relaxed">
             {x.text}
           </Text>
         </div>
 
-        <Divider className="border-gray-200 dark:border-white/10 opacity-80" />
+        <Divider className="border-[#1F6A5C]/20 dark:border-white/10 opacity-80" />
 
         {children ?? defaultFooter}
       </div>

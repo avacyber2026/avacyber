@@ -14,9 +14,9 @@ import {
 } from "react-icons/io5";
 
 const inputClass =
-  "w-full rounded-lg border border-gray-200 dark:border-white/20 bg-white dark:bg-[#192420] text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary transition-colors";
+  "w-full rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 bg-white dark:bg-[#192420] text-[#103E36] dark:text-white placeholder-[#1F6A5C]/50 dark:placeholder-[#1F6A5C]/50 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary transition-colors";
 const textareaClass = inputClass + " min-h-[120px] p-3 resize-y";
-const labelClass = "text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 block";
+const labelClass = "text-sm font-semibold text-[#103E36] dark:text-[#F4F3F4]/65 mb-1 block";
 
 function fileDedupeKey(f: File) {
   return `${f.name}-${f.size}-${f.lastModified}`;
@@ -104,17 +104,17 @@ export function IncidentCreateForm({ onSuccess }: IncidentCreateFormProps) {
 
   return (
     <Box className="grid grid-cols-1 lg:grid-cols-[1fr,1.2fr] gap-x-8 lg:gap-x-12 gap-y-10 max-w-5xl items-start">
-      <Text fontSize="sm" className="text-gray-500 dark:text-gray-400 lg:col-span-2 -mb-4">
+      <Text fontSize="sm" className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 lg:col-span-2 -mb-4">
         {t("report.requiredLegend")}
       </Text>
       {/* Row 1: What's going on — Brief, In-depth, Attach */}
-      <Box className="text-gray-600 dark:text-gray-400 text-sm lg:pt-1">
-        <Text fontWeight={600} className="text-gray-800 dark:text-gray-100 mb-1">
+      <Box className="text-[#1F6A5C] dark:text-[#1F6A5C]/60 text-sm lg:pt-1">
+        <Text fontWeight={600} className="text-[#103E36] dark:text-[#F4F3F4] mb-1">
           {t("report.whatsGoingOn")}
         </Text>
         <Text fontSize="sm">{t("report.whatsGoingOnDesc")}</Text>
       </Box>
-      <VStack align="stretch" spacing={4} className="bg-white dark:bg-[#1B2620] rounded-xl border border-gray-200 dark:border-white/20 p-6">
+      <VStack align="stretch" spacing={4} className="bg-white dark:bg-[#1B2620] rounded-xl border border-[#1F6A5C]/20 dark:border-white/20 p-6">
         <Box>
           <label className={labelClass}>{t("report.briefDescription")} *</label>
           <Input
@@ -140,7 +140,7 @@ export function IncidentCreateForm({ onSuccess }: IncidentCreateFormProps) {
             className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors min-w-0 max-w-full ${
               dragOver
                 ? "border-brand-primary bg-brand-primary/5 dark:bg-brand-primary/10"
-                : "border-gray-200 dark:border-white/20 hover:border-gray-300 dark:hover:border-white/30"
+                : "border-[#1F6A5C]/20 dark:border-white/20 hover:border-[#1F6A5C]/25 dark:hover:border-white/30"
             }`}
             onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
             onDragLeave={() => setDragOver(false)}
@@ -154,15 +154,15 @@ export function IncidentCreateForm({ onSuccess }: IncidentCreateFormProps) {
             }}
             onClick={() => fileInputRef.current?.click()}
           >
-            <IoDocumentAttachOutline className="mx-auto text-gray-400 dark:text-gray-500 mb-2" size={28} />
-            <Text fontSize="sm" className="text-gray-500 dark:text-gray-400 mb-2">
+            <IoDocumentAttachOutline className="mx-auto text-[#1F6A5C]/60 dark:text-[#1F6A5C]/70 mb-2" size={28} />
+            <Text fontSize="sm" className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mb-2">
               {t("report.dragDropFiles")}
             </Text>
             <Button
               type="button"
               size="sm"
               variant="outline"
-              className="border-gray-300 dark:border-white/20"
+              className="border-[#1F6A5C]/25 dark:border-white/20"
               onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
             >
               {t("report.chooseFiles")}
@@ -184,30 +184,30 @@ export function IncidentCreateForm({ onSuccess }: IncidentCreateFormProps) {
               }}
             />
             {attachedFiles.length > 0 && (
-              <VStack align="stretch" spacing={2} className="mt-4 text-left border-t border-gray-200 dark:border-white/15 pt-4">
-                <Text fontSize="xs" fontWeight={600} className="text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+              <VStack align="stretch" spacing={2} className="mt-4 text-left border-t border-[#1F6A5C]/20 dark:border-white/15 pt-4">
+                <Text fontSize="xs" fontWeight={600} className="text-[#1F6A5C] dark:text-[#1F6A5C]/60 uppercase tracking-wide">
                   {t("report.selectedFiles")}
                 </Text>
                 <ul className="space-y-2 min-w-0 max-w-full">
                   {attachedFiles.map((file, index) => (
                     <li
                       key={`${fileDedupeKey(file)}-${index}`}
-                      className="flex flex-col gap-2 rounded-lg bg-gray-50 dark:bg-white/5 px-3 py-2 text-sm text-gray-800 dark:text-gray-200 sm:flex-row sm:items-start sm:justify-between sm:gap-3"
+                      className="flex flex-col gap-2 rounded-lg bg-[#F4F3F4]/50 dark:bg-white/5 px-3 py-2 text-sm text-[#103E36] dark:text-[#F4F3F4]/80 sm:flex-row sm:items-start sm:justify-between sm:gap-3"
                     >
                       <div className="flex min-w-0 w-full flex-1 flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-2">
                         <span
-                          className="min-w-0 flex-1 text-left break-words [overflow-wrap:anywhere] text-gray-800 dark:text-gray-200"
+                          className="min-w-0 flex-1 text-left break-words [overflow-wrap:anywhere] text-[#103E36] dark:text-[#F4F3F4]/80"
                           title={file.name}
                         >
                           {file.name}
                         </span>
-                        <span className="shrink-0 text-gray-500 dark:text-gray-400 tabular-nums text-xs sm:text-sm">
+                        <span className="shrink-0 text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 tabular-nums text-xs sm:text-sm">
                           {formatFileSize(file.size)}
                         </span>
                       </div>
                       <button
                         type="button"
-                        className="shrink-0 self-end p-0.5 rounded text-gray-500 hover:text-red-600 dark:hover:text-red-400 focus:outline-none focus:ring-2 focus:ring-brand-primary sm:self-center"
+                        className="shrink-0 self-end p-0.5 rounded text-[#1F6A5C]/70 hover:text-red-600 dark:hover:text-red-400 focus:outline-none focus:ring-2 focus:ring-brand-primary sm:self-center"
                         aria-label={t("report.removeFile")}
                         onClick={(e) => {
                           e.stopPropagation();
@@ -226,13 +226,13 @@ export function IncidentCreateForm({ onSuccess }: IncidentCreateFormProps) {
       </VStack>
 
       {/* Row 2: Your contact details — Your e-mail, reporter email, hostname */}
-      <Box className="text-gray-600 dark:text-gray-400 text-sm items-start">
-        <Text fontWeight={600} className="text-gray-800 dark:text-gray-100 mb-1">
+      <Box className="text-[#1F6A5C] dark:text-[#1F6A5C]/60 text-sm items-start">
+        <Text fontWeight={600} className="text-[#103E36] dark:text-[#F4F3F4] mb-1">
           {t("report.yourContactDetails")}
         </Text>
         <Text fontSize="sm">{t("report.yourContactDetailsDesc")}</Text>
       </Box>
-      <VStack align="stretch" spacing={4} className="bg-white dark:bg-[#1B2620] rounded-xl border border-gray-200 dark:border-white/20 p-6">
+      <VStack align="stretch" spacing={4} className="bg-white dark:bg-[#1B2620] rounded-xl border border-[#1F6A5C]/20 dark:border-white/20 p-6">
         <Box>
           <label className={labelClass}>{t("report.yourEmail")}</label>
           <Input value={email} readOnly className={inputClass + " opacity-90"} />
@@ -264,23 +264,23 @@ export function IncidentCreateForm({ onSuccess }: IncidentCreateFormProps) {
             onChange={(e) => setIncidentAt(e.target.value)}
             className={inputClass}
           />
-          <Text fontSize="xs" className="text-gray-500 dark:text-gray-400 mt-1">
+          <Text fontSize="xs" className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mt-1">
             {t("report.incidentTimeHint")}
           </Text>
         </Box>
       </VStack>
 
       {/* Row 3: Who should we notify — Report to */}
-      <Box className="text-gray-600 dark:text-gray-400 text-sm items-start">
-        <Text fontWeight={600} className="text-gray-800 dark:text-gray-100 mb-1">
+      <Box className="text-[#1F6A5C] dark:text-[#1F6A5C]/60 text-sm items-start">
+        <Text fontWeight={600} className="text-[#103E36] dark:text-[#F4F3F4] mb-1">
           {t("report.whoToNotify")}
         </Text>
         <Text fontSize="sm">{t("report.whoToNotifyDesc")}</Text>
       </Box>
-      <Box className="bg-white dark:bg-[#1B2620] rounded-xl border border-gray-200 dark:border-white/20 p-6">
+      <Box className="bg-white dark:bg-[#1B2620] rounded-xl border border-[#1F6A5C]/20 dark:border-white/20 p-6">
         <label className={labelClass}>{t("report.reportTo")}</label>
-        <Box className="flex items-center gap-2 rounded-lg border border-gray-200 dark:border-white/20 bg-white dark:bg-[#192420] px-3 py-2">
-          <IoPeopleOutline className="text-gray-500 dark:text-gray-400 shrink-0" size={20} />
+        <Box className="flex items-center gap-2 rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 bg-white dark:bg-[#192420] px-3 py-2">
+          <IoPeopleOutline className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 shrink-0" size={20} />
           <Select
             value={priority}
             onChange={(v) => setPriority(v as "Low" | "Medium" | "High" | "Critical")}
@@ -297,13 +297,13 @@ export function IncidentCreateForm({ onSuccess }: IncidentCreateFormProps) {
       </Box>
 
       {/* Row 4: Notification channels — Notify via + button */}
-      <Box className="text-gray-600 dark:text-gray-400 text-sm items-start">
-        <Text fontWeight={600} className="text-gray-800 dark:text-gray-100 mb-1">
+      <Box className="text-[#1F6A5C] dark:text-[#1F6A5C]/60 text-sm items-start">
+        <Text fontWeight={600} className="text-[#103E36] dark:text-[#F4F3F4] mb-1">
           {t("report.notificationChannels")}
         </Text>
         <Text fontSize="sm">{t("report.notificationChannelsDesc")}</Text>
       </Box>
-      <VStack align="stretch" spacing={4} className="bg-white dark:bg-[#1B2620] rounded-xl border border-gray-200 dark:border-white/20 p-6">
+      <VStack align="stretch" spacing={4} className="bg-white dark:bg-[#1B2620] rounded-xl border border-[#1F6A5C]/20 dark:border-white/20 p-6">
         <Box>
           <label className={labelClass}>{t("report.notifyVia")}</label>
           <VStack align="stretch" spacing={2} className="mt-2">
@@ -314,21 +314,21 @@ export function IncidentCreateForm({ onSuccess }: IncidentCreateFormProps) {
               { key: "push", label: t("report.notifyPush"), checked: notifyPush, set: setNotifyPush },
               { key: "critical", label: t("report.notifyCriticalAlert"), checked: notifyCritical, set: setNotifyCritical },
             ].map(({ key, label, checked, set }) => (
-              <label key={key} className="flex items-center gap-2 cursor-pointer text-sm text-gray-700 dark:text-gray-300">
+              <label key={key} className="flex items-center gap-2 cursor-pointer text-sm text-[#103E36] dark:text-[#F4F3F4]/65">
                 <input
                   type="checkbox"
                   checked={checked}
                   onChange={(e) => set(e.target.checked)}
-                  className="rounded border-gray-300 dark:border-white/30 text-brand-primary focus:ring-brand-primary"
+                  className="rounded border-[#1F6A5C]/25 dark:border-white/30 text-brand-primary focus:ring-brand-primary"
                 />
                 <span>{label}</span>
                 {key === "critical" && (
-                  <IoInformationCircleOutline className="text-gray-400" size={16} title={t("report.noOnCallNote")} />
+                  <IoInformationCircleOutline className="text-[#1F6A5C]/60" size={16} title={t("report.noOnCallNote")} />
                 )}
               </label>
             ))}
           </VStack>
-          <Text fontSize="xs" className="text-gray-500 dark:text-gray-400 mt-2">
+          <Text fontSize="xs" className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mt-2">
             {t("report.noOnCallNote")}
           </Text>
         </Box>

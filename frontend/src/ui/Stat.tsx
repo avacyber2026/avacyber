@@ -6,7 +6,7 @@ export function Stat({ children, className = "" }: { children: React.ReactNode; 
 
 export function StatLabel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <dt className={`text-sm font-medium text-gray-500 dark:text-gray-400 ${className}`}>
+    <dt className={`text-sm font-medium text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 ${className}`}>
       {children}
     </dt>
   );
@@ -14,7 +14,7 @@ export function StatLabel({ children, className = "" }: { children: React.ReactN
 
 export function StatNumber({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <dd className={`text-2xl font-semibold text-gray-900 dark:text-white ${className}`}>
+    <dd className={`text-2xl font-semibold text-[#1C1E1C] dark:text-white ${className}`}>
       {children}
     </dd>
   );
@@ -22,7 +22,7 @@ export function StatNumber({ children, className = "" }: { children: React.React
 
 export function StatHelpText({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <dd className={`text-sm text-gray-500 dark:text-gray-400 mt-1 ${className}`}>
+    <dd className={`text-sm text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mt-1 ${className}`}>
       {children}
     </dd>
   );

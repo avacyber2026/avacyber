@@ -48,25 +48,25 @@ export function UserProfileCard({
 
   return (
     <motion.div
-      className="border border-gray-200 dark:border-white/20 rounded-lg p-4 bg-white dark:bg-[#1B2620] hover:border-gray-400"
+      className="border border-[#1F6A5C]/20 dark:border-white/20 rounded-lg p-4 bg-white dark:bg-[#1B2620] hover:border-[#1F6A5C]/35"
       whileHover={{ y: -2, boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
       whileTap={{ scale: 0.99 }}
     >
       <HStack spacing={3} align="start">
-        <Box className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center shrink-0">
-          <Icon as={FaUser} boxSize={5} className="text-gray-500" />
+        <Box className="w-10 h-10 rounded-full bg-[#F4F3F4] dark:bg-[#1F6A5C] flex items-center justify-center shrink-0">
+          <Icon as={FaUser} boxSize={5} className="text-[#1F6A5C]/70" />
         </Box>
         <VStack align="stretch" spacing={1} className="flex-1 min-w-0">
           <Text fontSize="sm" fontWeight={600} noOfLines={1}>
             {email}
           </Text>
           {nameLine ? (
-            <Text fontSize="xs" className="text-gray-600 dark:text-gray-400">
+            <Text fontSize="xs" className="text-[#1F6A5C] dark:text-[#1F6A5C]/60">
               {nameLine}
             </Text>
           ) : null}
           {(jobTitle || department) ? (
-            <Text fontSize="xs" className="text-gray-500 dark:text-gray-500 noOfLines={2}">
+            <Text fontSize="xs" className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/70 noOfLines={2}">
               {[jobTitle, department].filter(Boolean).join(" · ")}
             </Text>
           ) : null}
@@ -83,13 +83,13 @@ export function UserProfileCard({
                 options={roleOptions.map((r) => ({ value: r, label: r }))}
               />
             ) : (
-              <Text fontSize="xs" className="text-gray-500">
+              <Text fontSize="xs" className="text-[#1F6A5C]/70">
                 {role}
               </Text>
             )}
           </HStack>
           {rejectionComment != null && rejectionComment !== "" && (
-            <Text fontSize="xs" noOfLines={2} className="text-gray-600 dark:text-gray-400 mt-1">
+            <Text fontSize="xs" noOfLines={2} className="text-[#1F6A5C] dark:text-[#1F6A5C]/60 mt-1">
               {rejectionComment}
             </Text>
           )}

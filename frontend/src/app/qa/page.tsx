@@ -94,7 +94,7 @@ const SEV_COLOR: Record<string, string> = {
   high:     "text-orange-400 bg-orange-400/10 border-orange-400/30",
   medium:   "text-amber-400 bg-amber-400/10 border-amber-400/30",
   low:      "text-teal-400 bg-teal-400/10 border-teal-400/30",
-  info:     "text-slate-400 bg-slate-400/10 border-slate-400/20",
+  info:     "text-[#1F6A5C]/60 bg-[#50BFA0]/40/10 border-[#1F6A5C]/35/20",
 };
 
 function SevBadge({ severity }: { severity: string }) {
@@ -115,7 +115,7 @@ function VerdictBadge({ verdict }: { verdict: string }) {
 }
 
 function ScoreRing({ score }: { score: number | null }) {
-  if (score === null) return <span className="text-xs text-slate-400">—</span>;
+  if (score === null) return <span className="text-xs text-[#1F6A5C]/60">—</span>;
   const color = score >= 85 ? "text-emerald-400 ring-emerald-500/30"
               : score >= 65 ? "text-amber-400 ring-amber-400/30"
               : "text-red-400 ring-red-500/30";
@@ -242,8 +242,8 @@ export default function QaPage() {
                 <FaUserShield size={20} />
               </div>
               <div>
-                <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">AI QA</h1>
-                <p className="text-sm text-slate-500 dark:text-slate-400">Analyst Quality Assurance</p>
+                <h1 className="text-2xl font-extrabold tracking-tight text-[#1C1E1C] dark:text-white leading-tight">AI QA</h1>
+                <p className="text-sm text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60">Analyst Quality Assurance</p>
               </div>
               {stats && stats.pending > 0 && (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/25 text-amber-400 text-xs font-bold">
@@ -252,7 +252,7 @@ export default function QaPage() {
               )}
             </div>
             <button onClick={fetchData}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border border-white/70 dark:border-[#192420] bg-white/60 dark:bg-[#1B2620] text-slate-700 dark:text-slate-200 hover:bg-white/90 dark:hover:bg-[#192420] transition-colors">
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border border-white/70 dark:border-[#192420] bg-white/60 dark:bg-[#1B2620] text-[#103E36] dark:text-[#F4F3F4]/80 hover:bg-white/90 dark:hover:bg-[#192420] transition-colors">
               <MdRefresh size={16} /> Refresh
             </button>
           </motion.div>
@@ -271,8 +271,8 @@ export default function QaPage() {
                   <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${c.color} flex items-center justify-center text-white shadow-md mb-3`}>
                     <FaUserShield size={16} />
                   </div>
-                  <div className="text-3xl font-light tabular-nums text-slate-900 dark:text-white mb-0.5">{c.value}</div>
-                  <div className="text-sm font-semibold text-slate-600 dark:text-slate-300">{c.label}</div>
+                  <div className="text-3xl font-light tabular-nums text-[#1C1E1C] dark:text-white mb-0.5">{c.value}</div>
+                  <div className="text-sm font-semibold text-[#1F6A5C] dark:text-[#F4F3F4]/60">{c.label}</div>
                 </motion.div>
               ))}
             </div>
@@ -286,7 +286,7 @@ export default function QaPage() {
                 className={`flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold transition-all capitalize ${
                   tab === t
                     ? "bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white shadow-md"
-                    : "text-slate-600 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-[#192420]"
+                    : "text-[#1F6A5C] dark:text-[#F4F3F4]/60 hover:bg-white/60 dark:hover:bg-[#192420]"
                 }`}>
                 {t === "queue" ? (
                   <><IoWarning size={15} /> QA Queue {pendingCount > 0 && <span className="ml-1 px-1.5 py-0.5 rounded-full bg-amber-400/20 text-amber-400 text-xs font-bold">{pendingCount}</span>}</>
@@ -305,7 +305,7 @@ export default function QaPage() {
                 <div className={`${glass} p-5`}>
                   {/* Filters */}
                   <div className="flex items-center gap-3 mb-5 flex-wrap">
-                    <h2 className="font-bold text-slate-900 dark:text-white text-lg flex-1">QA Queue</h2>
+                    <h2 className="font-bold text-[#1C1E1C] dark:text-white text-lg flex-1">QA Queue</h2>
                     {/* Verdict filter */}
                     <div className="flex gap-1.5 flex-wrap">
                       {(["all", "fail", "flag", "pass"] as const).map(v => (
@@ -316,7 +316,7 @@ export default function QaPage() {
                                 : v === "fail" ? "bg-red-500/15 border border-red-500/30 text-red-400"
                                 : v === "flag" ? "bg-amber-400/15 border border-amber-400/30 text-amber-400"
                                 : "bg-emerald-500/15 border border-emerald-500/30 text-emerald-500"
-                              : "border border-white/60 dark:border-[#192420] bg-white/40 dark:bg-[#192420]/40 text-slate-500"
+                              : "border border-white/60 dark:border-[#192420] bg-white/40 dark:bg-[#192420]/40 text-[#1F6A5C]/70"
                           }`}>
                           {v}
                         </button>
@@ -329,7 +329,7 @@ export default function QaPage() {
                           className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize transition-all ${
                             statusFilter === s
                               ? "bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white"
-                              : "border border-white/60 dark:border-[#192420] bg-white/40 dark:bg-[#192420]/40 text-slate-500"
+                              : "border border-white/60 dark:border-[#192420] bg-white/40 dark:bg-[#192420]/40 text-[#1F6A5C]/70"
                           }`}>
                           {s}
                         </button>
@@ -338,11 +338,11 @@ export default function QaPage() {
                   </div>
 
                   {loading ? (
-                    <div className="space-y-3">{[1,2,3,4].map(i => <div key={i} className="h-20 rounded-xl bg-slate-200/60 dark:bg-[#192420]/60 animate-pulse" />)}</div>
+                    <div className="space-y-3">{[1,2,3,4].map(i => <div key={i} className="h-20 rounded-xl bg-[#50BFA0]/15/60 dark:bg-[#192420]/60 animate-pulse" />)}</div>
                   ) : reviews.length === 0 ? (
-                    <div className="flex flex-col items-center py-16 text-slate-400">
+                    <div className="flex flex-col items-center py-16 text-[#1F6A5C]/60">
                       <IoCheckmarkCircle size={48} className="mb-3 opacity-30" />
-                      <div className="font-semibold text-slate-600 dark:text-slate-300 mb-1">No reviews found</div>
+                      <div className="font-semibold text-[#1F6A5C] dark:text-[#F4F3F4]/60 mb-1">No reviews found</div>
                       <div className="text-sm">Analyst actions will generate QA reviews automatically when alerts are resolved.</div>
                     </div>
                   ) : (
@@ -358,7 +358,7 @@ export default function QaPage() {
                             <ScoreRing score={r.ai_score} />
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 flex-wrap mb-1">
-                                <span className="font-bold text-slate-900 dark:text-white">{r.rule_name}</span>
+                                <span className="font-bold text-[#1C1E1C] dark:text-white">{r.rule_name}</span>
                                 <SevBadge severity={r.severity} />
                                 <VerdictBadge verdict={r.ai_verdict} />
                                 {r.manager_decision && (
@@ -373,11 +373,11 @@ export default function QaPage() {
                                 )}
                               </div>
                               {r.ai_summary && (
-                                <p className="text-sm text-slate-600 dark:text-slate-300 mb-1.5">{r.ai_summary}</p>
+                                <p className="text-sm text-[#1F6A5C] dark:text-[#F4F3F4]/60 mb-1.5">{r.ai_summary}</p>
                               )}
-                              <div className="flex flex-wrap gap-3 text-xs text-slate-500">
-                                <span className="font-semibold text-slate-700 dark:text-slate-200">{r.analyst_name ?? r.analyst_email}</span>
-                                <span className="text-slate-400">·</span>
+                              <div className="flex flex-wrap gap-3 text-xs text-[#1F6A5C]/70">
+                                <span className="font-semibold text-[#103E36] dark:text-[#F4F3F4]/80">{r.analyst_name ?? r.analyst_email}</span>
+                                <span className="text-[#1F6A5C]/60">·</span>
                                 <span>{resolutionLabel(r.resolution_type)}</span>
                                 {r.time_to_action_minutes !== null && <span>{r.time_to_action_minutes} min response</span>}
                                 <span>{formatRelative(r.created_at)}</span>
@@ -397,7 +397,7 @@ export default function QaPage() {
                                 </>
                               )}
                               <button onClick={() => toggleExpand(r.id)}
-                                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-500 hover:bg-slate-100 dark:hover:bg-[#192420] transition-colors whitespace-nowrap">
+                                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-[#1F6A5C]/70 hover:bg-[#F4F3F4] dark:hover:bg-[#192420] transition-colors whitespace-nowrap">
                                 <IoChevronDown size={13} className={`transition-transform ${expanded.has(r.id) ? "rotate-180" : ""}`} />
                                 Details
                               </button>
@@ -409,12 +409,12 @@ export default function QaPage() {
                             {expanded.has(r.id) && (
                               <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
                                 className="overflow-hidden">
-                                <div className="px-4 pb-4 space-y-4 border-t border-slate-100 dark:border-[#192420] pt-4">
+                                <div className="px-4 pb-4 space-y-4 border-t border-[#1F6A5C]/12 dark:border-[#192420] pt-4">
 
                                   {/* Findings checklist */}
                                   {Array.isArray(r.ai_findings) && r.ai_findings.length > 0 && (
                                     <div>
-                                      <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">AI Findings</div>
+                                      <div className="text-xs font-bold uppercase tracking-wider text-[#1F6A5C]/60 mb-2">AI Findings</div>
                                       <div className="space-y-2">
                                         {r.ai_findings.map((f, i) => (
                                           <div key={i} className={`flex gap-3 rounded-lg px-3 py-2.5 border text-sm ${
@@ -426,8 +426,8 @@ export default function QaPage() {
                                               {f.passed ? <IoCheckmarkCircle size={16} /> : <IoCloseCircle size={16} />}
                                             </span>
                                             <div>
-                                              <span className="font-semibold text-slate-700 dark:text-slate-200 mr-2">{f.category}</span>
-                                              <span className="text-slate-500 dark:text-slate-400">{f.detail}</span>
+                                              <span className="font-semibold text-[#103E36] dark:text-[#F4F3F4]/80 mr-2">{f.category}</span>
+                                              <span className="text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60">{f.detail}</span>
                                             </div>
                                           </div>
                                         ))}
@@ -438,21 +438,21 @@ export default function QaPage() {
                                   {/* Analyst action details */}
                                   <div className="grid grid-cols-2 gap-3">
                                     {r.analyst_notes && (
-                                      <div className="col-span-2 rounded-lg bg-slate-50 dark:bg-[#1c1e1c] border border-slate-100 dark:border-[#192420] px-4 py-3">
-                                        <div className="text-xs text-slate-400 mb-1">Analyst Notes</div>
-                                        <div className="text-sm text-slate-700 dark:text-slate-200">{r.analyst_notes}</div>
+                                      <div className="col-span-2 rounded-lg bg-[#F4F3F4]/50 dark:bg-[#1c1e1c] border border-[#1F6A5C]/12 dark:border-[#192420] px-4 py-3">
+                                        <div className="text-xs text-[#1F6A5C]/60 mb-1">Analyst Notes</div>
+                                        <div className="text-sm text-[#103E36] dark:text-[#F4F3F4]/80">{r.analyst_notes}</div>
                                       </div>
                                     )}
                                     {r.source_ip && (
-                                      <div className="rounded-lg bg-slate-50 dark:bg-[#1c1e1c] border border-slate-100 dark:border-[#192420] px-4 py-3">
-                                        <div className="text-xs text-slate-400 mb-1">Source IP</div>
-                                        <div className="text-sm font-mono text-slate-700 dark:text-slate-200">{r.source_ip}</div>
+                                      <div className="rounded-lg bg-[#F4F3F4]/50 dark:bg-[#1c1e1c] border border-[#1F6A5C]/12 dark:border-[#192420] px-4 py-3">
+                                        <div className="text-xs text-[#1F6A5C]/60 mb-1">Source IP</div>
+                                        <div className="text-sm font-mono text-[#103E36] dark:text-[#F4F3F4]/80">{r.source_ip}</div>
                                       </div>
                                     )}
                                     {r.username && (
-                                      <div className="rounded-lg bg-slate-50 dark:bg-[#1c1e1c] border border-slate-100 dark:border-[#192420] px-4 py-3">
-                                        <div className="text-xs text-slate-400 mb-1">Username</div>
-                                        <div className="text-sm font-semibold text-slate-700 dark:text-slate-200">{r.username}</div>
+                                      <div className="rounded-lg bg-[#F4F3F4]/50 dark:bg-[#1c1e1c] border border-[#1F6A5C]/12 dark:border-[#192420] px-4 py-3">
+                                        <div className="text-xs text-[#1F6A5C]/60 mb-1">Username</div>
+                                        <div className="text-sm font-semibold text-[#103E36] dark:text-[#F4F3F4]/80">{r.username}</div>
                                       </div>
                                     )}
                                   </div>
@@ -464,11 +464,11 @@ export default function QaPage() {
                                         ? "bg-emerald-500/5 border-emerald-500/20"
                                         : "bg-orange-400/5 border-orange-400/20"
                                     }`}>
-                                      <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
+                                      <div className="text-xs font-bold uppercase tracking-wider text-[#1F6A5C]/60 mb-1">
                                         Manager {r.manager_decision === "approved" ? "Approval" : "Override"} Note
                                       </div>
-                                      <div className="text-slate-700 dark:text-slate-200">{r.manager_notes}</div>
-                                      <div className="text-xs text-slate-400 mt-1">{r.manager_email}</div>
+                                      <div className="text-[#103E36] dark:text-[#F4F3F4]/80">{r.manager_notes}</div>
+                                      <div className="text-xs text-[#1F6A5C]/60 mt-1">{r.manager_email}</div>
                                     </div>
                                   )}
                                 </div>
@@ -485,11 +485,11 @@ export default function QaPage() {
               {/* ────────── SCORECARDS ────────── */}
               {tab === "scorecards" && (
                 <div className={`${glass} p-5`}>
-                  <h2 className="font-bold text-slate-900 dark:text-white text-lg mb-5">Analyst Scorecards</h2>
+                  <h2 className="font-bold text-[#1C1E1C] dark:text-white text-lg mb-5">Analyst Scorecards</h2>
                   {loading ? (
-                    <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-16 rounded-xl bg-slate-200/60 dark:bg-[#192420]/60 animate-pulse" />)}</div>
+                    <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-16 rounded-xl bg-[#50BFA0]/15/60 dark:bg-[#192420]/60 animate-pulse" />)}</div>
                   ) : scorecards.length === 0 ? (
-                    <div className="flex flex-col items-center py-16 text-slate-400">
+                    <div className="flex flex-col items-center py-16 text-[#1F6A5C]/60">
                       <MdOutlineShield size={48} className="mb-3 opacity-30" />
                       <div className="font-semibold">No scorecards yet</div>
                       <div className="text-sm">Scorecards populate once analysts resolve alerts.</div>
@@ -498,7 +498,7 @@ export default function QaPage() {
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
                         <thead>
-                          <tr className="text-left text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-white/40 dark:border-[#192420]">
+                          <tr className="text-left text-xs font-bold uppercase tracking-wider text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 border-b border-white/40 dark:border-[#192420]">
                             <th className="pb-3 pr-6">Analyst</th>
                             <th className="pb-3 pr-6">Avg Score</th>
                             <th className="pb-3 pr-6">Total</th>
@@ -515,7 +515,7 @@ export default function QaPage() {
                             const pass = parseInt(String(s.pass_count));
                             const passRate = total > 0 ? Math.round((pass / total) * 100) : 0;
                             const score = s.avg_score ? parseInt(String(s.avg_score)) : null;
-                            const scoreColor = !score ? "text-slate-400"
+                            const scoreColor = !score ? "text-[#1F6A5C]/60"
                               : score >= 85 ? "text-emerald-400"
                               : score >= 65 ? "text-amber-400"
                               : "text-red-400";
@@ -528,24 +528,24 @@ export default function QaPage() {
                                       {(s.analyst_name ?? s.analyst_email).charAt(0).toUpperCase()}
                                     </div>
                                     <div>
-                                      <div className="font-semibold text-slate-800 dark:text-white">{s.analyst_name ?? s.analyst_email}</div>
-                                      <div className="text-xs text-slate-400">{s.analyst_email}</div>
+                                      <div className="font-semibold text-[#1C1E1C] dark:text-white">{s.analyst_name ?? s.analyst_email}</div>
+                                      <div className="text-xs text-[#1F6A5C]/60">{s.analyst_email}</div>
                                     </div>
                                   </div>
                                 </td>
                                 <td className={`py-3.5 pr-6 text-2xl font-light tabular-nums ${scoreColor}`}>
                                   {score ?? "—"}
                                 </td>
-                                <td className="py-3.5 pr-6 font-semibold text-slate-700 dark:text-slate-200 tabular-nums">{total}</td>
+                                <td className="py-3.5 pr-6 font-semibold text-[#103E36] dark:text-[#F4F3F4]/80 tabular-nums">{total}</td>
                                 <td className="py-3.5 pr-4 text-emerald-500 font-semibold tabular-nums">{s.pass_count}</td>
                                 <td className="py-3.5 pr-4 text-amber-400 font-semibold tabular-nums">{s.flag_count}</td>
                                 <td className="py-3.5 pr-6 text-red-400 font-semibold tabular-nums">{s.fail_count}</td>
-                                <td className="py-3.5 pr-6 text-slate-500 dark:text-slate-400 tabular-nums">
+                                <td className="py-3.5 pr-6 text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 tabular-nums">
                                   {s.avg_time_min ? `${s.avg_time_min} min` : "—"}
                                 </td>
                                 <td className="py-3.5">
                                   <div className="flex items-center gap-2">
-                                    <div className="flex-1 h-2 rounded-full bg-slate-200 dark:bg-[#192420] overflow-hidden w-24">
+                                    <div className="flex-1 h-2 rounded-full bg-[#50BFA0]/15 dark:bg-[#192420] overflow-hidden w-24">
                                       <div className={`h-full rounded-full transition-all ${
                                         passRate >= 80 ? "bg-emerald-500"
                                         : passRate >= 60 ? "bg-amber-400"
@@ -583,10 +583,10 @@ export default function QaPage() {
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
               className="fixed inset-0 z-50 flex items-center justify-center p-4">
               <div className="w-full max-w-md bg-white dark:bg-[#1a1c1a] rounded-2xl shadow-2xl border border-white/20 dark:border-[#192420] p-6">
-                <h3 className="font-bold text-slate-900 dark:text-white text-lg mb-1">
+                <h3 className="font-bold text-[#1C1E1C] dark:text-white text-lg mb-1">
                   {decisionModal.type === "approve" ? "Approve QA Review" : "Override QA Review"}
                 </h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+                <p className="text-sm text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mb-4">
                   {decisionModal.type === "approve"
                     ? "Confirm AI findings are accurate and the case is closed."
                     : "Override AI findings — provide your reasoning below."}
@@ -596,7 +596,7 @@ export default function QaPage() {
                   onChange={e => setDecisionNotes(e.target.value)}
                   placeholder={decisionModal.type === "approve" ? "Optional note for the analyst…" : "Explain your override decision…"}
                   rows={3}
-                  className="w-full px-4 py-3 rounded-xl text-sm border border-white/60 dark:border-[#192420] bg-slate-50 dark:bg-[#1c1e1c] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40 resize-none mb-4"
+                  className="w-full px-4 py-3 rounded-xl text-sm border border-white/60 dark:border-[#192420] bg-[#F4F3F4]/50 dark:bg-[#1c1e1c] text-[#103E36] dark:text-[#F4F3F4]/80 placeholder:text-[#1F6A5C]/60 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40 resize-none mb-4"
                 />
                 <div className="flex gap-2">
                   <button onClick={submitDecision} disabled={submitting}
@@ -608,7 +608,7 @@ export default function QaPage() {
                     {submitting ? "Submitting…" : decisionModal.type === "approve" ? "Approve" : "Override"}
                   </button>
                   <button onClick={() => setDecisionModal(null)}
-                    className="px-4 py-2.5 rounded-xl text-sm font-semibold border border-white/60 dark:border-[#192420] text-slate-600 dark:text-slate-300">
+                    className="px-4 py-2.5 rounded-xl text-sm font-semibold border border-white/60 dark:border-[#192420] text-[#1F6A5C] dark:text-[#F4F3F4]/60">
                     Cancel
                   </button>
                 </div>

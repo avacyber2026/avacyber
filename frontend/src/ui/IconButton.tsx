@@ -32,9 +32,9 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
       size === "sm" ? "h-8 w-8" : size === "lg" ? "h-10 w-10" : "h-9 w-9";
     const variantClasses =
       variant === "ghost"
-        ? "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10"
+        ? "text-[#103E36] dark:text-[#F4F3F4]/65 hover:bg-[#F4F3F4] dark:hover:bg-white/10"
         : variant === "outline"
-        ? "border border-gray-200 dark:border-white/20 hover:bg-gray-50 dark:hover:bg-white/10"
+        ? "border border-[#1F6A5C]/20 dark:border-white/20 hover:bg-[#F4F3F4]/50 dark:hover:bg-white/10"
         : "bg-brand-primary text-white hover:bg-brand-primaryDark";
     const minWidthClass = minW === 0 ? "min-w-0" : "";
     const cls = `${base} ${sizeClasses} ${variantClasses} ${minWidthClass} ${className}`.trim();

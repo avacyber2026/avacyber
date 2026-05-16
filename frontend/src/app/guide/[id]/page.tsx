@@ -73,8 +73,8 @@ export default function GuideArticlePage() {
 
   if (!isAuthenticated && !isLoading) return null;
 
-  const textColor = colorMode === "dark" ? "text-gray-100" : "text-gray-800";
-  const labelColor = colorMode === "dark" ? "text-gray-400" : "text-gray-600";
+  const textColor = colorMode === "dark" ? "text-[#F4F3F4]" : "text-[#103E36]";
+  const labelColor = colorMode === "dark" ? "text-[#1F6A5C]/60" : "text-[#1F6A5C]";
 
   return (
     <>
@@ -95,7 +95,7 @@ export default function GuideArticlePage() {
               <Text className={`text-xs mb-6 ${labelColor}`}>
                 {t("admin.guideUpdated")}: {new Date(article.updatedAt).toLocaleString()}
               </Text>
-              <Divider className="mb-6 border-gray-200 dark:border-white/20" />
+              <Divider className="mb-6 border-[#1F6A5C]/20 dark:border-white/20" />
               {safeHtml ? (
                 <Box
                   className={`${contentStyles.articleBody} max-w-3xl ${textColor}`}

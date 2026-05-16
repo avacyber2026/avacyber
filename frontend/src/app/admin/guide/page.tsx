@@ -213,19 +213,19 @@ export default function AdminGuidePage() {
         >
           <HStack justify="space-between" align="start" spacing={4} className="mb-6 flex-wrap">
             <div>
-              <Text className="text-2xl font-bold text-gray-800 dark:text-gray-100">{t("admin.userGuide")}</Text>
-              <Text className="text-sm text-gray-600 dark:text-gray-400 mt-1 max-w-xl">{t("admin.guideManageHint")}</Text>
+              <Text className="text-2xl font-bold text-[#103E36] dark:text-[#F4F3F4]">{t("admin.userGuide")}</Text>
+              <Text className="text-sm text-[#1F6A5C] dark:text-[#1F6A5C]/60 mt-1 max-w-xl">{t("admin.guideManageHint")}</Text>
             </div>
             <Button className="bg-brand-primary text-white hover:bg-brand-primaryDark" onClick={openNew}>
               {t("admin.guideNewArticle")}
             </Button>
           </HStack>
 
-          <div className="rounded-xl border border-gray-200 dark:border-white/15 bg-white dark:bg-[#1B2620] overflow-hidden">
+          <div className="rounded-xl border border-[#1F6A5C]/20 dark:border-white/15 bg-white dark:bg-[#1B2620] overflow-hidden">
             {loading ? (
-              <Text className="p-8 text-gray-500">{t("common.loading")}</Text>
+              <Text className="p-8 text-[#1F6A5C]/70">{t("common.loading")}</Text>
             ) : articles.length === 0 ? (
-              <Text className="p-8 text-gray-500">{t("admin.guideEmptyList")}</Text>
+              <Text className="p-8 text-[#1F6A5C]/70">{t("admin.guideEmptyList")}</Text>
             ) : (
               <TableContainer>
                 <Table>
@@ -248,7 +248,7 @@ export default function AdminGuidePage() {
                             {a.published ? t("admin.guideStatusPublished") : t("admin.guideStatusDraft")}
                           </Badge>
                         </Td>
-                        <Td className="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                        <Td className="text-sm text-[#1F6A5C] dark:text-[#1F6A5C]/60 whitespace-nowrap">
                           {new Date(a.updatedAt).toLocaleString()}
                         </Td>
                         <Td className="!text-right whitespace-nowrap align-middle">
@@ -281,7 +281,7 @@ export default function AdminGuidePage() {
 
       <Modal isOpen={isEditOpen} onClose={onEditClose} size="xl">
         <ModalOverlay />
-        <ModalContent className="dark:bg-[#1B2620] dark:text-gray-100 max-h-[90vh] w-[min(100vw-2rem,56rem)] max-w-[56rem]">
+        <ModalContent className="dark:bg-[#1B2620] dark:text-[#F4F3F4] max-h-[90vh] w-[min(100vw-2rem,56rem)] max-w-[56rem]">
           <ModalHeader onClose={onEditClose}>{editing ? t("admin.guideEditArticle") : t("admin.guideNewArticle")}</ModalHeader>
           <ModalBody className="space-y-4 overflow-y-auto max-h-[calc(90vh-8rem)]">
             <div>
@@ -302,7 +302,7 @@ export default function AdminGuidePage() {
                 type="checkbox"
                 checked={draftPublished}
                 onChange={(e) => setDraftPublished(e.target.checked)}
-                className="rounded border-gray-300"
+                className="rounded border-[#1F6A5C]/25"
               />
               {t("admin.guidePublishedLabel")}
             </label>

@@ -51,8 +51,8 @@ export default function NotificationsPage() {
       <SideMenu />
       <VStack className="w-full min-h-screen items-stretch">
         <Box className={`${style.main} bg-[#F4F3F4] dark:bg-[#131C18] p-6`} as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <Text className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-100">{t("notifications.title")}</Text>
-          <Divider className="mb-6 border-gray-200 dark:border-white/20" />
+          <Text className="text-2xl font-bold mb-4 text-[#103E36] dark:text-[#F4F3F4]">{t("notifications.title")}</Text>
+          <Divider className="mb-6 border-[#1F6A5C]/20 dark:border-white/20" />
           {loading ? (
             <Text>{t("common.loading")}</Text>
           ) : (
@@ -60,13 +60,13 @@ export default function NotificationsPage() {
               {list.some((n) => !n.readAt) && <Button size="sm" className="mb-4" onClick={markAllRead}>{t("notifications.markAllRead")}</Button>}
               <VStack align="stretch" spacing={3}>
                 {list.length === 0 ? (
-                  <Text className="text-gray-500">{t("notifications.noNotifications")}</Text>
+                  <Text className="text-[#1F6A5C]/70">{t("notifications.noNotifications")}</Text>
                 ) : (
                   list.map((n) => (
-                    <Box key={n.id} className={`p-4 rounded-lg bg-white dark:bg-[#1B2620] border border-gray-200 dark:border-white/20 ${n.readAt ? "opacity-85" : ""}`}>
+                    <Box key={n.id} className={`p-4 rounded-lg bg-white dark:bg-[#1B2620] border border-[#1F6A5C]/20 dark:border-white/20 ${n.readAt ? "opacity-85" : ""}`}>
                       <Text className="font-semibold">{n.title}</Text>
                       <Text className="text-sm text-brand-primary">{n.body}</Text>
-                      <Text className="text-xs text-gray-400 mt-1">{new Date(n.createdAt).toLocaleString()}</Text>
+                      <Text className="text-xs text-[#1F6A5C]/60 mt-1">{new Date(n.createdAt).toLocaleString()}</Text>
                       {(n.ticketId != null && Number.isFinite(Number(n.ticketId))) || n.reportId ? (
                         <div className="mt-2 flex flex-wrap gap-3">
                           {n.ticketId != null && Number.isFinite(Number(n.ticketId)) ? (

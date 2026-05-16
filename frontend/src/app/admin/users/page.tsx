@@ -89,7 +89,7 @@ function UserGrid({
   t: (key: string) => string;
 }) {
   if (loading) return <Text className="py-4">{t("common.loading")}</Text>;
-  if (users.length === 0) return <Text className="py-4 text-gray-500">{t("admin.noUsersInCategory")}</Text>;
+  if (users.length === 0) return <Text className="py-4 text-[#1F6A5C]/70">{t("admin.noUsersInCategory")}</Text>;
   return (
     <SimpleGrid columns={3} spacing={4} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4">
       {users.map((u) => (
@@ -343,7 +343,7 @@ export default function AdminUsersPage() {
         <AdminSidebar />
         <Stack className={`${style.main} bg-[#F4F3F4] dark:bg-[#131C18]`} as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <HStack className="justify-between flex-wrap gap-2 mb-4">
-            <Text className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
+            <Text className="text-2xl font-semibold text-[#103E36] dark:text-[#F4F3F4]">
               {t("admin.users")}
             </Text>
             <Select
@@ -354,7 +354,7 @@ export default function AdminUsersPage() {
               options={roleFilterOptions}
             />
           </HStack>
-          <Divider className="border-gray-200 dark:border-white/20 mb-4" />
+          <Divider className="border-[#1F6A5C]/20 dark:border-white/20 mb-4" />
           <Tabs variant="enclosed" defaultIndex={0}>
             <TabList>
               <Tab>{t("admin.all")} ({filteredAll.length})</Tab>
@@ -381,14 +381,14 @@ export default function AdminUsersPage() {
       </VStack>
 
       <Modal isOpen={isEditUserOpen} onClose={() => { onEditUserClose(); setEditUserDraft(null); }} size="lg">
-        <ModalContent className="dark:bg-[#1B2620] dark:text-gray-100 max-h-[90vh] overflow-y-auto">
+        <ModalContent className="dark:bg-[#1B2620] dark:text-[#F4F3F4] max-h-[90vh] overflow-y-auto">
           <ModalHeader onClose={() => { onEditUserClose(); setEditUserDraft(null); }}>{t("admin.editUser")}</ModalHeader>
           <ModalBody className="space-y-3">
-            <Text className="text-sm text-gray-600 dark:text-gray-400">{t("admin.editUserHint")}</Text>
+            <Text className="text-sm text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("admin.editUserHint")}</Text>
             {editUserDraft ? (
               <>
                 <div>
-                  <Text className="text-xs font-semibold mb-1 text-gray-600 dark:text-gray-400">{t("auth.email")}</Text>
+                  <Text className="text-xs font-semibold mb-1 text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("auth.email")}</Text>
                   <Input
                     value={editUserDraft.email}
                     onChange={(e) => setEditUserDraft((d) => (d ? { ...d, email: e.target.value } : d))}
@@ -397,14 +397,14 @@ export default function AdminUsersPage() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <Text className="text-xs font-semibold mb-1 text-gray-600 dark:text-gray-400">{t("auth.firstName")}</Text>
+                    <Text className="text-xs font-semibold mb-1 text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("auth.firstName")}</Text>
                     <Input
                       value={editUserDraft.firstName}
                       onChange={(e) => setEditUserDraft((d) => (d ? { ...d, firstName: e.target.value } : d))}
                     />
                   </div>
                   <div>
-                    <Text className="text-xs font-semibold mb-1 text-gray-600 dark:text-gray-400">{t("auth.lastName")}</Text>
+                    <Text className="text-xs font-semibold mb-1 text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("auth.lastName")}</Text>
                     <Input
                       value={editUserDraft.lastName}
                       onChange={(e) => setEditUserDraft((d) => (d ? { ...d, lastName: e.target.value } : d))}
@@ -412,21 +412,21 @@ export default function AdminUsersPage() {
                   </div>
                 </div>
                 <div>
-                  <Text className="text-xs font-semibold mb-1 text-gray-600 dark:text-gray-400">{t("profile.jobTitle")}</Text>
+                  <Text className="text-xs font-semibold mb-1 text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("profile.jobTitle")}</Text>
                   <Input
                     value={editUserDraft.jobTitle}
                     onChange={(e) => setEditUserDraft((d) => (d ? { ...d, jobTitle: e.target.value } : d))}
                   />
                 </div>
                 <div>
-                  <Text className="text-xs font-semibold mb-1 text-gray-600 dark:text-gray-400">{t("profile.department")}</Text>
+                  <Text className="text-xs font-semibold mb-1 text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("profile.department")}</Text>
                   <Input
                     value={editUserDraft.department}
                     onChange={(e) => setEditUserDraft((d) => (d ? { ...d, department: e.target.value } : d))}
                   />
                 </div>
                 <div>
-                  <Text className="text-xs font-semibold mb-1 text-gray-600 dark:text-gray-400">{t("admin.managerEmail")}</Text>
+                  <Text className="text-xs font-semibold mb-1 text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("admin.managerEmail")}</Text>
                   <Input
                     type="email"
                     value={editUserDraft.managerEmail}
@@ -434,10 +434,10 @@ export default function AdminUsersPage() {
                     placeholder="manager@company.com"
                     className="w-full"
                   />
-                  <Text className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t("admin.managerEmailHint")}</Text>
+                  <Text className="text-xs text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 mt-1">{t("admin.managerEmailHint")}</Text>
                 </div>
                 <div>
-                  <Text className="text-xs font-semibold mb-2 text-gray-600 dark:text-gray-400">{t("profile.avatarUrl")}</Text>
+                  <Text className="text-xs font-semibold mb-2 text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("profile.avatarUrl")}</Text>
                   <HStack className="items-start gap-3 flex-wrap">
                     <Avatar
                       size="lg"
@@ -481,7 +481,7 @@ export default function AdminUsersPage() {
                           </Button>
                         ) : null}
                       </HStack>
-                      <Text className="text-xs text-gray-500 dark:text-gray-400">{t("admin.avatarUrlOrUploadHint")}</Text>
+                      <Text className="text-xs text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60">{t("admin.avatarUrlOrUploadHint")}</Text>
                       <Input
                         value={editUserDraft.avatarUrl}
                         onChange={(e) => setEditUserDraft((d) => (d ? { ...d, avatarUrl: e.target.value } : d))}
@@ -492,7 +492,7 @@ export default function AdminUsersPage() {
                   </HStack>
                 </div>
                 <div>
-                  <Text className="text-xs font-semibold mb-1 text-gray-600 dark:text-gray-400">{t("admin.allRoles")}</Text>
+                  <Text className="text-xs font-semibold mb-1 text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("admin.allRoles")}</Text>
                   <Select
                     value={editUserDraft.role}
                     onChange={(role) => setEditUserDraft((d) => (d ? { ...d, role } : d))}
@@ -544,7 +544,7 @@ export default function AdminUsersPage() {
             <Text className="mb-2">
               {t("admin.removeUserQuestion")} <strong>{deletingId != null ? users.find((u) => u.id === deletingId)?.email ?? "?" : ""}</strong>?
             </Text>
-            <Text className="text-gray-600 dark:text-gray-400">
+            <Text className="text-[#1F6A5C] dark:text-[#1F6A5C]/60">
               {t("admin.removeUserWarning")}
             </Text>
           </ModalBody>

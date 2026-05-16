@@ -45,7 +45,7 @@ function formatDate(iso?: string) {
   return d.toLocaleString("en-GB", { dateStyle: "short", timeStyle: "short" }).replace(",", " ");
 }
 
-const filterInputClass = "text-sm border border-gray-200 dark:border-white/20 rounded focus:ring-2 focus:ring-brand-primary focus:border-brand-primary";
+const filterInputClass = "text-sm border border-[#1F6A5C]/20 dark:border-white/20 rounded focus:ring-2 focus:ring-brand-primary focus:border-brand-primary";
 
 export function ReportPremium() {
   const router = useRouter();
@@ -177,7 +177,7 @@ export function ReportPremium() {
   return (
     <div className={style.reportPremium}>
       {status === "Security Manager" && (
-        <Box className="mb-4 p-4 bg-white dark:bg-[#1B2620] rounded-lg border border-gray-200 dark:border-white/20">
+        <Box className="mb-4 p-4 bg-white dark:bg-[#1B2620] rounded-lg border border-[#1F6A5C]/20 dark:border-white/20">
           <div className="flex flex-wrap items-center gap-3">
             <Text fontSize="sm" fontWeight={600}>{t("report.exportXlsx")}</Text>
             <Input
@@ -232,7 +232,7 @@ export function ReportPremium() {
         </Box>
       )}
 
-      <Box className="mb-4 p-4 bg-white dark:bg-[#1B2620] rounded-lg border border-gray-200 dark:border-white/20 overflow-x-hidden">
+      <Box className="mb-4 p-4 bg-white dark:bg-[#1B2620] rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 overflow-x-hidden">
         <div className="flex justify-between items-center flex-wrap gap-4 mb-4">
           <Text fontSize="sm" fontWeight={600}>{t("report.filters")}</Text>
           <HStack spacing={2}>
@@ -259,7 +259,7 @@ export function ReportPremium() {
         <Wrap spacing={4}>
           <WrapItem>
             <HStack spacing={2} align="center">
-              <Text as="span" fontSize="sm" className="text-gray-600 dark:text-gray-400 whitespace-nowrap">{t("report.presets")}</Text>
+              <Text as="span" fontSize="sm" className="text-[#1F6A5C] dark:text-[#1F6A5C]/60 whitespace-nowrap">{t("report.presets")}</Text>
               <Select
                 size="sm"
                 className={`w-[130px] ${filterInputClass}`}
@@ -271,13 +271,13 @@ export function ReportPremium() {
           </WrapItem>
           <WrapItem>
             <HStack spacing={2} align="center">
-              <Text as="span" fontSize="sm" className="text-gray-600 dark:text-gray-400 whitespace-nowrap">{t("report.dateFrom")}</Text>
+              <Text as="span" fontSize="sm" className="text-[#1F6A5C] dark:text-[#1F6A5C]/60 whitespace-nowrap">{t("report.dateFrom")}</Text>
               <Input type="date" size="sm" className={`w-[140px] ${filterInputClass}`} value={filterDateFrom} onChange={(e) => { setFilterDateFrom(e.target.value); setFilterPreset("none"); }} />
             </HStack>
           </WrapItem>
           <WrapItem>
             <HStack spacing={2} align="center">
-              <Text as="span" fontSize="sm" className="text-gray-600 dark:text-gray-400 whitespace-nowrap">{t("report.dateTo")}</Text>
+              <Text as="span" fontSize="sm" className="text-[#1F6A5C] dark:text-[#1F6A5C]/60 whitespace-nowrap">{t("report.dateTo")}</Text>
               <Input type="date" size="sm" className={`w-[140px] ${filterInputClass}`} value={filterDateTo} onChange={(e) => { setFilterDateTo(e.target.value); setFilterPreset("none"); }} />
             </HStack>
           </WrapItem>
@@ -318,13 +318,13 @@ export function ReportPremium() {
             />
           </WrapItem>
           <WrapItem>
-            <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer">
-              <input type="checkbox" checked={filterSlaBreached} onChange={(e) => setFilterSlaBreached(e.target.checked)} className="rounded border-gray-300 dark:border-white/30 text-red-500 focus:ring-red-500" />
+            <label className="flex items-center gap-2 text-sm text-[#1F6A5C] dark:text-[#1F6A5C]/60 cursor-pointer">
+              <input type="checkbox" checked={filterSlaBreached} onChange={(e) => setFilterSlaBreached(e.target.checked)} className="rounded border-[#1F6A5C]/25 dark:border-white/30 text-red-500 focus:ring-red-500" />
               SLA Breached
             </label>
           </WrapItem>
           <WrapItem>
-            <Button size="sm" variant="outline" onClick={() => { setFilterDateFrom(""); setFilterDateTo(""); setFilterPreset("none"); setFilterStatus("all"); setFilterPriority("all"); setFilterPipeline("all"); setFilterSlaBreached(false); setSearchId(""); }} className="hover:bg-gray-50 dark:hover:bg-white/10">
+            <Button size="sm" variant="outline" onClick={() => { setFilterDateFrom(""); setFilterDateTo(""); setFilterPreset("none"); setFilterStatus("all"); setFilterPriority("all"); setFilterPipeline("all"); setFilterSlaBreached(false); setSearchId(""); }} className="hover:bg-[#F4F3F4]/50 dark:hover:bg-white/10">
               {t("report.resetFilters")}
             </Button>
           </WrapItem>
@@ -332,7 +332,7 @@ export function ReportPremium() {
       </Box>
 
       {viewMode === "table" ? (
-        <TableContainer className="bg-white dark:bg-[#1B2620] rounded-lg border border-gray-200 dark:border-white/20 overflow-x-auto">
+        <TableContainer className="bg-white dark:bg-[#1B2620] rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 overflow-x-auto">
           <Table>
             <Thead>
               <Tr>
@@ -365,7 +365,7 @@ export function ReportPremium() {
                           value={resolveComments[x.id] ?? ""}
                           onChange={(e) => setResolveComments((prev) => ({ ...prev, [x.id]: e.target.value }))}
                           rows={2}
-                          className="text-sm border border-gray-200 dark:border-white/20 rounded focus:ring-2 focus:ring-brand-primary bg-white dark:bg-[#192420] text-gray-800 dark:text-white resize-y"
+                          className="text-sm border border-[#1F6A5C]/20 dark:border-white/20 rounded focus:ring-2 focus:ring-brand-primary bg-white dark:bg-[#192420] text-[#103E36] dark:text-white resize-y"
                         />
                         <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => sendAnswer(x.id, resolveComments[x.id] ?? "")}>
                           {t("report.markResolved")}
@@ -424,9 +424,9 @@ export function ReportPremium() {
               </div>
             ) : null}
           </div>
-          <VStack align="stretch" spacing={1} className="text-sm text-gray-600 dark:text-gray-400 mt-3">
+          <VStack align="stretch" spacing={1} className="text-sm text-[#1F6A5C] dark:text-[#1F6A5C]/60 mt-3">
             <div className="flex flex-wrap gap-2 mb-1">
-              <span className={`px-2 py-0.5 rounded text-xs font-medium ${x.pipelineStatus === 'resolved' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : x.pipelineStatus === 'in_progress' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : x.pipelineStatus === 'ready_gsoc' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300' : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400'}`}>
+              <span className={`px-2 py-0.5 rounded text-xs font-medium ${x.pipelineStatus === 'resolved' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : x.pipelineStatus === 'in_progress' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : x.pipelineStatus === 'ready_gsoc' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300' : 'bg-[#F4F3F4] dark:bg-white/10 text-[#1F6A5C] dark:text-[#1F6A5C]/60'}`}>
                 {x.pipelineStatus || 'new'}
               </span>
               {x.slaBreached && (
@@ -477,14 +477,14 @@ export function ReportPremium() {
                 </Box>
               )}
               {status !== "" && CREATOR_ROLES.includes(status as UserStatus) && (
-                <VStack align="stretch" spacing={3} style={{ marginTop: 16 }} className="pt-4 border-t border-gray-200 dark:border-white/20">
-                  <Text fontSize="sm" fontWeight={600} className="text-gray-700 dark:text-gray-300">{t("report.comment")}</Text>
+                <VStack align="stretch" spacing={3} style={{ marginTop: 16 }} className="pt-4 border-t border-[#1F6A5C]/20 dark:border-white/20">
+                  <Text fontSize="sm" fontWeight={600} className="text-[#103E36] dark:text-[#F4F3F4]/65">{t("report.comment")}</Text>
                   <Textarea
                     placeholder={t("report.commentPlaceholder")}
                     value={resolveComments[x.id] ?? ""}
                     onChange={(e) => setResolveComments((prev) => ({ ...prev, [x.id]: e.target.value }))}
                     rows={3}
-                    className="w-full text-sm border border-gray-200 dark:border-white/20 rounded-lg focus:ring-2 focus:ring-brand-primary bg-white dark:bg-[#192420] text-gray-800 dark:text-white resize-y p-3"
+                    className="w-full text-sm border border-[#1F6A5C]/20 dark:border-white/20 rounded-lg focus:ring-2 focus:ring-brand-primary bg-white dark:bg-[#192420] text-[#103E36] dark:text-white resize-y p-3"
                   />
                   <Button
                     as={motion.button}

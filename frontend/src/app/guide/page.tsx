@@ -57,10 +57,10 @@ export default function GuidePage() {
 
   if (!isAuthenticated && !isLoading) return null;
 
-  const textColor = colorMode === "dark" ? "text-gray-100" : "text-gray-800";
-  const labelColor = colorMode === "dark" ? "text-gray-400" : "text-gray-600";
+  const textColor = colorMode === "dark" ? "text-[#F4F3F4]" : "text-[#103E36]";
+  const labelColor = colorMode === "dark" ? "text-[#1F6A5C]/60" : "text-[#1F6A5C]";
   const cardClass =
-    "block rounded-xl p-5 border border-gray-200 dark:border-white/15 bg-white dark:bg-[#1B2620] transition-shadow hover:shadow-md dark:hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)]";
+    "block rounded-xl p-5 border border-[#1F6A5C]/20 dark:border-white/15 bg-white dark:bg-[#1B2620] transition-shadow hover:shadow-md dark:hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)]";
 
   return (
     <>
@@ -69,7 +69,7 @@ export default function GuidePage() {
         <Box className={`${style.main} bg-[#F4F3F4] dark:bg-[#131C18] p-6`} as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <Text className={`text-2xl font-bold mb-2 ${textColor}`}>{t("guide.title")}</Text>
           <Text className={`text-sm mb-6 max-w-2xl ${labelColor}`}>{t("guide.intro")}</Text>
-          <Divider className="mb-6 border-gray-200 dark:border-white/20" />
+          <Divider className="mb-6 border-[#1F6A5C]/20 dark:border-white/20" />
 
           {loadError && (
             <Text className="text-red-600 dark:text-red-400 mb-4">{t("guide.loadError")}</Text>

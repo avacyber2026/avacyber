@@ -24,8 +24,8 @@ export default function HelpPage() {
 
   if (!isAuthenticated && !isLoading) return null;
 
-  const textColor = colorMode === "dark" ? "text-gray-100" : "text-gray-800";
-  const labelColor = colorMode === "dark" ? "text-gray-400" : "text-gray-600";
+  const textColor = colorMode === "dark" ? "text-[#F4F3F4]" : "text-[#103E36]";
+  const labelColor = colorMode === "dark" ? "text-[#1F6A5C]/60" : "text-[#1F6A5C]";
 
   return (
     <>
@@ -33,9 +33,9 @@ export default function HelpPage() {
       <VStack className="w-full min-h-screen items-stretch">
         <Box className={`${style.main} bg-[#F4F3F4] dark:bg-[#131C18] p-6`} as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <Text className={`text-2xl font-bold mb-4 ${textColor}`}>{t("help.title")}</Text>
-          <Divider className="mb-6 border-gray-200 dark:border-white/20" />
+          <Divider className="mb-6 border-[#1F6A5C]/20 dark:border-white/20" />
 
-          <Box className="p-6 rounded-lg bg-white dark:bg-[#1B2620] border border-gray-200 dark:border-white/20 mb-6 max-w-[700px]">
+          <Box className="p-6 rounded-lg bg-white dark:bg-[#1B2620] border border-[#1F6A5C]/20 dark:border-white/20 mb-6 max-w-[700px]">
             <Text className={`mb-4 ${textColor}`}>{t("help.content")}</Text>
             <Button
               as={Link}
@@ -48,7 +48,7 @@ export default function HelpPage() {
             </Button>
           </Box>
 
-          <Box className="p-6 rounded-lg bg-white dark:bg-[#1B2620] border border-gray-200 dark:border-white/20 max-w-[700px]">
+          <Box className="p-6 rounded-lg bg-white dark:bg-[#1B2620] border border-[#1F6A5C]/20 dark:border-white/20 max-w-[700px]">
             <Text fontWeight={600} className={`mb-4 ${textColor}`}>{t("help.faqTitle")}</Text>
             <VStack align="stretch" spacing={4}>
               <Box>

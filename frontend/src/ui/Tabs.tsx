@@ -55,7 +55,7 @@ export function TabList({
 
   const borderCls =
     borderColor === "gray.200" || !borderColor
-      ? "border-gray-200 dark:border-white/20"
+      ? "border-[#1F6A5C]/20 dark:border-white/20"
       : "";
 
   return (
@@ -92,7 +92,7 @@ export function Tab({ children, index = 0, className = "" }: TabProps) {
   const selected =
     "text-brand-primary dark:text-white border-brand-primary dark:border-transparent bg-white dark:bg-[#1B2620]";
   const unselected =
-    "text-gray-600 dark:text-gray-300 border-transparent hover:text-gray-800 dark:hover:text-white";
+    "text-[#1F6A5C] dark:text-[#F4F3F4]/65 border-transparent hover:text-[#103E36] dark:hover:text-white";
 
   return (
     <button

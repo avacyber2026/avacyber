@@ -45,7 +45,7 @@ export function TicketsTeam() {
     }
   }
 
-  if (loading) return <Text className="py-4 text-gray-600 dark:text-gray-400">Loading...</Text>;
+  if (loading) return <Text className="py-4 text-[#1F6A5C] dark:text-[#1F6A5C]/60">Loading...</Text>;
 
   const optSelected = (opt: string, idx: number) =>
     answer.split("-")[0] === opt && Number(answer.split("-")[1]) === idx;
@@ -53,7 +53,7 @@ export function TicketsTeam() {
   return (
     <div className="flex flex-col gap-5 w-full max-w-full">
       <HStack className="w-full justify-between items-center flex-wrap gap-3">
-        <Text fontSize="xl" fontWeight={600} className="text-gray-900 dark:text-gray-100">
+        <Text fontSize="xl" fontWeight={600} className="text-[#1C1E1C] dark:text-[#F4F3F4]">
           History
         </Text>
         <ButtonDownloadExcel data={data} />
@@ -63,7 +63,7 @@ export function TicketsTeam() {
           <IncidentLogCard key={x.id} ticket={x} index={i} answerHeading="Response">
             {x.answer === "" ? (
               <VStack spacing={4} align="stretch" className="w-full">
-                <Text fontSize="xs" fontWeight={600} className="uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                <Text fontSize="xs" fontWeight={600} className="uppercase tracking-wide text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60">
                   Your response
                 </Text>
                 {(x.type === "Activity Verification" || x.type === "Communication Channel") ? (
@@ -77,7 +77,7 @@ export function TicketsTeam() {
                         className={
                           optSelected(opt, i)
                             ? "border-[#1F6A5C] text-[#1F6A5C] dark:border-[#50BFA0] dark:text-[#50BFA0]"
-                            : "border-gray-200 dark:border-white/20"
+                            : "border-[#1F6A5C]/20 dark:border-white/20"
                         }
                         onClick={() => {
                           setAnswer(`${opt}-${i}`);
@@ -109,7 +109,7 @@ export function TicketsTeam() {
                       className={
                         optSelected("Acknowledged", i)
                           ? "border-[#1F6A5C] text-[#1F6A5C] dark:border-[#50BFA0] dark:text-[#50BFA0]"
-                          : "border-gray-200 dark:border-white/20"
+                          : "border-[#1F6A5C]/20 dark:border-white/20"
                       }
                       onClick={() => {
                         setAnswer(`Acknowledged-${i}`);
@@ -135,10 +135,10 @@ export function TicketsTeam() {
               </VStack>
             ) : (
               <VStack spacing={2} align="stretch" className="w-full">
-                <Text fontSize="xs" fontWeight={600} className="uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                <Text fontSize="xs" fontWeight={600} className="uppercase tracking-wide text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60">
                   Your answer
                 </Text>
-                <Text fontSize="sm" className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed">
+                <Text fontSize="sm" className="text-[#103E36] dark:text-[#F4F3F4]/80 whitespace-pre-wrap leading-relaxed">
                   {x.answer}
                 </Text>
               </VStack>

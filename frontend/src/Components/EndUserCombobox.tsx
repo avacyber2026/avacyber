@@ -201,10 +201,10 @@ export function EndUserCombobox({
 
   const triggerClass = [
     "group relative flex w-full min-w-0 items-center justify-between rounded-lg border text-left font-medium",
-    "border-gray-200/90 bg-white/95 text-gray-800 shadow-sm backdrop-blur-sm",
-    "dark:border-white/15 dark:bg-[#192420] dark:text-gray-100",
+    "border-[#1F6A5C]/20/90 bg-white/95 text-[#103E36] shadow-sm backdrop-blur-sm",
+    "dark:border-white/15 dark:bg-[#192420] dark:text-[#F4F3F4]",
     "transition-[box-shadow,transform,border-color] duration-200 ease-out",
-    "hover:border-gray-300 hover:shadow-md dark:hover:border-white/25",
+    "hover:border-[#1F6A5C]/25 hover:shadow-md dark:hover:border-white/25",
     "focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary/70 focus-visible:border-brand-primary",
     "disabled:cursor-not-allowed disabled:opacity-50",
     "h-9 min-h-9 text-sm px-3 gap-2",
@@ -228,15 +228,15 @@ export function EndUserCombobox({
             style={panelStyle}
             className={[
               "flex flex-col overflow-hidden rounded-xl border py-2 shadow-xl",
-              "border-gray-200/80 bg-white/98 text-gray-900 backdrop-blur-md",
-              "dark:border-white/12 dark:bg-[#1e211e]/98 dark:text-gray-100",
+              "border-[#1F6A5C]/20/80 bg-white/98 text-[#1C1E1C] backdrop-blur-md",
+              "dark:border-white/12 dark:bg-[#1e211e]/98 dark:text-[#F4F3F4]",
               "ring-1 ring-black/[0.04] dark:ring-white/[0.06]",
             ].join(" ")}
           >
-            <div className="px-2 pb-2 shrink-0 border-b border-gray-200/70 dark:border-white/10">
+            <div className="px-2 pb-2 shrink-0 border-b border-[#1F6A5C]/20/70 dark:border-white/10">
               <div className="relative">
                 <FiSearch
-                  className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none"
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#1F6A5C]/60 dark:text-[#1F6A5C]/70 pointer-events-none"
                   size={16}
                   aria-hidden
                 />
@@ -249,7 +249,7 @@ export function EndUserCombobox({
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={onKeySearch}
                   placeholder={searchPlaceholder}
-                  className="w-full rounded-lg border border-gray-200/90 dark:border-white/15 bg-white dark:bg-[#192420] pl-9 pr-3 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-primary/60"
+                  className="w-full rounded-lg border border-[#1F6A5C]/20/90 dark:border-white/15 bg-white dark:bg-[#192420] pl-9 pr-3 py-2 text-sm text-[#1C1E1C] dark:text-[#F4F3F4] placeholder:text-[#1F6A5C]/60 dark:placeholder:text-[#1F6A5C]/70 focus:outline-none focus:ring-2 focus:ring-brand-primary/60"
                   autoComplete="off"
                   autoCorrect="off"
                   spellCheck={false}
@@ -261,11 +261,11 @@ export function EndUserCombobox({
               style={{ maxHeight: maxResultsHeight }}
             >
               {loading ? (
-                <div className="px-3 py-4 text-sm text-gray-500 text-center">…</div>
+                <div className="px-3 py-4 text-sm text-[#1F6A5C]/70 text-center">…</div>
               ) : users.length === 0 ? (
-                <div className="px-3 py-4 text-sm text-gray-500 text-center">{emptyListMessage}</div>
+                <div className="px-3 py-4 text-sm text-[#1F6A5C]/70 text-center">{emptyListMessage}</div>
               ) : filtered.length === 0 ? (
-                <div className="px-3 py-4 text-sm text-gray-500 text-center">{noMatchMessage}</div>
+                <div className="px-3 py-4 text-sm text-[#1F6A5C]/70 text-center">{noMatchMessage}</div>
               ) : (
                 filtered.map((u, idx) => {
                   const label = endUserPickerLabelOrFallback(u, "—");
@@ -283,9 +283,9 @@ export function EndUserCombobox({
                         "flex w-full items-center rounded-lg px-3 py-2.5 text-left text-sm font-medium truncate transition-colors duration-150",
                         isHi
                           ? "bg-[#1F6A5C]/10 text-[#0d4f42] dark:bg-[#50BFA0]/12 dark:text-[#a5e8d4]"
-                          : "text-gray-800 dark:text-gray-200",
-                        "hover:bg-gray-100/90 dark:hover:bg-white/[0.07]",
-                        isSel && !isHi ? "bg-gray-50/80 dark:bg-white/[0.04]" : "",
+                          : "text-[#103E36] dark:text-[#F4F3F4]/80",
+                        "hover:bg-[#F4F3F4]/90 dark:hover:bg-white/[0.07]",
+                        isSel && !isHi ? "bg-[#F4F3F4]/50/80 dark:bg-white/[0.04]" : "",
                       ].join(" ")}
                       onMouseEnter={() => setHighlight(idx)}
                       onClick={() => pick(u.email)}
@@ -332,7 +332,7 @@ export function EndUserCombobox({
         <motion.span
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="shrink-0 text-gray-500 dark:text-gray-400"
+          className="shrink-0 text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60"
         >
           <IoChevronDown size={18} aria-hidden />
         </motion.span>

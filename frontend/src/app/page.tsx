@@ -12,7 +12,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 type Mode = "login" | "register";
 
-const inputStyles = "h-[52px] !rounded-[18px] border border-gray-200 bg-white text-[15px] placeholder-gray-400 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 focus:outline-none";
+const inputStyles = "h-[52px] !rounded-[18px] border border-[#1F6A5C]/20 bg-white text-[15px] placeholder-[#1F6A5C]/50 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 focus:outline-none";
 
 export default function Home() {
   const router = useRouter();

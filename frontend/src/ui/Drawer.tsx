@@ -122,7 +122,7 @@ export function DrawerContent({
   color?: string;
 }) {
   const bgClass = bg === "sidebar.bg" ? "bg-[#F4F3F4] dark:bg-[#131C18]" : "bg-white dark:bg-[#1B2620]";
-  const colorClass = color === "sidebar.textPrimary" ? "text-gray-800 dark:text-white" : "";
+  const colorClass = color === "sidebar.textPrimary" ? "text-[#103E36] dark:text-white" : "";
   return (
     <div
       className={`h-full flex flex-col overflow-y-auto ${bgClass} ${colorClass} ${className}`}
@@ -149,7 +149,7 @@ export function DrawerHeader({
 }) {
   return (
     <div
-      className={`border-b border-gray-200 dark:border-white/10 ${className}`}
+      className={`border-b border-[#1F6A5C]/20 dark:border-white/10 ${className}`}
       style={{
         borderBottomWidth: borderBottomWidth ?? "1px",
         paddingTop: py !== undefined ? `${py * 0.25}rem` : undefined,

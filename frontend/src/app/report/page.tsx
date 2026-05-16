@@ -34,7 +34,7 @@ export default function ReportPage() {
             <p className={style.title}>{data === "End-User" ? t("report.title") : t("report.reportedTitle")}</p>
             <Button as={Link} href="/tickets/new" size="sm" className="bg-green-600 hover:bg-green-700 text-white">{t("report.createNewIncident")}</Button>
           </div>
-          <Divider className="mb-5 border-gray-200 dark:border-white/20" />
+          <Divider className="mb-5 border-[#1F6A5C]/20 dark:border-white/20" />
           <div className={style.container}>
             {!data ? (
               <div>{t("common.loading")}</div>

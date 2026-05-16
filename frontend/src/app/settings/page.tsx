@@ -219,8 +219,8 @@ export default function SettingsPage() {
 
   if (!isAuthenticated && !isLoading) return null;
 
-  const textColor = colorMode === "dark" ? "text-gray-100" : "text-gray-800";
-  const labelColor = colorMode === "dark" ? "text-gray-400" : "text-gray-600";
+  const textColor = colorMode === "dark" ? "text-[#F4F3F4]" : "text-[#103E36]";
+  const labelColor = colorMode === "dark" ? "text-[#1F6A5C]/60" : "text-[#1F6A5C]";
 
   return (
     <>
@@ -235,7 +235,7 @@ export default function SettingsPage() {
           <Text fontSize="2xl" fontWeight={700} className={`mb-4 ${textColor}`}>
             {t("profile.title")}
           </Text>
-          <Divider className="mb-6 border-gray-200 dark:border-white/20" />
+          <Divider className="mb-6 border-[#1F6A5C]/20 dark:border-white/20" />
 
           <VStack align="stretch" spacing={6} className="max-w-[1040px]">
           <Box>
@@ -250,7 +250,7 @@ export default function SettingsPage() {
                 </Text>
               </Box>
 
-              <Box className="p-6 rounded-lg bg-white dark:bg-[#1B2620] border border-gray-200 dark:border-white/20 shadow-sm">
+              <Box className="p-6 rounded-lg bg-white dark:bg-[#1B2620] border border-[#1F6A5C]/20 dark:border-white/20 shadow-sm">
                   <Text fontWeight={600} fontSize="lg" className={`mb-4 ${textColor}`}>
                     {t("profile.editProfile")}
                   </Text>
@@ -360,7 +360,7 @@ export default function SettingsPage() {
                             {t("profile.save")}
                           </Button>
                         )}
-                        <Divider className="my-4 border-gray-200 dark:border-white/20" />
+                        <Divider className="my-4 border-[#1F6A5C]/20 dark:border-white/20" />
                         <Button
                           variant="ghost"
                           size="sm"
@@ -384,7 +384,7 @@ export default function SettingsPage() {
                 </Text>
               </Box>
 
-              <Box className="p-6 rounded-lg bg-white dark:bg-[#1B2620] border border-gray-200 dark:border-white/20 shadow-sm">
+              <Box className="p-6 rounded-lg bg-white dark:bg-[#1B2620] border border-[#1F6A5C]/20 dark:border-white/20 shadow-sm">
                   <HStack spacing={3} className="mb-4">
                     <button
                       type="button"
@@ -412,7 +412,7 @@ export default function SettingsPage() {
                         }
                       }}
                       className={`relative inline-flex h-6 w-11 shrink-0 rounded-full border border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 ${
-                        holidayEnabled ? "bg-brand-primary" : "bg-gray-300 dark:bg-white/20"
+                        holidayEnabled ? "bg-brand-primary" : "bg-[#50BFA0]/25 dark:bg-white/20"
                       }`}
                     >
                       <span

@@ -37,7 +37,7 @@ function NewIncidentContent() {
       >
         <div className="flex flex-wrap items-center gap-3 mb-6">
           <BackToIncidentsLink />
-          <Text fontSize="2xl" fontWeight={700} className="text-gray-800 dark:text-gray-100">
+          <Text fontSize="2xl" fontWeight={700} className="text-[#103E36] dark:text-[#F4F3F4]">
             {t("tickets.newIncident")}
           </Text>
         </div>

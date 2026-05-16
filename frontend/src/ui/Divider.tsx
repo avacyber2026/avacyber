@@ -24,7 +24,7 @@ export const Divider = forwardRef<HTMLHRElement, DividerProps>(
         : "h-full border-l border-t-0 border-r-0 border-b-0";
     const colorClass =
       borderColor === "sidebar.cardBorder" || borderColor === "sidebar.border"
-        ? "border-gray-200 dark:border-white/10"
+        ? "border-[#1F6A5C]/20 dark:border-white/10"
         : "";
     return (
       <hr

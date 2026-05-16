@@ -27,7 +27,7 @@ export const Progress = forwardRef<HTMLDivElement, ProgressProps>(
     const bgClass =
       colorScheme === "green" || colorScheme === "brand"
         ? "bg-brand-primary"
-        : "bg-gray-200 dark:bg-gray-600";
+        : "bg-[#50BFA0]/15 dark:bg-[#1F6A5C]";
 
     return (
       <div
@@ -36,7 +36,7 @@ export const Progress = forwardRef<HTMLDivElement, ProgressProps>(
         aria-valuenow={isIndeterminate ? undefined : value}
         aria-valuemin={0}
         aria-valuemax={100}
-        className={`w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-600 ${className}`}
+        className={`w-full overflow-hidden rounded-full bg-[#50BFA0]/15 dark:bg-[#1F6A5C] ${className}`}
         style={{ height: heightMap[size] }}
         {...props}
       >

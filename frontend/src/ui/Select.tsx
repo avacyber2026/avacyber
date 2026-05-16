@@ -218,12 +218,12 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
 
   const triggerClass = [
     "group relative flex w-full min-w-0 items-center justify-between rounded-lg border text-left font-medium",
-    "border-gray-200/90 bg-white/95 text-gray-800 shadow-sm backdrop-blur-sm",
-    "dark:border-white/15 dark:bg-[#192420] dark:text-gray-100",
+    "border-[#1F6A5C]/20/90 bg-white/95 text-[#103E36] shadow-sm backdrop-blur-sm",
+    "dark:border-white/15 dark:bg-[#192420] dark:text-[#F4F3F4]",
     "transition-[box-shadow,transform,border-color] duration-200 ease-out",
-    "hover:border-gray-300 hover:shadow-md dark:hover:border-white/25 dark:hover:shadow-[0_8px_30px_-12px_rgba(0,0,0,0.65)]",
+    "hover:border-[#1F6A5C]/25 hover:shadow-md dark:hover:border-white/25 dark:hover:shadow-[0_8px_30px_-12px_rgba(0,0,0,0.65)]",
     "focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary/70 focus-visible:border-brand-primary",
-    "disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:shadow-sm disabled:hover:border-gray-200 dark:disabled:hover:border-white/15",
+    "disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:shadow-sm disabled:hover:border-[#1F6A5C]/20 dark:disabled:hover:border-white/15",
     sizeClasses,
     className,
   ].join(" ");
@@ -269,8 +269,8 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
             onKeyDown={onKeyDownList}
             className={[
               "ui-select-listbox overflow-y-auto overflow-x-hidden rounded-xl border py-1.5 shadow-xl",
-              "border-gray-200/80 bg-white/98 text-gray-900 backdrop-blur-md",
-              "dark:border-white/12 dark:bg-[#1e211e]/98 dark:text-gray-100",
+              "border-[#1F6A5C]/20/80 bg-white/98 text-[#1C1E1C] backdrop-blur-md",
+              "dark:border-white/12 dark:bg-[#1e211e]/98 dark:text-[#F4F3F4]",
               "ring-1 ring-black/[0.04] dark:ring-white/[0.06]",
             ].join(" ")}
           >
@@ -279,7 +279,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
                 return (
                   <div
                     key={opt.value}
-                    className="px-3 py-2 text-sm text-gray-400 dark:text-gray-500 cursor-default"
+                    className="px-3 py-2 text-sm text-[#1F6A5C]/60 dark:text-[#1F6A5C]/70 cursor-default"
                   >
                     {opt.label}
                   </div>
@@ -300,9 +300,9 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
                     "flex w-full items-center gap-2 px-3 py-2.5 text-left text-sm transition-colors duration-150",
                     isHi
                       ? "bg-[#1F6A5C]/10 text-[#0d4f42] dark:bg-[#50BFA0]/12 dark:text-[#a5e8d4]"
-                      : "text-gray-800 dark:text-gray-200",
-                    "hover:bg-gray-100/90 dark:hover:bg-white/[0.07]",
-                    isSel && !isHi ? "bg-gray-50/80 dark:bg-white/[0.04]" : "",
+                      : "text-[#103E36] dark:text-[#F4F3F4]/80",
+                    "hover:bg-[#F4F3F4]/90 dark:hover:bg-white/[0.07]",
+                    isSel && !isHi ? "bg-[#F4F3F4]/50/80 dark:bg-white/[0.04]" : "",
                   ].join(" ")}
                   onMouseEnter={() => idx != null && setHighlight(idx)}
                   onClick={() => idx != null && selectIndex(idx)}
@@ -352,7 +352,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
         <motion.span
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-          className="shrink-0 text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200"
+          className="shrink-0 text-[#1F6A5C]/70 dark:text-[#1F6A5C]/60 group-hover:text-[#103E36] dark:group-hover:text-[#F4F3F4]/80"
         >
           <IoChevronDown size={18} aria-hidden />
         </motion.span>
