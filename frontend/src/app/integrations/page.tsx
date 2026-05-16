@@ -26,10 +26,10 @@ export default function IntegrationsPage() {
     <>
       <SideMenu />
       <VStack className="w-full min-h-screen items-stretch">
-        <Box className={`${style.main} bg-[#F4F3F4] dark:bg-[#1C1E1C] p-6`} as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <Box className={`${style.main} bg-[#F4F3F4] dark:bg-[#131C18] p-6`} as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <Text className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-100">{t("integrations.title")}</Text>
           <Divider className="mb-6 border-gray-200 dark:border-white/20" />
-          <Box className="p-6 rounded-lg bg-white dark:bg-[#232522] border border-gray-200 dark:border-white/20 mb-6">
+          <Box className="p-6 rounded-lg bg-white dark:bg-[#1B2620] border border-gray-200 dark:border-white/20 mb-6">
             <Text className="font-semibold mb-3">{t("integrations.siemSystems")}</Text>
             <Text className="text-sm text-gray-600 dark:text-gray-400 mb-4">{t("integrations.siemDesc")}</Text>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
@@ -42,12 +42,12 @@ export default function IntegrationsPage() {
             </div>
           </Box>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Box className="p-6 rounded-lg bg-white dark:bg-[#232522] border border-gray-200 dark:border-white/20">
+            <Box className="p-6 rounded-lg bg-white dark:bg-[#1B2620] border border-gray-200 dark:border-white/20">
               <Text className="font-semibold mb-2 text-gray-800 dark:text-gray-100">{t("integrations.createFromEmails")}</Text>
               <Text className="text-sm text-gray-600 dark:text-gray-400 mb-3">{t("integrations.createFromEmailsDesc")}</Text>
               <Badge size="sm" colorScheme="gray">{t("dashboard.comingSoon")}</Badge>
             </Box>
-            <Box className="p-6 rounded-lg bg-white dark:bg-[#232522] border border-gray-200 dark:border-white/20">
+            <Box className="p-6 rounded-lg bg-white dark:bg-[#1B2620] border border-gray-200 dark:border-white/20">
               <Text className="font-semibold mb-2 text-gray-800 dark:text-gray-100">{t("integrations.createFromCalls")}</Text>
               <Text className="text-sm text-gray-600 dark:text-gray-400 mb-3">{t("integrations.createFromCallsDesc")}</Text>
               <Badge size="sm" colorScheme="gray">{t("dashboard.comingSoon")}</Badge>

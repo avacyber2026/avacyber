@@ -92,7 +92,7 @@ function IncidentDetailInner() {
     <VStack className="w-full min-h-screen">
       <SideMenu />
       <Stack
-        className={`${style.main} bg-[#F4F3F4] dark:bg-[#1C1E1C] p-6`}
+        className={`${style.main} bg-[#F4F3F4] dark:bg-[#131C18] p-6`}
         as={motion.div}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -133,7 +133,7 @@ function IncidentDetailInner() {
             <Text fontSize="2xl" fontWeight={700} className="text-gray-900 dark:text-gray-100 mb-4">
               {ticket.title}
             </Text>
-            <Box className="rounded-xl border border-gray-200 dark:border-white/15 bg-white dark:bg-[#232522] p-5 mb-2">
+            <Box className="rounded-xl border border-gray-200 dark:border-white/15 bg-white dark:bg-[#1B2620] p-5 mb-2">
               <Text fontSize="sm" fontWeight={600} className="text-gray-500 dark:text-gray-400 mb-2">
                 {t("tickets.detailDescription")}
               </Text>
@@ -195,7 +195,7 @@ function IncidentDetailInner() {
             )}
 
             {role && CREATOR_ROLES.includes(role) && ticket.recipients && ticket.recipients.length > 0 && (
-              <Box className="rounded-xl border border-gray-200 dark:border-white/15 bg-white dark:bg-[#232522] p-5 mt-4">
+              <Box className="rounded-xl border border-gray-200 dark:border-white/15 bg-white dark:bg-[#1B2620] p-5 mt-4">
                 <Text fontSize="sm" fontWeight={600} className="text-gray-500 dark:text-gray-400 mb-3">
                   {t("tickets.recipientsList")}
                 </Text>

@@ -219,7 +219,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
   const triggerClass = [
     "group relative flex w-full min-w-0 items-center justify-between rounded-lg border text-left font-medium",
     "border-gray-200/90 bg-white/95 text-gray-800 shadow-sm backdrop-blur-sm",
-    "dark:border-white/15 dark:bg-[#2a2d2a] dark:text-gray-100",
+    "dark:border-white/15 dark:bg-[#192420] dark:text-gray-100",
     "transition-[box-shadow,transform,border-color] duration-200 ease-out",
     "hover:border-gray-300 hover:shadow-md dark:hover:border-white/25 dark:hover:shadow-[0_8px_30px_-12px_rgba(0,0,0,0.65)]",
     "focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary/70 focus-visible:border-brand-primary",

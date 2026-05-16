@@ -328,14 +328,14 @@ export default function AdminRequestsPage() {
 
   if (isAdmin === null) {
     return (
-      <VStack className="w-full min-h-screen justify-center items-center bg-[#F4F3F4] dark:bg-[#1C1E1C]">
+      <VStack className="w-full min-h-screen justify-center items-center bg-[#F4F3F4] dark:bg-[#131C18]">
         <Text className="text-gray-500">{t("common.loading")}</Text>
       </VStack>
     );
   }
   if (!isAdmin) {
     return (
-      <VStack className="w-full min-h-screen justify-center items-center bg-[#F4F3F4] dark:bg-[#1C1E1C]">
+      <VStack className="w-full min-h-screen justify-center items-center bg-[#F4F3F4] dark:bg-[#131C18]">
         <Text className="text-gray-500">{t("admin.redirectingLogin")}</Text>
       </VStack>
     );
@@ -344,14 +344,14 @@ export default function AdminRequestsPage() {
   return (
     <VStack className="w-full min-h-screen items-stretch">
       <AdminSidebar />
-      <Stack className={`${style.main} bg-[#F4F3F4] dark:bg-[#1C1E1C] overflow-x-hidden`} as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+      <Stack className={`${style.main} bg-[#F4F3F4] dark:bg-[#131C18] overflow-x-hidden`} as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
         <Text className="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
           {t("admin.incidentLists")}
         </Text>
         <Divider className="border-gray-200 dark:border-white/20 mb-4" />
 
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.05 }}>
-        <VStack align="stretch" spacing={4} className="mb-4 p-4 bg-white dark:bg-[#232522] rounded-lg border border-gray-200 dark:border-white/20 overflow-x-hidden">
+        <VStack align="stretch" spacing={4} className="mb-4 p-4 bg-white dark:bg-[#1B2620] rounded-lg border border-gray-200 dark:border-white/20 overflow-x-hidden">
           <Text className="text-sm font-semibold text-gray-800 dark:text-gray-200">
             {t("report.filters")}
           </Text>
@@ -449,7 +449,7 @@ export default function AdminRequestsPage() {
           </Text>
         ) : (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
-          <TableContainer className="whitespace-normal overflow-x-auto max-w-full bg-white dark:bg-[#232522] rounded-lg border border-gray-200 dark:border-white/20">
+          <TableContainer className="whitespace-normal overflow-x-auto max-w-full bg-white dark:bg-[#1B2620] rounded-lg border border-gray-200 dark:border-white/20">
             <Table>
               <Thead>
                 <Tr>
@@ -540,7 +540,7 @@ export default function AdminRequestsPage() {
           }}
           size="xl"
         >
-          <ModalContent className="dark:bg-[#232522] dark:text-gray-100 max-h-[92vh] w-full min-w-0 overflow-y-auto">
+          <ModalContent className="dark:bg-[#1B2620] dark:text-gray-100 max-h-[92vh] w-full min-w-0 overflow-y-auto">
             <ModalHeader
               onClose={() => {
                 onEditClose();
@@ -570,7 +570,7 @@ export default function AdminRequestsPage() {
                       onChange={(e) =>
                         setIncidentDraft((d) => (d ? { ...d, text: e.target.value } : d))
                       }
-                      className="w-full rounded-lg border border-gray-200 dark:border-white/20 bg-white dark:bg-[#2c2f2c] px-3 py-2 text-sm"
+                      className="w-full rounded-lg border border-gray-200 dark:border-white/20 bg-white dark:bg-[#192420] px-3 py-2 text-sm"
                     />
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -638,7 +638,7 @@ export default function AdminRequestsPage() {
                       onChange={(e) =>
                         setIncidentDraft((d) => (d ? { ...d, answer: e.target.value } : d))
                       }
-                      className="w-full rounded-lg border border-gray-200 dark:border-white/20 bg-white dark:bg-[#2c2f2c] px-3 py-2 text-sm"
+                      className="w-full rounded-lg border border-gray-200 dark:border-white/20 bg-white dark:bg-[#192420] px-3 py-2 text-sm"
                     />
                   </div>
                   <div>

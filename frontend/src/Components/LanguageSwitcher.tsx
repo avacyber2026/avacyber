@@ -41,13 +41,13 @@ export function LanguageSwitcher({
   );
 
   const sidebarBtnClass = compact
-    ? "h-9 w-9 min-w-0 gap-0 justify-center rounded-md border border-slate-200/90 bg-white/95 text-slate-800 shadow-sm hover:bg-white dark:border-[#2c2f2c] dark:bg-[#2c2f2c] dark:text-gray-100 dark:hover:bg-[#353835] dark:hover:border-[#3d413d]"
-    : "h-9 min-h-9 px-3 gap-2 rounded-md border border-slate-200/90 bg-white/95 text-slate-800 shadow-sm hover:bg-white dark:border-[#2c2f2c] dark:bg-[#2c2f2c] dark:text-gray-100 dark:hover:bg-[#353835] dark:hover:border-[#3d413d]";
+    ? "h-9 w-9 min-w-0 gap-0 justify-center rounded-md border border-slate-200/90 bg-white/95 text-slate-800 shadow-sm hover:bg-white dark:border-[#192420] dark:bg-[#192420] dark:text-gray-100 dark:hover:bg-[#353835] dark:hover:border-[#3d413d]"
+    : "h-9 min-h-9 px-3 gap-2 rounded-md border border-slate-200/90 bg-white/95 text-slate-800 shadow-sm hover:bg-white dark:border-[#192420] dark:bg-[#192420] dark:text-gray-100 dark:hover:bg-[#353835] dark:hover:border-[#3d413d]";
 
   const sidebarListClass =
-    "bg-white text-slate-800 border border-slate-200 shadow-xl ring-1 ring-black/5 rounded-md dark:bg-[#232522] dark:text-gray-100 dark:border-[#2c2f2c] dark:ring-white/5 z-[200]";
+    "bg-white text-slate-800 border border-slate-200 shadow-xl ring-1 ring-black/5 rounded-md dark:bg-[#1B2620] dark:text-gray-100 dark:border-[#192420] dark:ring-white/5 z-[200]";
 
-  const itemSidebar = "text-slate-800 hover:bg-slate-100 dark:text-gray-100 dark:hover:bg-[#2c2f2c]";
+  const itemSidebar = "text-slate-800 hover:bg-slate-100 dark:text-gray-100 dark:hover:bg-[#192420]";
 
   const defaultBtn =
     "text-gray-700 dark:text-gray-300 hover:bg-brand-primary/10 dark:hover:bg-brand-primary/20 hover:text-brand-primary";

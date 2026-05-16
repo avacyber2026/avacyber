@@ -90,7 +90,7 @@ export function Tab({ children, index = 0, className = "" }: TabProps) {
   const base =
     "px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors cursor-pointer";
   const selected =
-    "text-brand-primary dark:text-white border-brand-primary dark:border-transparent bg-white dark:bg-[#232522]";
+    "text-brand-primary dark:text-white border-brand-primary dark:border-transparent bg-white dark:bg-[#1B2620]";
   const unselected =
     "text-gray-600 dark:text-gray-300 border-transparent hover:text-gray-800 dark:hover:text-white";
 

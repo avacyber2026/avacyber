@@ -99,7 +99,7 @@ function SearchPageContent() {
     <>
       <SideMenu />
       <VStack className="w-full min-h-screen" align="stretch">
-        <Box className={`${style.main} bg-[#F4F3F4] dark:bg-[#1C1E1C] p-6`} as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <Box className={`${style.main} bg-[#F4F3F4] dark:bg-[#131C18] p-6`} as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <Text fontSize="2xl" fontWeight={700} className="mb-4 text-gray-800 dark:text-gray-100">
             {t("common.searchTitle")}
           </Text>
@@ -113,7 +113,7 @@ function SearchPageContent() {
                 placeholder={t("common.searchPlaceholder")}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="pl-10 bg-white dark:bg-[#232522] border-gray-200 dark:border-white/20"
+                className="pl-10 bg-white dark:bg-[#1B2620] border-gray-200 dark:border-white/20"
               />
             </InputGroup>
           </form>
@@ -124,7 +124,7 @@ function SearchPageContent() {
               {results.map((r) => (
                 <Link key={`${r.type}-${r.id}`} href={r.link}>
                   <Box
-                    className="p-4 rounded-lg bg-white dark:bg-[#232522] border border-gray-200 dark:border-white/20 hover:border-brand-primary hover:shadow-sm transition-colors"
+                    className="p-4 rounded-lg bg-white dark:bg-[#1B2620] border border-gray-200 dark:border-white/20 hover:border-brand-primary hover:shadow-sm transition-colors"
                   >
                     <HStack justify="between" className="mb-1">
                       <Text fontWeight={600}>{r.title}</Text>

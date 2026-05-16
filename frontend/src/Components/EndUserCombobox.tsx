@@ -202,7 +202,7 @@ export function EndUserCombobox({
   const triggerClass = [
     "group relative flex w-full min-w-0 items-center justify-between rounded-lg border text-left font-medium",
     "border-gray-200/90 bg-white/95 text-gray-800 shadow-sm backdrop-blur-sm",
-    "dark:border-white/15 dark:bg-[#2a2d2a] dark:text-gray-100",
+    "dark:border-white/15 dark:bg-[#192420] dark:text-gray-100",
     "transition-[box-shadow,transform,border-color] duration-200 ease-out",
     "hover:border-gray-300 hover:shadow-md dark:hover:border-white/25",
     "focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary/70 focus-visible:border-brand-primary",
@@ -249,7 +249,7 @@ export function EndUserCombobox({
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={onKeySearch}
                   placeholder={searchPlaceholder}
-                  className="w-full rounded-lg border border-gray-200/90 dark:border-white/15 bg-white dark:bg-[#2a2d2a] pl-9 pr-3 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-primary/60"
+                  className="w-full rounded-lg border border-gray-200/90 dark:border-white/15 bg-white dark:bg-[#192420] pl-9 pr-3 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-primary/60"
                   autoComplete="off"
                   autoCorrect="off"
                   spellCheck={false}

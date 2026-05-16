@@ -60,7 +60,7 @@ html:not(.dark) [class*="subtitle"] {
 
 .dark .main,
 .dark [class*="main"] {
-  background: #1C1E1C !important;
+  background: #131C18 !important;
 }
 
 .dark [class*="createTicketBlock"] {
@@ -71,7 +71,7 @@ html:not(.dark) [class*="subtitle"] {
 .dark [class*="simpleTicketBlock"],
 .dark [class*="simpleUserTicket"] {
   border-color: rgba(255, 255, 255, 0.06);
-  background: #232522;
+  background: #1B2620;
   color: #f3f4f6;
 }
 
@@ -81,7 +81,7 @@ html:not(.dark) [class*="subtitle"] {
 .dark [class*="createTicketBlock"] textarea,
 .dark [class*="createReportBlock"] input,
 .dark [class*="createReportBlock"] textarea {
-  background: #1a1d1b !important;
+  background: #0F1713 !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
   color: #f4f3f4 !important;
 }
@@ -96,7 +96,7 @@ html:not(.dark) [class*="subtitle"] {
 
 .dark [class*="userSelect"],
 .dark [class*="userSelectButton"] {
-  background: #1a1d1b !important;
+  background: #0F1713 !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
   color: #f4f3f4 !important;
 }
@@ -107,7 +107,7 @@ html:not(.dark) [class*="subtitle"] {
 .dark [class*="priorityBlock"],
 .dark [class*="emptyCircle"] {
   border-color: rgba(255, 255, 255, 0.08) !important;
-  background: #1a1d1b !important;
+  background: #0F1713 !important;
   color: #f4f3f4 !important;
 }
 .dark [class*="completeCircle"],
@@ -141,13 +141,13 @@ html:not(.dark) [class*="subtitle"] {
 }
 
 .dark [class*="card"] {
-  background: #232522 !important;
+  background: #1B2620 !important;
   border-color: rgba(255, 255, 255, 0.06) !important;
   color: #f3f4f6 !important;
 }
 .dark [class*="form"] input,
 .dark [class*="form"] [class*="input"] {
-  background: #1a1d1b !important;
+  background: #0F1713 !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
   color: #f4f3f4 !important;
 }
@@ -215,7 +215,7 @@ html:not(.dark) [class*="subtitle"] {
 .dark [data-admin] input,
 .dark [data-admin] select,
 .dark [data-admin] textarea {
-  background: #1a1d1b !important;
+  background: #0F1713 !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
   color: #f4f3f4 !important;
 }

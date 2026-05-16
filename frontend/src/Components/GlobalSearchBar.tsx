@@ -109,7 +109,7 @@ export function GlobalSearchBar({ embedded = false }: { embedded?: boolean }) {
 
   const fieldClass = embedded
     ? "w-full pl-8 pr-2 py-2 text-sm rounded-lg bg-transparent border-0 text-slate-800 dark:text-gray-100 placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-0 focus:border-0 shadow-none"
-    : "w-full pl-8 pr-3 py-1.5 text-xs rounded-md border border-gray-200 dark:border-white/15 bg-white dark:bg-[#232522] text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-primary focus:border-brand-primary";
+    : "w-full pl-8 pr-3 py-1.5 text-xs rounded-md border border-gray-200 dark:border-white/15 bg-white dark:bg-[#1B2620] text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-primary focus:border-brand-primary";
 
   return (
     <>

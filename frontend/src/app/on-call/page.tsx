@@ -30,10 +30,10 @@ export default function OnCallPage() {
     <>
       <SideMenu />
       <VStack className="w-full min-h-screen items-stretch">
-        <Box className={`${style.main} bg-[#F4F3F4] dark:bg-[#1C1E1C] p-6`} as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <Box className={`${style.main} bg-[#F4F3F4] dark:bg-[#131C18] p-6`} as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <Text className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-100">{t("onCall.title")}</Text>
           <Divider className="mb-6 border-gray-200 dark:border-white/20" />
-          <Box className="p-6 rounded-lg bg-white dark:bg-[#232522] border border-gray-200 dark:border-white/20 max-w-[560px] mb-6">
+          <Box className="p-6 rounded-lg bg-white dark:bg-[#1B2620] border border-gray-200 dark:border-white/20 max-w-[560px] mb-6">
             <Text className="mb-5 text-gray-700 dark:text-gray-300 leading-relaxed">
               {t("onCall.desc")}
             </Text>
@@ -44,7 +44,7 @@ export default function OnCallPage() {
               {t("onCall.phoneNote")}
             </Text>
           </Box>
-          <Box className="p-6 rounded-lg bg-white dark:bg-[#232522] border border-gray-200 dark:border-white/20 max-w-[560px]">
+          <Box className="p-6 rounded-lg bg-white dark:bg-[#1B2620] border border-gray-200 dark:border-white/20 max-w-[560px]">
             <Text className="font-semibold mb-2 text-gray-800 dark:text-gray-100">{t("onCall.schedulesTitle")}</Text>
             <Text className="text-sm text-gray-600 dark:text-gray-400">{t("onCall.schedulesDesc")}</Text>
           </Box>

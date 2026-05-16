@@ -28,7 +28,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="bg-[#F4F3F4] dark:bg-[#1C1E1C] text-gray-800 dark:text-gray-100">
+      <body className="bg-[#F4F3F4] dark:bg-[#131C18] text-gray-800 dark:text-gray-100">
         <Providers>{children}</Providers>
         <Toaster
           position="top-center"
@@ -36,7 +36,7 @@ export default function RootLayout({
           toastOptions={{
             duration: 4000,
             style: {
-              background: "#232522",
+              background: "#1B2620",
               color: "#f3f4f6",
             },
           }}

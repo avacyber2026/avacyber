@@ -162,7 +162,7 @@ const SOURCE_ICON: Record<string, React.ReactNode> = {
   custom:   <FaServer size={14} />,
 };
 
-const glass = "rounded-xl border border-white/60 dark:border-[#2c2f2c] bg-white/55 dark:bg-[#232522] shadow-[0_4px_24px_-8px_rgba(31,106,92,0.12)]";
+const glass = "rounded-xl border border-white/60 dark:border-[#192420] bg-white/55 dark:bg-[#1B2620] shadow-[0_4px_24px_-8px_rgba(31,106,92,0.12)]";
 
 // ── Status filter tabs ─────────────────────────────────────────────────────────
 
@@ -454,7 +454,7 @@ export default function SiemPage() {
   return (
     <>
       <SideMenu />
-      <div className="min-h-screen bg-[#F4F3F4] dark:bg-[#1C1E1C]" style={{ paddingLeft: "var(--app-sidebar-width, 308px)" }}>
+      <div className="min-h-screen bg-[#F4F3F4] dark:bg-[#131C18]" style={{ paddingLeft: "var(--app-sidebar-width, 308px)" }}>
         <div className="max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 py-6 pb-16">
 
           {/* ── Header ── */}
@@ -474,7 +474,7 @@ export default function SiemPage() {
             </div>
             <button
               onClick={fetchAll}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border border-white/70 dark:border-[#2c2f2c] bg-white/60 dark:bg-[#232522] text-slate-700 dark:text-slate-200 hover:bg-white/90 dark:hover:bg-[#2c2f2c] transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border border-white/70 dark:border-[#192420] bg-white/60 dark:bg-[#1B2620] text-slate-700 dark:text-slate-200 hover:bg-white/90 dark:hover:bg-[#192420] transition-colors"
             >
               <MdRefresh size={16} />
               Refresh
@@ -522,7 +522,7 @@ export default function SiemPage() {
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
                   tab === t.key
                     ? "bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white shadow-md shadow-emerald-900/15"
-                    : "text-slate-600 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-[#2c2f2c]"
+                    : "text-slate-600 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-[#192420]"
                 }`}>
                 {t.icon}
                 {t.label}
@@ -545,13 +545,13 @@ export default function SiemPage() {
                       <button onClick={() => setTab("alerts")} className="text-xs text-[#1F6A5C] dark:text-[#50BFA0] hover:underline font-semibold">View all</button>
                     </div>
                     {dataLoading ? (
-                      <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-14 rounded-lg bg-slate-200/60 dark:bg-[#2c2f2c]/60 animate-pulse" />)}</div>
+                      <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-14 rounded-lg bg-slate-200/60 dark:bg-[#192420]/60 animate-pulse" />)}</div>
                     ) : alerts.length === 0 ? (
                       <EmptyState icon={<IoAlertCircle size={32} />} title="No alerts yet" sub="Alerts will appear here when detection rules match incoming events." />
                     ) : (
                       <div className="space-y-2">
                         {alerts.slice(0, 8).map((a) => (
-                          <div key={a.id} onClick={() => setSelectedAlert(a)} className="flex items-center gap-3 rounded-lg px-3 py-3 border border-white/50 dark:border-[#2c2f2c] bg-white/40 dark:bg-[#2c2f2c]/40 hover:bg-white/70 dark:hover:bg-[#2c2f2c] transition-colors cursor-pointer">
+                          <div key={a.id} onClick={() => setSelectedAlert(a)} className="flex items-center gap-3 rounded-lg px-3 py-3 border border-white/50 dark:border-[#192420] bg-white/40 dark:bg-[#192420]/40 hover:bg-white/70 dark:hover:bg-[#192420] transition-colors cursor-pointer">
                             <AiScore score={a.ai_score} />
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 flex-wrap">
@@ -634,7 +634,7 @@ export default function SiemPage() {
                           className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${
                             alertFilter === f
                               ? "bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white"
-                              : "border border-white/60 dark:border-[#2c2f2c] bg-white/40 dark:bg-[#2c2f2c]/40 text-slate-600 dark:text-slate-300"
+                              : "border border-white/60 dark:border-[#192420] bg-white/40 dark:bg-[#192420]/40 text-slate-600 dark:text-slate-300"
                           }`}>
                           {f}
                         </button>
@@ -647,7 +647,7 @@ export default function SiemPage() {
                   ) : (
                     <div className="space-y-2">
                       {filteredAlerts.map((a) => (
-                        <div key={a.id} onClick={() => setSelectedAlert(a)} className="flex items-start gap-4 rounded-xl px-4 py-4 border border-white/50 dark:border-[#2c2f2c] bg-white/40 dark:bg-[#2c2f2c]/40 hover:bg-white/70 dark:hover:bg-[#2c2f2c] transition-colors cursor-pointer">
+                        <div key={a.id} onClick={() => setSelectedAlert(a)} className="flex items-start gap-4 rounded-xl px-4 py-4 border border-white/50 dark:border-[#192420] bg-white/40 dark:bg-[#192420]/40 hover:bg-white/70 dark:hover:bg-[#192420] transition-colors cursor-pointer">
                           <AiScore score={a.ai_score} />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap mb-1">
@@ -710,7 +710,7 @@ export default function SiemPage() {
                           onChange={(e) => setEventSearchInput(e.target.value)}
                           onKeyDown={(e) => { if (e.key === "Enter") { setEventSearch(eventSearchInput); fetchEvents(eventSearchInput); }}}
                           placeholder="Search logs, IPs, usernames…"
-                          className="pl-8 pr-3 py-2 rounded-lg text-sm border border-white/60 dark:border-[#2c2f2c] bg-white/60 dark:bg-[#1C1E1C] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40 w-64"
+                          className="pl-8 pr-3 py-2 rounded-lg text-sm border border-white/60 dark:border-[#192420] bg-white/60 dark:bg-[#131C18] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40 w-64"
                         />
                       </div>
                       <button onClick={() => { setEventSearch(eventSearchInput); fetchEvents(eventSearchInput); }}
@@ -727,7 +727,7 @@ export default function SiemPage() {
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
                         <thead>
-                          <tr className="text-left text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-white/40 dark:border-[#2c2f2c]">
+                          <tr className="text-left text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-white/40 dark:border-[#192420]">
                             <th className="pb-3 pr-4">Time</th>
                             <th className="pb-3 pr-4">Source</th>
                             <th className="pb-3 pr-4">Type</th>
@@ -737,9 +737,9 @@ export default function SiemPage() {
                             <th className="pb-3">Message</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/30 dark:divide-[#2c2f2c]/60">
+                        <tbody className="divide-y divide-white/30 dark:divide-[#192420]/60">
                           {events.map((e) => (
-                            <tr key={e.id} className="hover:bg-white/30 dark:hover:bg-[#2c2f2c]/30 transition-colors">
+                            <tr key={e.id} className="hover:bg-white/30 dark:hover:bg-[#192420]/30 transition-colors">
                               <td className="py-2.5 pr-4 text-xs text-slate-500 whitespace-nowrap font-mono">{formatRelative(e.ingested_at)}</td>
                               <td className="py-2.5 pr-4 text-xs font-semibold text-slate-700 dark:text-slate-200 whitespace-nowrap">{e.source_name ?? "—"}</td>
                               <td className="py-2.5 pr-4 text-xs font-mono text-slate-600 dark:text-slate-300 whitespace-nowrap">{e.event_type}</td>
@@ -773,7 +773,7 @@ export default function SiemPage() {
                         onChange={(e) => setAiRulePrompt(e.target.value)}
                         onKeyDown={(e) => { if (e.key === "Enter" && !aiRuleLoading) handleGenerateRule(); }}
                         placeholder='e.g. "Alert when a user logs in from outside the US between midnight and 6am"'
-                        className="flex-1 min-w-[260px] px-4 py-2.5 rounded-lg text-sm border border-white/60 dark:border-[#2c2f2c] bg-white/60 dark:bg-[#1C1E1C] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/40"
+                        className="flex-1 min-w-[260px] px-4 py-2.5 rounded-lg text-sm border border-white/60 dark:border-[#192420] bg-white/60 dark:bg-[#131C18] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/40"
                       />
                       <button onClick={handleGenerateRule} disabled={aiRuleLoading || !aiRulePrompt.trim()}
                         className="px-5 py-2.5 rounded-lg text-sm font-semibold bg-purple-600 hover:bg-purple-700 text-white disabled:opacity-50 transition-colors flex items-center gap-2">
@@ -801,7 +801,7 @@ export default function SiemPage() {
                             Save Rule
                           </button>
                           <button onClick={() => setGeneratedRule(null)}
-                            className="px-4 py-2 rounded-lg text-sm font-semibold border border-white/60 dark:border-[#2c2f2c] text-slate-600 dark:text-slate-300">
+                            className="px-4 py-2 rounded-lg text-sm font-semibold border border-white/60 dark:border-[#192420] text-slate-600 dark:text-slate-300">
                             Discard
                           </button>
                         </div>
@@ -821,8 +821,8 @@ export default function SiemPage() {
                         {rules.map((r) => (
                           <div key={r.id} className={`flex items-start gap-4 rounded-xl px-4 py-4 border transition-colors ${
                             r.enabled
-                              ? "border-white/50 dark:border-[#2c2f2c] bg-white/40 dark:bg-[#2c2f2c]/40"
-                              : "border-white/30 dark:border-[#2c2f2c]/50 bg-white/20 dark:bg-[#2c2f2c]/20 opacity-60"
+                              ? "border-white/50 dark:border-[#192420] bg-white/40 dark:bg-[#192420]/40"
+                              : "border-white/30 dark:border-[#192420]/50 bg-white/20 dark:bg-[#192420]/20 opacity-60"
                           }`}>
                             {/* Toggle */}
                             <button onClick={() => toggleRule(r)}
@@ -949,9 +949,9 @@ export default function SiemPage() {
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
                           <input value={newSource.name} onChange={(e) => setNewSource(s => ({ ...s, name: e.target.value }))}
                             placeholder="Source name (e.g. Firewall-01)"
-                            className="px-3 py-2 rounded-lg text-sm border border-white/60 dark:border-[#2c2f2c] bg-white/80 dark:bg-[#1C1E1C] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40" />
+                            className="px-3 py-2 rounded-lg text-sm border border-white/60 dark:border-[#192420] bg-white/80 dark:bg-[#131C18] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40" />
                           <select value={newSource.type} onChange={(e) => setNewSource(s => ({ ...s, type: e.target.value }))}
-                            className="px-3 py-2 rounded-lg text-sm border border-white/60 dark:border-[#2c2f2c] bg-white/80 dark:bg-[#1C1E1C] text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40">
+                            className="px-3 py-2 rounded-lg text-sm border border-white/60 dark:border-[#192420] bg-white/80 dark:bg-[#131C18] text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40">
                             <option value="syslog">Syslog (UDP/TCP 514)</option>
                             <option value="api">REST API</option>
                             <option value="aws">AWS CloudTrail</option>
@@ -962,7 +962,7 @@ export default function SiemPage() {
                           </select>
                           <input value={newSource.description} onChange={(e) => setNewSource(s => ({ ...s, description: e.target.value }))}
                             placeholder="Description (optional)"
-                            className="px-3 py-2 rounded-lg text-sm border border-white/60 dark:border-[#2c2f2c] bg-white/80 dark:bg-[#1C1E1C] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40" />
+                            className="px-3 py-2 rounded-lg text-sm border border-white/60 dark:border-[#192420] bg-white/80 dark:bg-[#131C18] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40" />
                         </div>
                         <div className="flex gap-2">
                           <button onClick={addSource}
@@ -970,7 +970,7 @@ export default function SiemPage() {
                             Add Source
                           </button>
                           <button onClick={() => setShowAddSource(false)}
-                            className="px-4 py-2 rounded-lg text-sm font-semibold border border-white/60 dark:border-[#2c2f2c] text-slate-600 dark:text-slate-300">
+                            className="px-4 py-2 rounded-lg text-sm font-semibold border border-white/60 dark:border-[#192420] text-slate-600 dark:text-slate-300">
                             Cancel
                           </button>
                         </div>
@@ -984,14 +984,14 @@ export default function SiemPage() {
                   ) : (
                     <div className="space-y-3">
                       {sources.map((s) => (
-                        <div key={s.id} className="flex items-center gap-4 rounded-xl px-4 py-4 border border-white/50 dark:border-[#2c2f2c] bg-white/40 dark:bg-[#2c2f2c]/40">
+                        <div key={s.id} className="flex items-center gap-4 rounded-xl px-4 py-4 border border-white/50 dark:border-[#192420] bg-white/40 dark:bg-[#192420]/40">
                           <div className="w-10 h-10 rounded-xl bg-[#1F6A5C]/12 dark:bg-[#50BFA0]/15 flex items-center justify-center text-[#1F6A5C] dark:text-[#50BFA0]">
                             {SOURCE_ICON[s.type] ?? <FaServer size={16} />}
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-0.5">
                               <span className="font-semibold text-slate-900 dark:text-white">{s.name}</span>
-                              <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-[#2c2f2c] text-slate-500 border border-slate-200 dark:border-[#3d4240] capitalize">{s.type}</span>
+                              <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-[#192420] text-slate-500 border border-slate-200 dark:border-[#3d4240] capitalize">{s.type}</span>
                               <span className={`w-2 h-2 rounded-full ${s.enabled ? "bg-emerald-500" : "bg-slate-400"}`} />
                             </div>
                             <div className="flex gap-4 text-xs text-slate-500">
@@ -1030,7 +1030,7 @@ export default function SiemPage() {
               className="fixed inset-0 bg-black/50 z-40" />
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
               className="fixed inset-0 z-50 flex items-center justify-center p-4">
-              <div className="w-full max-w-md bg-white dark:bg-[#1a1c1a] rounded-2xl shadow-2xl border border-white/20 dark:border-[#2c2f2c] p-6">
+              <div className="w-full max-w-md bg-white dark:bg-[#1a1c1a] rounded-2xl shadow-2xl border border-white/20 dark:border-[#192420] p-6">
                 <h3 className="font-bold text-slate-900 dark:text-white text-lg mb-1">Resolve Alert</h3>
                 <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Record your determination — this feeds into AI QA review.</p>
 
@@ -1044,7 +1044,7 @@ export default function SiemPage() {
                             ? t === "true_positive" ? "bg-red-500/15 border-red-500/40 text-red-400"
                               : t === "false_positive" ? "bg-slate-400/15 border-slate-400/40 text-slate-400"
                               : "bg-emerald-500/15 border-emerald-500/40 text-emerald-500"
-                            : "border-white/60 dark:border-[#2c2f2c] text-slate-500 hover:bg-slate-50 dark:hover:bg-[#2c2f2c]"
+                            : "border-white/60 dark:border-[#192420] text-slate-500 hover:bg-slate-50 dark:hover:bg-[#192420]"
                         }`}>
                         {t === "true_positive" ? "True Positive" : t === "false_positive" ? "False Positive" : "Benign"}
                       </button>
@@ -1059,7 +1059,7 @@ export default function SiemPage() {
                     onChange={e => setResolveNotes(e.target.value)}
                     placeholder="Document your findings, actions taken, evidence…"
                     rows={3}
-                    className="w-full px-4 py-3 rounded-xl text-sm border border-white/60 dark:border-[#2c2f2c] bg-slate-50 dark:bg-[#1c1e1c] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40 resize-none"
+                    className="w-full px-4 py-3 rounded-xl text-sm border border-white/60 dark:border-[#192420] bg-slate-50 dark:bg-[#1c1e1c] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40 resize-none"
                   />
                 </div>
 
@@ -1069,7 +1069,7 @@ export default function SiemPage() {
                     {resolving ? <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Resolving…</> : <><MdCheck size={16} /> Resolve & Queue for QA</>}
                   </button>
                   <button onClick={() => setResolveModal(null)}
-                    className="px-4 py-2.5 rounded-xl text-sm font-semibold border border-white/60 dark:border-[#2c2f2c] text-slate-600 dark:text-slate-300">
+                    className="px-4 py-2.5 rounded-xl text-sm font-semibold border border-white/60 dark:border-[#192420] text-slate-600 dark:text-slate-300">
                     Cancel
                   </button>
                 </div>
@@ -1090,10 +1090,10 @@ export default function SiemPage() {
 
             {/* Panel */}
             <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 28, stiffness: 260 }}
-              className="fixed right-0 top-0 h-full w-full max-w-xl bg-white dark:bg-[#1a1c1a] shadow-2xl z-50 flex flex-col overflow-hidden border-l border-white/20 dark:border-[#2c2f2c]">
+              className="fixed right-0 top-0 h-full w-full max-w-xl bg-white dark:bg-[#1a1c1a] shadow-2xl z-50 flex flex-col overflow-hidden border-l border-white/20 dark:border-[#192420]">
 
               {/* Panel header */}
-              <div className="flex items-start justify-between px-6 py-5 border-b border-slate-100 dark:border-[#2c2f2c] shrink-0">
+              <div className="flex items-start justify-between px-6 py-5 border-b border-slate-100 dark:border-[#192420] shrink-0">
                 <div className="flex-1 min-w-0 pr-3">
                   <div className="flex items-center gap-2 flex-wrap mb-1">
                     <SevBadge severity={selectedAlert.severity} />
@@ -1102,7 +1102,7 @@ export default function SiemPage() {
                   </div>
                   <h2 className="text-lg font-bold text-slate-900 dark:text-white">{selectedAlert.rule_name}</h2>
                 </div>
-                <button onClick={() => setSelectedAlert(null)} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-[#2c2f2c] text-slate-400 transition-colors shrink-0">
+                <button onClick={() => setSelectedAlert(null)} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-[#192420] text-slate-400 transition-colors shrink-0">
                   <MdClose size={20} />
                 </button>
               </div>
@@ -1123,7 +1123,7 @@ export default function SiemPage() {
                     { label: "Hostname", value: selectedAlert.hostname, mono: true },
                     { label: "Detected", value: formatTime(selectedAlert.created_at), mono: false },
                   ].map(({ label, value, mono }) => value ? (
-                    <div key={label} className="rounded-lg bg-slate-50 dark:bg-[#232522] px-4 py-3 border border-slate-100 dark:border-[#2c2f2c]">
+                    <div key={label} className="rounded-lg bg-slate-50 dark:bg-[#1B2620] px-4 py-3 border border-slate-100 dark:border-[#192420]">
                       <div className="text-xs text-slate-400 mb-1">{label}</div>
                       <div className={`text-sm font-semibold text-slate-800 dark:text-white ${mono ? "font-mono" : ""}`}>{value}</div>
                     </div>
@@ -1131,7 +1131,7 @@ export default function SiemPage() {
                 </div>
 
                 {/* AI Triage */}
-                <div className="rounded-xl border border-white/60 dark:border-[#2c2f2c] bg-white/55 dark:bg-[#232522] p-4">
+                <div className="rounded-xl border border-white/60 dark:border-[#192420] bg-white/55 dark:bg-[#1B2620] p-4">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <MdAutoAwesome size={16} className="text-purple-400" />
@@ -1155,7 +1155,7 @@ export default function SiemPage() {
                 </div>
 
                 {/* AI Investigation */}
-                <div className="rounded-xl border border-white/60 dark:border-[#2c2f2c] bg-white/55 dark:bg-[#232522] p-4">
+                <div className="rounded-xl border border-white/60 dark:border-[#192420] bg-white/55 dark:bg-[#1B2620] p-4">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <MdAutoAwesome size={16} className="text-blue-400" />
@@ -1209,7 +1209,7 @@ export default function SiemPage() {
               </div>
 
               {/* Action footer */}
-              <div className="px-6 py-4 border-t border-slate-100 dark:border-[#2c2f2c] flex gap-2 shrink-0">
+              <div className="px-6 py-4 border-t border-slate-100 dark:border-[#192420] flex gap-2 shrink-0">
                 {selectedAlert.status === "open" && (
                   <button onClick={() => { updateAlertStatus(selectedAlert.id, "investigating"); setSelectedAlert(p => p ? { ...p, status: "investigating" } : p); }}
                     className="flex-1 py-2 rounded-lg text-sm font-semibold bg-amber-400/10 border border-amber-400/25 text-amber-400 hover:bg-amber-400/20 transition-colors">

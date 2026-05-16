@@ -80,7 +80,7 @@ export default function GuideArticlePage() {
     <>
       <SideMenu />
       <VStack className="w-full min-h-screen items-stretch">
-        <Box className={`${style.main} bg-[#F4F3F4] dark:bg-[#1C1E1C] p-6`} as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <Box className={`${style.main} bg-[#F4F3F4] dark:bg-[#131C18] p-6`} as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <Button as={Link} href="/guide" variant="ghost" size="sm" className="mb-4 -ml-2 text-[#1F6A5C] dark:text-[#50BFA0]">
             {t("guide.backToList")}
           </Button>

@@ -57,7 +57,7 @@ export function ReportSupplementForm({ report, onSupplemented }: ReportSupplemen
     }
   }
 
-  const inputClass = "w-full rounded-lg border border-gray-200 dark:border-white/20 bg-white dark:bg-[#2c2f2c] text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary text-sm";
+  const inputClass = "w-full rounded-lg border border-gray-200 dark:border-white/20 bg-white dark:bg-[#192420] text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary text-sm";
   const labelClass = "text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 block";
 
   return (

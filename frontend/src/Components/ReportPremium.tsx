@@ -177,7 +177,7 @@ export function ReportPremium() {
   return (
     <div className={style.reportPremium}>
       {status === "Security Manager" && (
-        <Box className="mb-4 p-4 bg-white dark:bg-[#232522] rounded-lg border border-gray-200 dark:border-white/20">
+        <Box className="mb-4 p-4 bg-white dark:bg-[#1B2620] rounded-lg border border-gray-200 dark:border-white/20">
           <div className="flex flex-wrap items-center gap-3">
             <Text fontSize="sm" fontWeight={600}>{t("report.exportXlsx")}</Text>
             <Input
@@ -232,7 +232,7 @@ export function ReportPremium() {
         </Box>
       )}
 
-      <Box className="mb-4 p-4 bg-white dark:bg-[#232522] rounded-lg border border-gray-200 dark:border-white/20 overflow-x-hidden">
+      <Box className="mb-4 p-4 bg-white dark:bg-[#1B2620] rounded-lg border border-gray-200 dark:border-white/20 overflow-x-hidden">
         <div className="flex justify-between items-center flex-wrap gap-4 mb-4">
           <Text fontSize="sm" fontWeight={600}>{t("report.filters")}</Text>
           <HStack spacing={2}>
@@ -332,7 +332,7 @@ export function ReportPremium() {
       </Box>
 
       {viewMode === "table" ? (
-        <TableContainer className="bg-white dark:bg-[#232522] rounded-lg border border-gray-200 dark:border-white/20 overflow-x-auto">
+        <TableContainer className="bg-white dark:bg-[#1B2620] rounded-lg border border-gray-200 dark:border-white/20 overflow-x-auto">
           <Table>
             <Thead>
               <Tr>
@@ -365,7 +365,7 @@ export function ReportPremium() {
                           value={resolveComments[x.id] ?? ""}
                           onChange={(e) => setResolveComments((prev) => ({ ...prev, [x.id]: e.target.value }))}
                           rows={2}
-                          className="text-sm border border-gray-200 dark:border-white/20 rounded focus:ring-2 focus:ring-brand-primary bg-white dark:bg-[#2c2f2c] text-gray-800 dark:text-white resize-y"
+                          className="text-sm border border-gray-200 dark:border-white/20 rounded focus:ring-2 focus:ring-brand-primary bg-white dark:bg-[#192420] text-gray-800 dark:text-white resize-y"
                         />
                         <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => sendAnswer(x.id, resolveComments[x.id] ?? "")}>
                           {t("report.markResolved")}
@@ -484,7 +484,7 @@ export function ReportPremium() {
                     value={resolveComments[x.id] ?? ""}
                     onChange={(e) => setResolveComments((prev) => ({ ...prev, [x.id]: e.target.value }))}
                     rows={3}
-                    className="w-full text-sm border border-gray-200 dark:border-white/20 rounded-lg focus:ring-2 focus:ring-brand-primary bg-white dark:bg-[#2c2f2c] text-gray-800 dark:text-white resize-y p-3"
+                    className="w-full text-sm border border-gray-200 dark:border-white/20 rounded-lg focus:ring-2 focus:ring-brand-primary bg-white dark:bg-[#192420] text-gray-800 dark:text-white resize-y p-3"
                   />
                   <Button
                     as={motion.button}

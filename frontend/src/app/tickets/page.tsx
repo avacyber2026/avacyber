@@ -29,7 +29,7 @@ function TicketsPageContent() {
         <VStack className="w-full min-h-screen">
           <SideMenu />
           <Stack
-            className={`${style.main} bg-[#F4F3F4] dark:bg-[#1C1E1C] p-6`}
+            className={`${style.main} bg-[#F4F3F4] dark:bg-[#131C18] p-6`}
             as={motion.div}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

@@ -57,7 +57,7 @@ export function StructuredAnswerPanel({ ticket, onAnswered }: StructuredAnswerPa
   }
 
   return (
-    <Box className="rounded-xl border border-gray-200 dark:border-white/15 bg-white dark:bg-[#232522] p-5 mt-4">
+    <Box className="rounded-xl border border-gray-200 dark:border-white/15 bg-white dark:bg-[#1B2620] p-5 mt-4">
       <Text fontSize="sm" fontWeight={600} className="text-gray-700 dark:text-gray-300 mb-3">
         {isAnnouncement ? t("tickets.acknowledgePrompt") : t("tickets.verificationPrompt")}
       </Text>
@@ -89,7 +89,7 @@ export function StructuredAnswerPanel({ ticket, onAnswered }: StructuredAnswerPa
           onChange={(e) => setComment(e.target.value)}
           placeholder={t("tickets.commentPlaceholder")}
           rows={2}
-          className="w-full rounded-lg border border-gray-200 dark:border-white/20 bg-white dark:bg-[#2c2f2c] text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary text-sm p-3 resize-y"
+          className="w-full rounded-lg border border-gray-200 dark:border-white/20 bg-white dark:bg-[#192420] text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary text-sm p-3 resize-y"
         />
       </div>
 

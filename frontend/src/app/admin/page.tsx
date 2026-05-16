@@ -20,7 +20,7 @@ export default function AdminPage() {
   }, [router]);
 
   return (
-    <VStack className="w-full min-h-screen justify-center items-center bg-[#F4F3F4] dark:bg-[#1C1E1C]">
+    <VStack className="w-full min-h-screen justify-center items-center bg-[#F4F3F4] dark:bg-[#131C18]">
       <Text className="text-gray-500">{t("common.loading")}</Text>
     </VStack>
   );

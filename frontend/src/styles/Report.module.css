@@ -158,7 +158,7 @@
 }
 
 .dark .timelineCommentInput {
-    background: #2c2f2c;
+    background: #192420;
     border-color: rgba(255, 255, 255, 0.2);
     color: #e5e7eb;
 }
@@ -350,13 +350,13 @@
 .dark .historyBlock,
 .dark .simpleTicketBlock,
 .dark .simpleUserTicket {
-    background: #232522;
+    background: #1B2620;
     border-color: rgba(255, 255, 255, 0.12);
 }
 
 .dark .input,
 .dark .textarea {
-    background: #2c2f2c !important;
+    background: #192420 !important;
     border-color: rgba(255, 255, 255, 0.2) !important;
     color: #f3f4f6 !important;
 }
@@ -368,7 +368,7 @@
 
 .dark .infoBlockUser,
 .dark .parametrsId {
-    background: #2c2f2c !important;
+    background: #192420 !important;
     border-color: rgba(255, 255, 255, 0.2) !important;
     color: #f3f4f6 !important;
 }

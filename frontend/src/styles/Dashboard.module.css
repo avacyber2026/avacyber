@@ -20,7 +20,7 @@
 }
 
 :global(.dark) .mesh {
-  background: #1C1E1C;
+  background: #131C18;
 }
 
 .blob {
@@ -50,9 +50,9 @@
     0 12px 48px -12px rgba(16, 62, 54, 0.08);
 }
 
-/* Тёмная тема: карточки #232522 на фоне #1C1E1C (app kit) */
+/* Тёмная тема: карточки #1B2620 на фоне #131C18 (app kit) */
 :global(.dark) .glass {
-  background: #1f2220;
+  background: #1B2620;
   border: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow: none;
   backdrop-filter: none;
@@ -70,7 +70,7 @@
 }
 
 :global(.dark) .glassStrong {
-  background: #272b28;
+  background: #213128;
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: none;
   backdrop-filter: none;
