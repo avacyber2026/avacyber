@@ -1,4 +1,4 @@
-/* AVA cyber brand — exact brandbook palette */
+/* AVA Cyber brand — exact brandbook palette */
 export const avaDeep    = "#103E36"; /* dark forest — cards, sidebar, surfaces */
 export const avaForest  = "#1F6A5C"; /* forest — hover, elevated surfaces */
 export const avaTeal    = "#50BFA0"; /* teal — secondary text, icons, borders */

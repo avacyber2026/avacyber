@@ -18,8 +18,12 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "AVA cyber",
-  description: "AVA cyber — Clarity in Security and Compliance",
+  title: "AVA Cyber",
+  description: "AVA Cyber — Clarity in Security and Compliance",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({

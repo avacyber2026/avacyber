@@ -26,8 +26,8 @@ html.dark [class*="text-[#3FFFA3]"] { color: #3FFFA3 !important }
 /* Neutral bg tints in dark */
 html.dark [class*="bg-[#1F6A5C]"]   { background-color: rgba(255,255,255,0.05) !important }
 html.dark [class*="bg-[#50BFA0]"]   { background-color: rgba(255,255,255,0.05) !important }
-html.dark [class*="border-[#1F6A5C]"] { border-color: rgba(255,255,255,0.08) !important }
-html.dark [class*="border-[#50BFA0]"] { border-color: rgba(255,255,255,0.08) !important }
+html.dark [class*="border-[#1F6A5C]"] { border-color: rgba(255,255,255,0.04) !important }
+html.dark [class*="border-[#50BFA0]"] { border-color: rgba(255,255,255,0.04) !important }
 /* Gradient buttons keep their forest green — only plain bg-[#103E36] surfaces
    are neutralised. These are fixed directly in the component files. */
 
@@ -95,7 +95,7 @@ html:not(.dark) [class*="subtitle"] {
 .dark [class*="historyBlock"],
 .dark [class*="simpleTicketBlock"],
 .dark [class*="simpleUserTicket"] {
-  border-color: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255,255,255,0.04);
   background: #1E2128;
   color: #f3f4f6;
 }
@@ -107,7 +107,7 @@ html:not(.dark) [class*="subtitle"] {
 .dark [class*="createReportBlock"] input,
 .dark [class*="createReportBlock"] textarea {
   background: #1C1E1C !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255,255,255,0.04) !important;
   color: #f4f3f4 !important;
 }
 .dark .input::placeholder,
@@ -122,7 +122,7 @@ html:not(.dark) [class*="subtitle"] {
 .dark [class*="userSelect"],
 .dark [class*="userSelectButton"] {
   background: #1C1E1C !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255,255,255,0.04) !important;
   color: #f4f3f4 !important;
 }
 .dark [class*="userSelectText"] {
@@ -131,7 +131,7 @@ html:not(.dark) [class*="subtitle"] {
 
 .dark [class*="priorityBlock"],
 .dark [class*="emptyCircle"] {
-  border-color: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255,255,255,0.04) !important;
   background: #1C1E1C !important;
   color: #f4f3f4 !important;
 }
@@ -142,7 +142,7 @@ html:not(.dark) [class*="subtitle"] {
 
 .dark [class*="parametrsId"],
 .dark [class*="infoBlockUser"] {
-  border-color: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255,255,255,0.04) !important;
   color: #f4f3f4 !important;
 }
 
@@ -167,13 +167,13 @@ html:not(.dark) [class*="subtitle"] {
 
 .dark [class*="card"] {
   background: #1E2128 !important;
-  border-color: rgba(63, 255, 163, 0.10) !important;
+  border-color: rgba(255,255,255,0.04) !important;
   color: #F4F3F4 !important;
 }
 .dark [class*="form"] input,
 .dark [class*="form"] [class*="input"] {
   background: #1C1E1C !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255,255,255,0.04) !important;
   color: #f4f3f4 !important;
 }
 
@@ -241,7 +241,7 @@ html:not(.dark) [class*="subtitle"] {
 .dark [data-admin] select,
 .dark [data-admin] textarea {
   background: #1C1E1C !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255,255,255,0.04) !important;
   color: #f4f3f4 !important;
 }
 .dark [data-admin] input::placeholder,

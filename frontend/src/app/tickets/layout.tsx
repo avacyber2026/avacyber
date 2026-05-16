@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Incidents — AVA cyber",
-  description: "Incidents — AVA cyber",
+  title: "Incidents — AVA Cyber",
+  description: "Incidents — AVA Cyber",
 };
 
 export default function TicketsLayout({

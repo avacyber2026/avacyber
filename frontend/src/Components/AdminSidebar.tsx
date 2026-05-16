@@ -27,7 +27,7 @@ export function AdminSidebar() {
 
   return (
     <AppSidebar
-      logoText="AVA cyber"
+      logoText="AVA Cyber"
       userPrimary={username}
       role="Admin"
       links={adminLinks}

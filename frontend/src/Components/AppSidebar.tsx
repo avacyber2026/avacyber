@@ -37,7 +37,7 @@ interface AppSidebarProps {
 const S = {
   bg: "#103E36",
   borderRight: "rgba(63,255,163,0.08)",
-  divider: "rgba(255,255,255,0.06)",
+  divider: "rgba(255,255,255,0.04)",
   mint: "#3FFFA3",
   mintBg: "rgba(63,255,163,0.08)",
   textPrimary: "#F4F3F4",
@@ -49,8 +49,8 @@ const S = {
 function LogoMark({ size = 30 }: { size?: number }) {
   return (
     <img
-      src="/logo-dark.svg"
-      alt="AVA cyber"
+      src="/logo-dark.png"
+      alt="AVA Cyber"
       className="rounded-[7px] shrink-0 select-none"
       style={{ width: size, height: size, objectFit: "cover" }}
       draggable={false}
@@ -100,7 +100,7 @@ function SidebarContent({
             <div className="flex items-center gap-2.5">
               <LogoMark size={30} />
               <span className="font-semibold text-[15px] tracking-tight" style={{ color: S.textPrimary }}>
-                AVA cyber
+                AVA Cyber
               </span>
             </div>
             {mode === "desktop" && (
@@ -358,7 +358,7 @@ export function AppSidebar({
           <div className="flex items-center gap-2.5">
             <LogoMark size={28} />
             <span className="font-semibold text-[15px] tracking-tight" style={{ color: S.textPrimary }}>
-              AVA cyber
+              AVA Cyber
             </span>
           </div>
           <button

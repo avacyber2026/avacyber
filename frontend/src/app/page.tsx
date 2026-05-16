@@ -140,7 +140,7 @@ export default function Home() {
       <div className={styles.orb + " " + styles.orb3} aria-hidden />
 
       <Box className={styles.card}>
-        <Text className={styles.title}>AVA cyber</Text>
+        <Text className={styles.title}>AVA Cyber</Text>
         <Text className={styles.subtitle}>
           {mode === "login" ? t("auth.signInTitle") : t("auth.createAccountTitle")}
         </Text>

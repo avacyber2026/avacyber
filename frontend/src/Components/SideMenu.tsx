@@ -76,7 +76,7 @@ export function SideMenu() {
 
   return (
     <AppSidebar
-      logoText="AVA cyber"
+      logoText="AVA Cyber"
       userPrimary={userPrimary}
       userAvatarUrl={profile?.avatarSrc ?? undefined}
       role={type || undefined}
