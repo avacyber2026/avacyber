@@ -48,7 +48,7 @@ export function UserProfileCard({
 
   return (
     <motion.div
-      className="border border-[#1F6A5C]/20 dark:border-white/20 rounded-lg p-4 bg-white dark:bg-[#103E36] hover:border-[#1F6A5C]/35"
+      className="border border-[#1F6A5C]/20 dark:border-white/20 rounded-lg p-4 bg-white dark:bg-[#1E2128] hover:border-[#1F6A5C]/35"
       whileHover={{ y: -2, boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
       whileTap={{ scale: 0.99 }}
     >

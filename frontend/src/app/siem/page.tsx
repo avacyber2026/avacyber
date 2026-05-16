@@ -162,7 +162,7 @@ const SOURCE_ICON: Record<string, React.ReactNode> = {
   custom:   <FaServer size={14} />,
 };
 
-const glass = "rounded-xl border border-white/60 dark:border-[#103E36] bg-white/55 dark:bg-[#103E36] shadow-[0_4px_24px_-8px_rgba(31,106,92,0.12)]";
+const glass = "rounded-xl border border-white/60 dark:border-[#103E36] bg-white/55 dark:bg-[#1E2128] shadow-[0_4px_24px_-8px_rgba(31,106,92,0.12)]";
 
 // ── Status filter tabs ─────────────────────────────────────────────────────────
 
@@ -474,7 +474,7 @@ export default function SiemPage() {
             </div>
             <button
               onClick={fetchAll}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border border-white/70 dark:border-[#103E36] bg-white/60 dark:bg-[#103E36] text-[#103E36] dark:text-[#F4F3F4]/80 hover:bg-white/90 dark:hover:bg-[#103E36] transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border border-white/70 dark:border-[#103E36] bg-white/60 dark:bg-[#1E2128] text-[#103E36] dark:text-[#F4F3F4]/80 hover:bg-white/90 dark:hover:bg-white/[0.06] transition-colors"
             >
               <MdRefresh size={16} />
               Refresh
@@ -522,7 +522,7 @@ export default function SiemPage() {
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
                   tab === t.key
                     ? "bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white shadow-md shadow-emerald-900/15"
-                    : "text-[#1F6A5C] dark:text-[#F4F3F4]/60 hover:bg-white/60 dark:hover:bg-[#103E36]"
+                    : "text-[#1F6A5C] dark:text-[#F4F3F4]/60 hover:bg-white/60 dark:hover:bg-white/[0.06]"
                 }`}>
                 {t.icon}
                 {t.label}
@@ -545,13 +545,13 @@ export default function SiemPage() {
                       <button onClick={() => setTab("alerts")} className="text-xs text-[#1F6A5C] dark:text-[#50BFA0] hover:underline font-semibold">View all</button>
                     </div>
                     {dataLoading ? (
-                      <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-14 rounded-lg bg-[#50BFA0]/15 dark:bg-[#103E36]/60 animate-pulse" />)}</div>
+                      <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-14 rounded-lg bg-[#50BFA0]/15 dark:bg-[#1E2128]/60 animate-pulse" />)}</div>
                     ) : alerts.length === 0 ? (
                       <EmptyState icon={<IoAlertCircle size={32} />} title="No alerts yet" sub="Alerts will appear here when detection rules match incoming events." />
                     ) : (
                       <div className="space-y-2">
                         {alerts.slice(0, 8).map((a) => (
-                          <div key={a.id} onClick={() => setSelectedAlert(a)} className="flex items-center gap-3 rounded-lg px-3 py-3 border border-white/50 dark:border-[#103E36] bg-white/40 dark:bg-[#103E36]/40 hover:bg-white/70 dark:hover:bg-[#103E36] transition-colors cursor-pointer">
+                          <div key={a.id} onClick={() => setSelectedAlert(a)} className="flex items-center gap-3 rounded-lg px-3 py-3 border border-white/50 dark:border-[#103E36] bg-white/40 dark:bg-[#1E2128]/40 hover:bg-white/70 dark:hover:bg-white/[0.06] transition-colors cursor-pointer">
                             <AiScore score={a.ai_score} />
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 flex-wrap">
@@ -634,7 +634,7 @@ export default function SiemPage() {
                           className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${
                             alertFilter === f
                               ? "bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white"
-                              : "border border-white/60 dark:border-[#103E36] bg-white/40 dark:bg-[#103E36]/40 text-[#1F6A5C] dark:text-[#F4F3F4]/60"
+                              : "border border-white/60 dark:border-[#103E36] bg-white/40 dark:bg-[#1E2128]/40 text-[#1F6A5C] dark:text-[#F4F3F4]/60"
                           }`}>
                           {f}
                         </button>
@@ -647,7 +647,7 @@ export default function SiemPage() {
                   ) : (
                     <div className="space-y-2">
                       {filteredAlerts.map((a) => (
-                        <div key={a.id} onClick={() => setSelectedAlert(a)} className="flex items-start gap-4 rounded-xl px-4 py-4 border border-white/50 dark:border-[#103E36] bg-white/40 dark:bg-[#103E36]/40 hover:bg-white/70 dark:hover:bg-[#103E36] transition-colors cursor-pointer">
+                        <div key={a.id} onClick={() => setSelectedAlert(a)} className="flex items-start gap-4 rounded-xl px-4 py-4 border border-white/50 dark:border-[#103E36] bg-white/40 dark:bg-[#1E2128]/40 hover:bg-white/70 dark:hover:bg-white/[0.06] transition-colors cursor-pointer">
                           <AiScore score={a.ai_score} />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap mb-1">
@@ -739,7 +739,7 @@ export default function SiemPage() {
                         </thead>
                         <tbody className="divide-y divide-white/30 dark:divide-[#103E36]/60">
                           {events.map((e) => (
-                            <tr key={e.id} className="hover:bg-white/30 dark:hover:bg-[#103E36]/30 transition-colors">
+                            <tr key={e.id} className="hover:bg-white/30 dark:hover:bg-white/[0.06]/30 transition-colors">
                               <td className="py-2.5 pr-4 text-xs text-[#1F6A5C]/70 whitespace-nowrap font-mono">{formatRelative(e.ingested_at)}</td>
                               <td className="py-2.5 pr-4 text-xs font-semibold text-[#103E36] dark:text-[#F4F3F4]/80 whitespace-nowrap">{e.source_name ?? "—"}</td>
                               <td className="py-2.5 pr-4 text-xs font-mono text-[#1F6A5C] dark:text-[#F4F3F4]/60 whitespace-nowrap">{e.event_type}</td>
@@ -821,8 +821,8 @@ export default function SiemPage() {
                         {rules.map((r) => (
                           <div key={r.id} className={`flex items-start gap-4 rounded-xl px-4 py-4 border transition-colors ${
                             r.enabled
-                              ? "border-white/50 dark:border-[#103E36] bg-white/40 dark:bg-[#103E36]/40"
-                              : "border-white/30 dark:border-[#103E36]/50 bg-white/20 dark:bg-[#103E36]/20 opacity-60"
+                              ? "border-white/50 dark:border-[#103E36] bg-white/40 dark:bg-[#1E2128]/40"
+                              : "border-white/30 dark:border-[#103E36]/50 bg-white/20 dark:bg-[#1E2128]/20 opacity-60"
                           }`}>
                             {/* Toggle */}
                             <button onClick={() => toggleRule(r)}
@@ -984,14 +984,14 @@ export default function SiemPage() {
                   ) : (
                     <div className="space-y-3">
                       {sources.map((s) => (
-                        <div key={s.id} className="flex items-center gap-4 rounded-xl px-4 py-4 border border-white/50 dark:border-[#103E36] bg-white/40 dark:bg-[#103E36]/40">
+                        <div key={s.id} className="flex items-center gap-4 rounded-xl px-4 py-4 border border-white/50 dark:border-[#103E36] bg-white/40 dark:bg-[#1E2128]/40">
                           <div className="w-10 h-10 rounded-xl bg-[#1F6A5C]/12 dark:bg-[#50BFA0]/15 flex items-center justify-center text-[#1F6A5C] dark:text-[#50BFA0]">
                             {SOURCE_ICON[s.type] ?? <FaServer size={16} />}
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-0.5">
                               <span className="font-semibold text-[#1C1E1C] dark:text-white">{s.name}</span>
-                              <span className="text-xs px-2 py-0.5 rounded-full bg-[#F4F3F4] dark:bg-[#103E36] text-[#1F6A5C]/70 border border-[#1F6A5C]/20 dark:border-[#3d4240] capitalize">{s.type}</span>
+                              <span className="text-xs px-2 py-0.5 rounded-full bg-[#F4F3F4] dark:bg-[#1E2128] text-[#1F6A5C]/70 border border-[#1F6A5C]/20 dark:border-[#3d4240] capitalize">{s.type}</span>
                               <span className={`w-2 h-2 rounded-full ${s.enabled ? "bg-emerald-500" : "bg-[#50BFA0]/40"}`} />
                             </div>
                             <div className="flex gap-4 text-xs text-[#1F6A5C]/70">
@@ -1044,7 +1044,7 @@ export default function SiemPage() {
                             ? t === "true_positive" ? "bg-red-500/15 border-red-500/40 text-red-400"
                               : t === "false_positive" ? "bg-[#50BFA0]/40 border-[#1F6A5C]/35 text-[#1F6A5C]/60"
                               : "bg-emerald-500/15 border-emerald-500/40 text-emerald-500"
-                            : "border-white/60 dark:border-[#103E36] text-[#1F6A5C]/70 hover:bg-[#F4F3F4]/50 dark:hover:bg-[#103E36]"
+                            : "border-white/60 dark:border-[#103E36] text-[#1F6A5C]/70 hover:bg-[#F4F3F4]/50 dark:hover:bg-white/[0.06]"
                         }`}>
                         {t === "true_positive" ? "True Positive" : t === "false_positive" ? "False Positive" : "Benign"}
                       </button>
@@ -1102,7 +1102,7 @@ export default function SiemPage() {
                   </div>
                   <h2 className="text-lg font-bold text-[#1C1E1C] dark:text-white">{selectedAlert.rule_name}</h2>
                 </div>
-                <button onClick={() => setSelectedAlert(null)} className="p-1.5 rounded-lg hover:bg-[#F4F3F4] dark:hover:bg-[#103E36] text-[#1F6A5C]/60 transition-colors shrink-0">
+                <button onClick={() => setSelectedAlert(null)} className="p-1.5 rounded-lg hover:bg-[#F4F3F4] dark:hover:bg-white/[0.06] text-[#1F6A5C]/60 transition-colors shrink-0">
                   <MdClose size={20} />
                 </button>
               </div>
@@ -1123,7 +1123,7 @@ export default function SiemPage() {
                     { label: "Hostname", value: selectedAlert.hostname, mono: true },
                     { label: "Detected", value: formatTime(selectedAlert.created_at), mono: false },
                   ].map(({ label, value, mono }) => value ? (
-                    <div key={label} className="rounded-lg bg-[#F4F3F4]/50 dark:bg-[#103E36] px-4 py-3 border border-[#1F6A5C]/12 dark:border-[#103E36]">
+                    <div key={label} className="rounded-lg bg-[#F4F3F4]/50 dark:bg-[#1E2128] px-4 py-3 border border-[#1F6A5C]/12 dark:border-[#103E36]">
                       <div className="text-xs text-[#1F6A5C]/60 mb-1">{label}</div>
                       <div className={`text-sm font-semibold text-[#1C1E1C] dark:text-white ${mono ? "font-mono" : ""}`}>{value}</div>
                     </div>
@@ -1131,7 +1131,7 @@ export default function SiemPage() {
                 </div>
 
                 {/* AI Triage */}
-                <div className="rounded-xl border border-white/60 dark:border-[#103E36] bg-white/55 dark:bg-[#103E36] p-4">
+                <div className="rounded-xl border border-white/60 dark:border-[#103E36] bg-white/55 dark:bg-[#1E2128] p-4">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <MdAutoAwesome size={16} className="text-purple-400" />
@@ -1155,7 +1155,7 @@ export default function SiemPage() {
                 </div>
 
                 {/* AI Investigation */}
-                <div className="rounded-xl border border-white/60 dark:border-[#103E36] bg-white/55 dark:bg-[#103E36] p-4">
+                <div className="rounded-xl border border-white/60 dark:border-[#103E36] bg-white/55 dark:bg-[#1E2128] p-4">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <MdAutoAwesome size={16} className="text-blue-400" />

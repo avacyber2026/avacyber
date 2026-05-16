@@ -37,7 +37,7 @@ export function AlertDialog({
         aria-hidden="true"
       />
       <div
-        className="relative bg-white dark:bg-[#103E36] rounded-lg shadow-xl max-w-md w-full p-6"
+        className="relative bg-white dark:bg-[#1E2128] rounded-lg shadow-xl max-w-md w-full p-6"
         onClick={(e) => e.stopPropagation()}
         role="alertdialog"
         aria-modal="true"

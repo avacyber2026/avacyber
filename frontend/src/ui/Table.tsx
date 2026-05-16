@@ -31,12 +31,12 @@ export function Table({
 }
 
 export function Thead({ children }: { children: React.ReactNode }) {
-  return <thead className="bg-[#F4F3F4]/50 dark:bg-[#103E36]/50">{children}</thead>;
+  return <thead className="bg-[#F4F3F4]/50 dark:bg-[#1E2128]/50">{children}</thead>;
 }
 
 export function Tbody({ children }: { children: React.ReactNode }) {
   return (
-    <tbody className="divide-y divide-[#1F6A5C]/15 dark:divide-white/20 bg-white dark:bg-[#103E36]">
+    <tbody className="divide-y divide-[#1F6A5C]/15 dark:divide-white/20 bg-white dark:bg-[#1E2128]">
       {children}
     </tbody>
   );

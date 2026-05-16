@@ -35,7 +35,7 @@ export default function HelpPage() {
           <Text className={`text-2xl font-bold mb-4 ${textColor}`}>{t("help.title")}</Text>
           <Divider className="mb-6 border-[#1F6A5C]/20 dark:border-white/20" />
 
-          <Box className="p-6 rounded-lg bg-white dark:bg-[#103E36] border border-[#1F6A5C]/20 dark:border-white/20 mb-6 max-w-[700px]">
+          <Box className="p-6 rounded-lg bg-white dark:bg-[#1E2128] border border-[#1F6A5C]/20 dark:border-white/20 mb-6 max-w-[700px]">
             <Text className={`mb-4 ${textColor}`}>{t("help.content")}</Text>
             <Button
               as={Link}
@@ -48,7 +48,7 @@ export default function HelpPage() {
             </Button>
           </Box>
 
-          <Box className="p-6 rounded-lg bg-white dark:bg-[#103E36] border border-[#1F6A5C]/20 dark:border-white/20 max-w-[700px]">
+          <Box className="p-6 rounded-lg bg-white dark:bg-[#1E2128] border border-[#1F6A5C]/20 dark:border-white/20 max-w-[700px]">
             <Text fontWeight={600} className={`mb-4 ${textColor}`}>{t("help.faqTitle")}</Text>
             <VStack align="stretch" spacing={4}>
               <Box>

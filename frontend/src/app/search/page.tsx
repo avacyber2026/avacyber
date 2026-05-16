@@ -113,7 +113,7 @@ function SearchPageContent() {
                 placeholder={t("common.searchPlaceholder")}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="pl-10 bg-white dark:bg-[#103E36] border-[#1F6A5C]/20 dark:border-white/20"
+                className="pl-10 bg-white dark:bg-[#1E2128] border-[#1F6A5C]/20 dark:border-white/20"
               />
             </InputGroup>
           </form>
@@ -124,7 +124,7 @@ function SearchPageContent() {
               {results.map((r) => (
                 <Link key={`${r.type}-${r.id}`} href={r.link}>
                   <Box
-                    className="p-4 rounded-lg bg-white dark:bg-[#103E36] border border-[#1F6A5C]/20 dark:border-white/20 hover:border-brand-primary hover:shadow-sm transition-colors"
+                    className="p-4 rounded-lg bg-white dark:bg-[#1E2128] border border-[#1F6A5C]/20 dark:border-white/20 hover:border-brand-primary hover:shadow-sm transition-colors"
                   >
                     <HStack justify="between" className="mb-1">
                       <Text fontWeight={600}>{r.title}</Text>

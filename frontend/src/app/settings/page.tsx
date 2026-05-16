@@ -250,7 +250,7 @@ export default function SettingsPage() {
                 </Text>
               </Box>
 
-              <Box className="p-6 rounded-lg bg-white dark:bg-[#103E36] border border-[#1F6A5C]/20 dark:border-white/20 shadow-sm">
+              <Box className="p-6 rounded-lg bg-white dark:bg-[#1E2128] border border-[#1F6A5C]/20 dark:border-white/20 shadow-sm">
                   <Text fontWeight={600} fontSize="lg" className={`mb-4 ${textColor}`}>
                     {t("profile.editProfile")}
                   </Text>
@@ -384,7 +384,7 @@ export default function SettingsPage() {
                 </Text>
               </Box>
 
-              <Box className="p-6 rounded-lg bg-white dark:bg-[#103E36] border border-[#1F6A5C]/20 dark:border-white/20 shadow-sm">
+              <Box className="p-6 rounded-lg bg-white dark:bg-[#1E2128] border border-[#1F6A5C]/20 dark:border-white/20 shadow-sm">
                   <HStack spacing={3} className="mb-4">
                     <button
                       type="button"

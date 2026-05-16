@@ -102,7 +102,7 @@ export default function AdminSettingsPage() {
         {loading ? (
           <Text className="text-[#1F6A5C]/70">{t("common.loading")}</Text>
         ) : (
-          <Box className="w-full max-w-[480px] p-6 rounded-lg bg-white dark:bg-[#103E36] border border-[#1F6A5C]/20 dark:border-white/20">
+          <Box className="w-full max-w-[480px] p-6 rounded-lg bg-white dark:bg-[#1E2128] border border-[#1F6A5C]/20 dark:border-white/20">
             <FormControl className="mb-4">
               <FormLabel className="text-[#103E36] dark:text-[#F4F3F4]/65">
                 {t("admin.onCallPhone")}

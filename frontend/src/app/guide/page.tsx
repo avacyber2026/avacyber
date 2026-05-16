@@ -60,7 +60,7 @@ export default function GuidePage() {
   const textColor = colorMode === "dark" ? "text-[#F4F3F4]" : "text-[#103E36]";
   const labelColor = colorMode === "dark" ? "text-[#1F6A5C]/60" : "text-[#1F6A5C]";
   const cardClass =
-    "block rounded-xl p-5 border border-[#1F6A5C]/20 dark:border-white/15 bg-white dark:bg-[#103E36] transition-shadow hover:shadow-md dark:hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)]";
+    "block rounded-xl p-5 border border-[#1F6A5C]/20 dark:border-white/15 bg-white dark:bg-[#1E2128] transition-shadow hover:shadow-md dark:hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)]";
 
   return (
     <>

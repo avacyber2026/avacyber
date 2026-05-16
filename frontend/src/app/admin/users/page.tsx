@@ -381,7 +381,7 @@ export default function AdminUsersPage() {
       </VStack>
 
       <Modal isOpen={isEditUserOpen} onClose={() => { onEditUserClose(); setEditUserDraft(null); }} size="lg">
-        <ModalContent className="dark:bg-[#103E36] dark:text-[#F4F3F4] max-h-[90vh] overflow-y-auto">
+        <ModalContent className="dark:bg-[#1E2128] dark:text-[#F4F3F4] max-h-[90vh] overflow-y-auto">
           <ModalHeader onClose={() => { onEditUserClose(); setEditUserDraft(null); }}>{t("admin.editUser")}</ModalHeader>
           <ModalBody className="space-y-3">
             <Text className="text-sm text-[#1F6A5C] dark:text-[#1F6A5C]/60">{t("admin.editUserHint")}</Text>

@@ -288,7 +288,7 @@ export function TicketsSimple() {
 
   // ── UI helpers ─────────────────────────────────────────────────────────────
 
-  const card = "rounded-xl border border-white/60 dark:border-[#103E36] bg-white/80 dark:bg-[#103E36] shadow-sm";
+  const card = "rounded-xl border border-white/60 dark:border-[#103E36] bg-white/80 dark:bg-[#1E2128] shadow-sm";
 
   if (loading) return (
     <div className="flex items-center justify-center py-20 text-[#1F6A5C]/60">
@@ -490,7 +490,7 @@ export function TicketsSimple() {
           </div>
           {/* Stats */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/60 dark:bg-[#103E36] border border-white/60 dark:border-[#103E36]">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/60 dark:bg-[#1E2128] border border-white/60 dark:border-[#103E36]">
               <span className="w-2 h-2 rounded-full bg-sky-400" />
               <span className="text-sm font-semibold text-[#103E36] dark:text-[#F4F3F4]/80">{openCount} open</span>
             </div>
@@ -527,7 +527,7 @@ export function TicketsSimple() {
             {tab.label}
             {tab.count > 0 && (
               <span className={`text-xs px-1.5 py-0.5 rounded-full font-bold ${
-                socTab === tab.key ? "bg-[#1F6A5C]/15 text-[#1F6A5C] dark:text-[#50BFA0]" : "bg-[#F4F3F4] dark:bg-[#103E36] text-[#1F6A5C]/60"
+                socTab === tab.key ? "bg-[#1F6A5C]/15 text-[#1F6A5C] dark:text-[#50BFA0]" : "bg-[#F4F3F4] dark:bg-[#1E2128] text-[#1F6A5C]/60"
               }`}>{tab.count}</span>
             )}
           </button>
@@ -541,7 +541,7 @@ export function TicketsSimple() {
           placeholder="Search…"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="pl-9 pr-3 py-2 w-full rounded-lg text-sm border border-white/60 dark:border-[#103E36] bg-white/60 dark:bg-[#103E36] text-[#103E36] dark:text-[#F4F3F4]/80 placeholder:text-[#1F6A5C]/60 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40"
+          className="pl-9 pr-3 py-2 w-full rounded-lg text-sm border border-white/60 dark:border-[#103E36] bg-white/60 dark:bg-[#1E2128] text-[#103E36] dark:text-[#F4F3F4]/80 placeholder:text-[#1F6A5C]/60 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40"
         />
       </div>
 

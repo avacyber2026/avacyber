@@ -210,7 +210,7 @@ export default function DashboardPage() {
     const openTotal = reportOpen + ticketOpen;
     const resolvedTotal = reportResolved + ticketResolved;
     const data = [
-      { name: t("dashboard.open"), value: openTotal, color: "#50BFA0" },
+      { name: t("dashboard.open"), value: openTotal, color: "#3FFFA3" },
       { name: t("dashboard.resolved"), value: resolvedTotal, color: "#1F6A5C" },
     ];
     if (openTotal === 0 && resolvedTotal === 0) {
@@ -373,7 +373,7 @@ export default function DashboardPage() {
                         <span>{m.label}</span>
                         <span className="tabular-nums">{loading ? "—" : `${m.v}%`}</span>
                       </div>
-                      <div className="h-3 rounded-full bg-[#50BFA0]/15 dark:bg-[#103E36] overflow-hidden">
+                      <div className="h-3 rounded-full bg-[#50BFA0]/15 dark:bg-[#3FFFA3]/8 overflow-hidden">
                         <div
                           className={`h-full rounded-full transition-all duration-1000 ease-out ${dash.stripedBar}`}
                           style={{ width: loading ? "0%" : `${m.v}%`, background: m.bg }}
@@ -416,10 +416,10 @@ export default function DashboardPage() {
                       >
                         <Icon as={c.icon} className="text-white text-xl" />
                       </div>
-                      <Text className="text-2xl md:text-3xl font-light tabular-nums text-[#1C1E1C] dark:text-white shrink-0">
+                      <Text className="text-2xl md:text-3xl font-bold tabular-nums text-[#1C1E1C] dark:text-[#3FFFA3] shrink-0">
                         {c.n}
                       </Text>
-                      <Text className="text-xs md:text-sm text-[#1F6A5C] dark:text-[#F4F3F4]/60 font-medium leading-snug mt-1 px-0.5 w-full">
+                      <Text className="text-xs md:text-sm text-[#1F6A5C] dark:text-[#F4F3F4]/55 font-medium leading-snug mt-1 px-0.5 w-full">
                         {c.lab}
                       </Text>
                     </div>
@@ -468,7 +468,7 @@ export default function DashboardPage() {
                     <div className="space-y-1 pt-1">
                       <Link
                         href="/tickets"
-                        className="flex items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-white/60 dark:hover:bg-[#103E36] transition-colors text-[#103E36] dark:text-[#F4F3F4]/80"
+                        className="flex items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-white/60 dark:hover:bg-white/[0.06] transition-colors text-[#103E36] dark:text-[#F4F3F4]/80"
                       >
                         <Icon as={IoGitPullRequestSharp} className="text-[#1F6A5C] dark:text-[#50BFA0]" />
                         {t("dashboard.goToTickets")}
@@ -476,7 +476,7 @@ export default function DashboardPage() {
                       </Link>
                       <Link
                         href="/report"
-                        className="flex items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-white/60 dark:hover:bg-[#103E36] transition-colors text-[#103E36] dark:text-[#F4F3F4]/80"
+                        className="flex items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-white/60 dark:hover:bg-white/[0.06] transition-colors text-[#103E36] dark:text-[#F4F3F4]/80"
                       >
                         <Icon as={IoDocumentTextOutline} className="text-[#1F6A5C] dark:text-[#50BFA0]" />
                         {t("dashboard.goToReport")}
@@ -506,7 +506,7 @@ export default function DashboardPage() {
                     <BarChart data={activityData} margin={{ top: 16, right: 8, left: -12, bottom: 0 }}>
                       <defs>
                         <linearGradient id="barInc" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#50BFA0" />
+                          <stop offset="0%" stopColor="#3FFFA3" />
                           <stop offset="100%" stopColor="#1F6A5C" />
                         </linearGradient>
                         <linearGradient id="barReq" x1="0" y1="0" x2="0" y2="1">
@@ -583,7 +583,7 @@ export default function DashboardPage() {
 
                 <div className={`rounded-lg p-5 ${dash.glass}`}>
                   <Text className="text-sm font-bold text-[#1C1E1C] dark:text-white mb-3">{t("dashboard.pipelineTitle")}</Text>
-                  <div className="flex h-4 rounded-full overflow-hidden shadow-inner bg-[#50BFA0]/15 dark:bg-[#103E36]">
+                  <div className="flex h-4 rounded-full overflow-hidden shadow-inner bg-[#50BFA0]/15 dark:bg-[#1E2128]">
                     {pipeline.map((seg) => (
                       <div
                         key={seg.key}
@@ -617,7 +617,7 @@ export default function DashboardPage() {
                     <button
                       type="button"
                       onClick={() => setWeekOffset((w) => w - 1)}
-                      className="px-3 py-1 rounded-full bg-white/70 dark:bg-[#103E36] text-sm font-medium text-[#103E36] dark:text-[#F4F3F4]/80 border border-white/80 dark:border-[#103E36]"
+                      className="px-3 py-1 rounded-full bg-white/70 dark:bg-[#1E2128] text-sm font-medium text-[#103E36] dark:text-[#F4F3F4]/80 border border-white/80 dark:border-[#103E36]"
                     >
                       ←
                     </button>
@@ -625,7 +625,7 @@ export default function DashboardPage() {
                     <button
                       type="button"
                       onClick={() => setWeekOffset((w) => w + 1)}
-                      className="px-3 py-1 rounded-full bg-white/70 dark:bg-[#103E36] text-sm font-medium text-[#103E36] dark:text-[#F4F3F4]/80 border border-white/80 dark:border-[#103E36]"
+                      className="px-3 py-1 rounded-full bg-white/70 dark:bg-[#1E2128] text-sm font-medium text-[#103E36] dark:text-[#F4F3F4]/80 border border-white/80 dark:border-[#103E36]"
                     >
                       →
                     </button>
@@ -647,7 +647,7 @@ export default function DashboardPage() {
                         className={`text-center rounded-lg py-3 px-1 border transition-all ${
                           isToday
                             ? "bg-gradient-to-br from-[#103E36] to-[#1F6A5C] text-white border-transparent shadow-lg dark:shadow-[0_4px_18px_-4px_rgba(0,0,0,0.32)] scale-[1.02]"
-                            : "bg-white/50 dark:bg-[#103E36]/55 border-white/60 dark:border-[#103E36] text-[#103E36] dark:text-[#F4F3F4]/80"
+                            : "bg-white/50 dark:bg-[#1E2128]/55 border-white/60 dark:border-[#103E36] text-[#103E36] dark:text-[#F4F3F4]/80"
                         }`}
                       >
                         <div className="text-xs font-medium opacity-80">{d.toLocaleDateString(undefined, { weekday: "short" })}</div>
@@ -671,7 +671,7 @@ export default function DashboardPage() {
                         }
                         className={`flex items-center gap-3 rounded-lg px-4 py-3 border transition-all hover:shadow-md dark:hover:shadow-[0_2px_12px_-2px_rgba(0,0,0,0.22)] ${
                           ev.resolved
-                            ? "bg-[#F4F3F4]/80 dark:bg-[#103E36]/70 border-[#1F6A5C]/20 dark:border-[#103E36]"
+                            ? "bg-[#F4F3F4]/80 dark:bg-[#1E2128]/70 border-[#1F6A5C]/20 dark:border-[#103E36]"
                             : "bg-gradient-to-r from-[#1F6A5C]/12 to-[#50BFA0]/10 border-[#1F6A5C]/25 dark:border-[#50BFA0]/35"
                         }`}
                       >
@@ -708,7 +708,7 @@ export default function DashboardPage() {
               >
                 <div className="flex items-center justify-between mb-5 gap-2">
                   <Text className="text-lg font-bold text-[#1C1E1C] dark:text-white">{t("dashboard.latestItems")}</Text>
-                  <span className="text-xs font-mono tabular-nums shrink-0 text-[#1F6A5C] dark:text-[#50BFA0] bg-[#1F6A5C]/10 dark:bg-[#50BFA0]/12 px-3 py-1 rounded-full border border-[#1F6A5C]/20 dark:border-[#50BFA0]/25">
+                  <span className="text-xs font-mono tabular-nums shrink-0 text-[#1F6A5C] dark:text-[#3FFFA3] bg-[#1F6A5C]/10 dark:bg-[#3FFFA3]/10 px-3 py-1 rounded-full border border-[#1F6A5C]/20 dark:border-[#3FFFA3]/25">
                     {trackedLine}
                   </span>
                 </div>
@@ -720,7 +720,7 @@ export default function DashboardPage() {
                       <Link
                         key={row.id}
                         href={row.href}
-                        className="flex items-center gap-3 rounded-lg px-3 py-3 border border-white/50 dark:border-[#103E36] bg-white/40 dark:bg-[#103E36]/40 hover:bg-white/70 dark:hover:bg-[#103E36] transition-colors"
+                        className="flex items-center gap-3 rounded-lg px-3 py-3 border border-white/50 dark:border-[#103E36] bg-white/40 dark:bg-[#1E2128]/40 hover:bg-white/70 dark:hover:bg-white/[0.06] transition-colors"
                       >
                         <div className="w-9 h-9 rounded-md bg-gradient-to-br from-[#103E36]/25 to-[#50BFA0]/30 dark:from-[#103E36]/40 dark:to-[#1F6A5C]/35 flex items-center justify-center shrink-0">
                           <Icon

@@ -90,7 +90,7 @@ export function MenuButton({
 
   const base = bare
     ? "inline-flex items-center gap-2 text-sm cursor-pointer"
-    : "inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-md cursor-pointer bg-white dark:bg-[#103E36] border border-[#1F6A5C]/20 dark:border-white/20 text-[#103E36] dark:text-white hover:bg-[#F4F3F4]/50 dark:hover:bg-white/10";
+    : "inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-md cursor-pointer bg-white dark:bg-[#1E2128] border border-[#1F6A5C]/20 dark:border-white/20 text-[#103E36] dark:text-white hover:bg-[#F4F3F4]/50 dark:hover:bg-white/10";
 
   return (
     <Comp
@@ -139,7 +139,7 @@ export function MenuList({
 
   return (
     <div
-      className={`absolute z-[200] min-w-[160px] py-1 rounded-md shadow-lg bg-white dark:bg-[#103E36] border border-[#1F6A5C]/20 dark:border-white/20 ${posClass} ${alignClass} ${className}`.trim()}
+      className={`absolute z-[200] min-w-[160px] py-1 rounded-md shadow-lg bg-white dark:bg-[#1E2128] border border-[#1F6A5C]/20 dark:border-white/20 ${posClass} ${alignClass} ${className}`.trim()}
       role="menu"
     >
       {React.Children.map(children, (child) => {

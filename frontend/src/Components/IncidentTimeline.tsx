@@ -249,7 +249,7 @@ export function IncidentTimeline({ ticketId, composerName }: IncidentTimelinePro
           onClick={post}
           isLoading={posting}
           disabled={!draft.trim() && pendingFiles.length === 0}
-          className="h-10 px-5 rounded-lg bg-[#103E36] dark:bg-[#103E36] hover:bg-[#103E36] dark:hover:bg-[#353835] text-white border border-[#1F6A5C] dark:border-white/10"
+          className="h-10 px-5 rounded-lg bg-[#103E36] dark:bg-[#1E2128] hover:bg-[#103E36] dark:hover:bg-[#353835] text-white border border-[#1F6A5C] dark:border-white/10"
         >
           {t("tickets.incidentThreadPost")}
         </Button>
@@ -282,7 +282,7 @@ export function IncidentTimeline({ ticketId, composerName }: IncidentTimelinePro
                         {formatWhen(e.createdAt, locale)}
                       </Text>
                     </HStack>
-                    <div className="rounded-xl border border-[#1F6A5C]/20 dark:border-white/10 bg-[#F4F3F4]/50 dark:bg-[#103E36] px-4 py-4 shadow-inner">
+                    <div className="rounded-xl border border-[#1F6A5C]/20 dark:border-white/10 bg-[#F4F3F4]/50 dark:bg-[#1E2128] px-4 py-4 shadow-inner">
                       <MarkdownBody source={e.body} />
                     </div>
                   </div>

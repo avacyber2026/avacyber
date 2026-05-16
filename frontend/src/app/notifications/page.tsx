@@ -63,7 +63,7 @@ export default function NotificationsPage() {
                   <Text className="text-[#1F6A5C]/70">{t("notifications.noNotifications")}</Text>
                 ) : (
                   list.map((n) => (
-                    <Box key={n.id} className={`p-4 rounded-lg bg-white dark:bg-[#103E36] border border-[#1F6A5C]/20 dark:border-white/20 ${n.readAt ? "opacity-85" : ""}`}>
+                    <Box key={n.id} className={`p-4 rounded-lg bg-white dark:bg-[#1E2128] border border-[#1F6A5C]/20 dark:border-white/20 ${n.readAt ? "opacity-85" : ""}`}>
                       <Text className="font-semibold">{n.title}</Text>
                       <Text className="text-sm text-brand-primary">{n.body}</Text>
                       <Text className="text-xs text-[#1F6A5C]/60 mt-1">{new Date(n.createdAt).toLocaleString()}</Text>

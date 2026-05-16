@@ -351,7 +351,7 @@ export default function AdminRequestsPage() {
         <Divider className="border-[#1F6A5C]/20 dark:border-white/20 mb-4" />
 
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.05 }}>
-        <VStack align="stretch" spacing={4} className="mb-4 p-4 bg-white dark:bg-[#103E36] rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 overflow-x-hidden">
+        <VStack align="stretch" spacing={4} className="mb-4 p-4 bg-white dark:bg-[#1E2128] rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 overflow-x-hidden">
           <Text className="text-sm font-semibold text-[#103E36] dark:text-[#F4F3F4]/80">
             {t("report.filters")}
           </Text>
@@ -449,7 +449,7 @@ export default function AdminRequestsPage() {
           </Text>
         ) : (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
-          <TableContainer className="whitespace-normal overflow-x-auto max-w-full bg-white dark:bg-[#103E36] rounded-lg border border-[#1F6A5C]/20 dark:border-white/20">
+          <TableContainer className="whitespace-normal overflow-x-auto max-w-full bg-white dark:bg-[#1E2128] rounded-lg border border-[#1F6A5C]/20 dark:border-white/20">
             <Table>
               <Thead>
                 <Tr>
@@ -540,7 +540,7 @@ export default function AdminRequestsPage() {
           }}
           size="xl"
         >
-          <ModalContent className="dark:bg-[#103E36] dark:text-[#F4F3F4] max-h-[92vh] w-full min-w-0 overflow-y-auto">
+          <ModalContent className="dark:bg-[#1E2128] dark:text-[#F4F3F4] max-h-[92vh] w-full min-w-0 overflow-y-auto">
             <ModalHeader
               onClose={() => {
                 onEditClose();
@@ -570,7 +570,7 @@ export default function AdminRequestsPage() {
                       onChange={(e) =>
                         setIncidentDraft((d) => (d ? { ...d, text: e.target.value } : d))
                       }
-                      className="w-full rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 bg-white dark:bg-[#103E36] px-3 py-2 text-sm"
+                      className="w-full rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 bg-white dark:bg-[#1E2128] px-3 py-2 text-sm"
                     />
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -638,7 +638,7 @@ export default function AdminRequestsPage() {
                       onChange={(e) =>
                         setIncidentDraft((d) => (d ? { ...d, answer: e.target.value } : d))
                       }
-                      className="w-full rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 bg-white dark:bg-[#103E36] px-3 py-2 text-sm"
+                      className="w-full rounded-lg border border-[#1F6A5C]/20 dark:border-white/20 bg-white dark:bg-[#1E2128] px-3 py-2 text-sm"
                     />
                   </div>
                   <div>

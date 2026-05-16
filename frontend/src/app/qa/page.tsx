@@ -75,7 +75,7 @@ interface QaStats {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-const glass = "rounded-xl border border-white/60 dark:border-[#103E36] bg-white/55 dark:bg-[#103E36] shadow-[0_4px_24px_-8px_rgba(31,106,92,0.12)]";
+const glass = "rounded-xl border border-white/60 dark:border-[#103E36] bg-white/55 dark:bg-[#1E2128] shadow-[0_4px_24px_-8px_rgba(31,106,92,0.12)]";
 
 const VERDICT_STYLE: Record<string, string> = {
   pass: "text-emerald-500 bg-emerald-500/10 border-emerald-500/25",
@@ -252,7 +252,7 @@ export default function QaPage() {
               )}
             </div>
             <button onClick={fetchData}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border border-white/70 dark:border-[#103E36] bg-white/60 dark:bg-[#103E36] text-[#103E36] dark:text-[#F4F3F4]/80 hover:bg-white/90 dark:hover:bg-[#103E36] transition-colors">
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border border-white/70 dark:border-[#103E36] bg-white/60 dark:bg-[#1E2128] text-[#103E36] dark:text-[#F4F3F4]/80 hover:bg-white/90 dark:hover:bg-white/[0.06] transition-colors">
               <MdRefresh size={16} /> Refresh
             </button>
           </motion.div>
@@ -286,7 +286,7 @@ export default function QaPage() {
                 className={`flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold transition-all capitalize ${
                   tab === t
                     ? "bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white shadow-md"
-                    : "text-[#1F6A5C] dark:text-[#F4F3F4]/60 hover:bg-white/60 dark:hover:bg-[#103E36]"
+                    : "text-[#1F6A5C] dark:text-[#F4F3F4]/60 hover:bg-white/60 dark:hover:bg-white/[0.06]"
                 }`}>
                 {t === "queue" ? (
                   <><IoWarning size={15} /> QA Queue {pendingCount > 0 && <span className="ml-1 px-1.5 py-0.5 rounded-full bg-amber-400/20 text-amber-400 text-xs font-bold">{pendingCount}</span>}</>
@@ -316,7 +316,7 @@ export default function QaPage() {
                                 : v === "fail" ? "bg-red-500/15 border border-red-500/30 text-red-400"
                                 : v === "flag" ? "bg-amber-400/15 border border-amber-400/30 text-amber-400"
                                 : "bg-emerald-500/15 border border-emerald-500/30 text-emerald-500"
-                              : "border border-white/60 dark:border-[#103E36] bg-white/40 dark:bg-[#103E36]/40 text-[#1F6A5C]/70"
+                              : "border border-white/60 dark:border-[#103E36] bg-white/40 dark:bg-[#1E2128]/40 text-[#1F6A5C]/70"
                           }`}>
                           {v}
                         </button>
@@ -329,7 +329,7 @@ export default function QaPage() {
                           className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize transition-all ${
                             statusFilter === s
                               ? "bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white"
-                              : "border border-white/60 dark:border-[#103E36] bg-white/40 dark:bg-[#103E36]/40 text-[#1F6A5C]/70"
+                              : "border border-white/60 dark:border-[#103E36] bg-white/40 dark:bg-[#1E2128]/40 text-[#1F6A5C]/70"
                           }`}>
                           {s}
                         </button>
@@ -338,7 +338,7 @@ export default function QaPage() {
                   </div>
 
                   {loading ? (
-                    <div className="space-y-3">{[1,2,3,4].map(i => <div key={i} className="h-20 rounded-xl bg-[#50BFA0]/15 dark:bg-[#103E36]/60 animate-pulse" />)}</div>
+                    <div className="space-y-3">{[1,2,3,4].map(i => <div key={i} className="h-20 rounded-xl bg-[#50BFA0]/15 dark:bg-[#1E2128]/60 animate-pulse" />)}</div>
                   ) : reviews.length === 0 ? (
                     <div className="flex flex-col items-center py-16 text-[#1F6A5C]/60">
                       <IoCheckmarkCircle size={48} className="mb-3 opacity-30" />
@@ -351,7 +351,7 @@ export default function QaPage() {
                         <div key={r.id} className={`rounded-xl border transition-colors ${
                           r.ai_verdict === "fail" ? "border-red-500/20 bg-red-500/3 dark:bg-red-500/5"
                           : r.ai_verdict === "flag" ? "border-amber-400/20 bg-amber-400/3 dark:bg-amber-400/5"
-                          : "border-white/50 dark:border-[#103E36] bg-white/40 dark:bg-[#103E36]/40"
+                          : "border-white/50 dark:border-[#103E36] bg-white/40 dark:bg-[#1E2128]/40"
                         }`}>
                           {/* Review header */}
                           <div className="flex items-start gap-4 px-4 py-4">
@@ -397,7 +397,7 @@ export default function QaPage() {
                                 </>
                               )}
                               <button onClick={() => toggleExpand(r.id)}
-                                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-[#1F6A5C]/70 hover:bg-[#F4F3F4] dark:hover:bg-[#103E36] transition-colors whitespace-nowrap">
+                                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-[#1F6A5C]/70 hover:bg-[#F4F3F4] dark:hover:bg-white/[0.06] transition-colors whitespace-nowrap">
                                 <IoChevronDown size={13} className={`transition-transform ${expanded.has(r.id) ? "rotate-180" : ""}`} />
                                 Details
                               </button>
@@ -487,7 +487,7 @@ export default function QaPage() {
                 <div className={`${glass} p-5`}>
                   <h2 className="font-bold text-[#1C1E1C] dark:text-white text-lg mb-5">Analyst Scorecards</h2>
                   {loading ? (
-                    <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-16 rounded-xl bg-[#50BFA0]/15 dark:bg-[#103E36]/60 animate-pulse" />)}</div>
+                    <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-16 rounded-xl bg-[#50BFA0]/15 dark:bg-[#1E2128]/60 animate-pulse" />)}</div>
                   ) : scorecards.length === 0 ? (
                     <div className="flex flex-col items-center py-16 text-[#1F6A5C]/60">
                       <MdOutlineShield size={48} className="mb-3 opacity-30" />
@@ -521,7 +521,7 @@ export default function QaPage() {
                               : "text-red-400";
 
                             return (
-                              <tr key={s.analyst_email} className="hover:bg-white/20 dark:hover:bg-[#103E36]/30 transition-colors">
+                              <tr key={s.analyst_email} className="hover:bg-white/20 dark:hover:bg-white/[0.06]/30 transition-colors">
                                 <td className="py-3.5 pr-6">
                                   <div className="flex items-center gap-3">
                                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1F6A5C] to-[#50BFA0] flex items-center justify-center text-white text-xs font-bold shrink-0">
@@ -545,7 +545,7 @@ export default function QaPage() {
                                 </td>
                                 <td className="py-3.5">
                                   <div className="flex items-center gap-2">
-                                    <div className="flex-1 h-2 rounded-full bg-[#50BFA0]/15 dark:bg-[#103E36] overflow-hidden w-24">
+                                    <div className="flex-1 h-2 rounded-full bg-[#50BFA0]/15 dark:bg-[#1E2128] overflow-hidden w-24">
                                       <div className={`h-full rounded-full transition-all ${
                                         passRate >= 80 ? "bg-emerald-500"
                                         : passRate >= 60 ? "bg-amber-400"

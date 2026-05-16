@@ -221,7 +221,7 @@ export default function AdminGuidePage() {
             </Button>
           </HStack>
 
-          <div className="rounded-xl border border-[#1F6A5C]/20 dark:border-white/15 bg-white dark:bg-[#103E36] overflow-hidden">
+          <div className="rounded-xl border border-[#1F6A5C]/20 dark:border-white/15 bg-white dark:bg-[#1E2128] overflow-hidden">
             {loading ? (
               <Text className="p-8 text-[#1F6A5C]/70">{t("common.loading")}</Text>
             ) : articles.length === 0 ? (
@@ -281,7 +281,7 @@ export default function AdminGuidePage() {
 
       <Modal isOpen={isEditOpen} onClose={onEditClose} size="xl">
         <ModalOverlay />
-        <ModalContent className="dark:bg-[#103E36] dark:text-[#F4F3F4] max-h-[90vh] w-[min(100vw-2rem,56rem)] max-w-[56rem]">
+        <ModalContent className="dark:bg-[#1E2128] dark:text-[#F4F3F4] max-h-[90vh] w-[min(100vw-2rem,56rem)] max-w-[56rem]">
           <ModalHeader onClose={onEditClose}>{editing ? t("admin.guideEditArticle") : t("admin.guideNewArticle")}</ModalHeader>
           <ModalBody className="space-y-4 overflow-y-auto max-h-[calc(90vh-8rem)]">
             <div>
@@ -320,7 +320,7 @@ export default function AdminGuidePage() {
 
       <AlertDialog isOpen={isDelOpen} leastDestructiveRef={cancelDelRef as React.RefObject<HTMLElement>} onClose={onDelClose}>
         <AlertDialogOverlay />
-        <AlertDialogContent className="dark:bg-[#103E36]">
+        <AlertDialogContent className="dark:bg-[#1E2128]">
           <AlertDialogHeader>{t("admin.guideDelete")}</AlertDialogHeader>
           <AlertDialogBody>{t("admin.guideDeleteConfirm")}</AlertDialogBody>
           <AlertDialogFooter className="gap-2">
