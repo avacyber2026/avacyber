@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --app-sidebar-width: 308px;
+  --app-sidebar-width: 240px;
 }
 
 /* Side menu: hide scrollbars (scroll still works) */
@@ -70,7 +70,7 @@ html:not(.dark) [class*="subtitle"] {
 .dark [class*="historyBlock"],
 .dark [class*="simpleTicketBlock"],
 .dark [class*="simpleUserTicket"] {
-  border-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.06);
   background: #232522;
   color: #f3f4f6;
 }
@@ -81,9 +81,9 @@ html:not(.dark) [class*="subtitle"] {
 .dark [class*="createTicketBlock"] textarea,
 .dark [class*="createReportBlock"] input,
 .dark [class*="createReportBlock"] textarea {
-  background: #2c2f2c !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
-  color: white !important;
+  background: #1a1d1b !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #f4f3f4 !important;
 }
 .dark .input::placeholder,
 .dark .textarea::placeholder,
@@ -96,9 +96,9 @@ html:not(.dark) [class*="subtitle"] {
 
 .dark [class*="userSelect"],
 .dark [class*="userSelectButton"] {
-  background: #2c2f2c !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
-  color: white !important;
+  background: #1a1d1b !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #f4f3f4 !important;
 }
 .dark [class*="userSelectText"] {
   color: white !important;
@@ -106,19 +106,19 @@ html:not(.dark) [class*="subtitle"] {
 
 .dark [class*="priorityBlock"],
 .dark [class*="emptyCircle"] {
-  border-color: rgba(255, 255, 255, 0.2) !important;
-  background: #2c2f2c !important;
-  color: #f3f4f6 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  background: #1a1d1b !important;
+  color: #f4f3f4 !important;
 }
 .dark [class*="completeCircle"],
 .dark [class*="completeCircleEnter"] {
-  background: #50BFA0 !important;
+  background: #3FFFA3 !important;
 }
 
 .dark [class*="parametrsId"],
 .dark [class*="infoBlockUser"] {
-  border-color: rgba(255, 255, 255, 0.2) !important;
-  color: #f3f4f6 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #f4f3f4 !important;
 }
 
 .dark [class*="textBlock"],
@@ -142,14 +142,14 @@ html:not(.dark) [class*="subtitle"] {
 
 .dark [class*="card"] {
   background: #232522 !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
   color: #f3f4f6 !important;
 }
 .dark [class*="form"] input,
 .dark [class*="form"] [class*="input"] {
-  background: #2c2f2c !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
-  color: white !important;
+  background: #1a1d1b !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #f4f3f4 !important;
 }
 
 .authPageRoot [class*="card"] {
@@ -215,9 +215,9 @@ html:not(.dark) [class*="subtitle"] {
 .dark [data-admin] input,
 .dark [data-admin] select,
 .dark [data-admin] textarea {
-  background: #2c2f2c !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
-  color: #f3f4f6 !important;
+  background: #1a1d1b !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #f4f3f4 !important;
 }
 .dark [data-admin] input::placeholder,
 .dark [data-admin] textarea::placeholder {

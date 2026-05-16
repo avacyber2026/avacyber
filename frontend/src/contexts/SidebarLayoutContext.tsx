@@ -4,9 +4,9 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 
 const STORAGE_KEY = "app-sidebar-collapsed";
 
-/** Total horizontal space the rail occupies (padding + glass panel), px */
-export const SIDEBAR_RAIL_EXPANDED = 308;
-export const SIDEBAR_RAIL_COLLAPSED = 96;
+/** Total horizontal space the rail occupies, px */
+export const SIDEBAR_RAIL_EXPANDED = 240;
+export const SIDEBAR_RAIL_COLLAPSED = 60;
 
 type SidebarLayoutValue = {
   collapsed: boolean;

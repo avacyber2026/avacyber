@@ -18,14 +18,15 @@ const config: Config = {
           primary: "#1F6A5C",
           primaryDark: "#103E36",
           primaryLight: "#50BFA0",
+          mint: "#3FFFA3",
+          sidebar: "#0B1F1A",
         },
         app: {
           mainBg: { DEFAULT: "#F4F3F4", dark: "#1C1E1C" },
-          /** Поверхность карточек / сайдбара в тёмной теме (над #1C1E1C) */
-          cardBg: { DEFAULT: "white", dark: "#232522" },
-          /** Вдавленные треки, вложенные блоки */
-          insetBg: { dark: "#2c2f2c" },
-          border: { DEFAULT: "#e5e7eb", dark: "#2c2f2c" },
+          cardBg: { DEFAULT: "white", dark: "#1F2220" },
+          cardStrong: { dark: "#272B28" },
+          insetBg: { dark: "#1A1D1B" },
+          border: { DEFAULT: "#e5e7eb", dark: "rgba(255,255,255,0.06)" },
         },
       },
     },

@@ -11,7 +11,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "AVA cyber",
-  description: "AVA cyber — secure connect platform",
+  description: "AVA cyber — security operations platform",
 };
 
 export default function RootLayout({
@@ -24,7 +24,7 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){var m=localStorage.getItem('chakra-ui-color-mode');document.documentElement.classList.toggle('dark',m==='dark');try{var c=localStorage.getItem('app-sidebar-collapsed');document.documentElement.style.setProperty('--app-sidebar-width',c==='1'?'96px':'308px');}catch(e){}})();`,
+            __html: `(function(){var m=localStorage.getItem('chakra-ui-color-mode');document.documentElement.classList.toggle('dark',m==='dark');try{var c=localStorage.getItem('app-sidebar-collapsed');document.documentElement.style.setProperty('--app-sidebar-width',c==='1'?'60px':'240px');}catch(e){}})();`,
           }}
         />
       </head>
