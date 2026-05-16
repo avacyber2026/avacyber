@@ -373,7 +373,7 @@ export default function DashboardPage() {
                         <span>{m.label}</span>
                         <span className="tabular-nums">{loading ? "—" : `${m.v}%`}</span>
                       </div>
-                      <div className="h-3 rounded-full bg-[#50BFA0]/15/80 dark:bg-[#192420] overflow-hidden">
+                      <div className="h-3 rounded-full bg-[#50BFA0]/15 dark:bg-[#192420] overflow-hidden">
                         <div
                           className={`h-full rounded-full transition-all duration-1000 ease-out ${dash.stripedBar}`}
                           style={{ width: loading ? "0%" : `${m.v}%`, background: m.bg }}
@@ -583,7 +583,7 @@ export default function DashboardPage() {
 
                 <div className={`rounded-lg p-5 ${dash.glass}`}>
                   <Text className="text-sm font-bold text-[#1C1E1C] dark:text-white mb-3">{t("dashboard.pipelineTitle")}</Text>
-                  <div className="flex h-4 rounded-full overflow-hidden shadow-inner bg-[#50BFA0]/15/50 dark:bg-[#192420]">
+                  <div className="flex h-4 rounded-full overflow-hidden shadow-inner bg-[#50BFA0]/15 dark:bg-[#192420]">
                     {pipeline.map((seg) => (
                       <div
                         key={seg.key}
@@ -671,7 +671,7 @@ export default function DashboardPage() {
                         }
                         className={`flex items-center gap-3 rounded-lg px-4 py-3 border transition-all hover:shadow-md dark:hover:shadow-[0_2px_12px_-2px_rgba(0,0,0,0.22)] ${
                           ev.resolved
-                            ? "bg-[#F4F3F4]/80 dark:bg-[#192420]/70 border-[#1F6A5C]/20/80 dark:border-[#192420]"
+                            ? "bg-[#F4F3F4]/80 dark:bg-[#192420]/70 border-[#1F6A5C]/20 dark:border-[#192420]"
                             : "bg-gradient-to-r from-[#1F6A5C]/12 to-[#50BFA0]/10 border-[#1F6A5C]/25 dark:border-[#50BFA0]/35"
                         }`}
                       >

@@ -106,7 +106,7 @@ const SEV_COLOR: Record<string, string> = {
   high:     "text-orange-400 bg-orange-400/10 border-orange-400/30",
   medium:   "text-amber-400 bg-amber-400/10 border-amber-400/30",
   low:      "text-teal-400 bg-teal-400/10 border-teal-400/30",
-  info:     "text-[#1F6A5C]/60 bg-[#50BFA0]/40/10 border-[#1F6A5C]/35/20",
+  info:     "text-[#1F6A5C]/60 bg-[#50BFA0]/40 border-[#1F6A5C]/35",
 };
 
 const SEV_DOT: Record<string, string> = {
@@ -545,7 +545,7 @@ export default function SiemPage() {
                       <button onClick={() => setTab("alerts")} className="text-xs text-[#1F6A5C] dark:text-[#50BFA0] hover:underline font-semibold">View all</button>
                     </div>
                     {dataLoading ? (
-                      <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-14 rounded-lg bg-[#50BFA0]/15/60 dark:bg-[#192420]/60 animate-pulse" />)}</div>
+                      <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-14 rounded-lg bg-[#50BFA0]/15 dark:bg-[#192420]/60 animate-pulse" />)}</div>
                     ) : alerts.length === 0 ? (
                       <EmptyState icon={<IoAlertCircle size={32} />} title="No alerts yet" sub="Alerts will appear here when detection rules match incoming events." />
                     ) : (
@@ -1042,7 +1042,7 @@ export default function SiemPage() {
                         className={`py-2.5 rounded-xl text-xs font-bold border transition-all ${
                           resolveType === t
                             ? t === "true_positive" ? "bg-red-500/15 border-red-500/40 text-red-400"
-                              : t === "false_positive" ? "bg-[#50BFA0]/40/15 border-[#1F6A5C]/35/40 text-[#1F6A5C]/60"
+                              : t === "false_positive" ? "bg-[#50BFA0]/40 border-[#1F6A5C]/35 text-[#1F6A5C]/60"
                               : "bg-emerald-500/15 border-emerald-500/40 text-emerald-500"
                             : "border-white/60 dark:border-[#192420] text-[#1F6A5C]/70 hover:bg-[#F4F3F4]/50 dark:hover:bg-[#192420]"
                         }`}>
@@ -1251,7 +1251,7 @@ function StatusBadge({ status }: { status: string }) {
     open:          "bg-red-500/10 border-red-500/25 text-red-400",
     investigating: "bg-amber-400/10 border-amber-400/25 text-amber-400",
     resolved:      "bg-emerald-500/10 border-emerald-500/25 text-emerald-500",
-    suppressed:    "bg-[#50BFA0]/40/10 border-[#1F6A5C]/35/20 text-[#1F6A5C]/60",
+    suppressed:    "bg-[#50BFA0]/40 border-[#1F6A5C]/35 text-[#1F6A5C]/60",
   };
   return (
     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border capitalize ${map[status] ?? map.open}`}>

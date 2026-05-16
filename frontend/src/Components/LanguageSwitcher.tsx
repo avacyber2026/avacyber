@@ -41,8 +41,8 @@ export function LanguageSwitcher({
   );
 
   const sidebarBtnClass = compact
-    ? "h-9 w-9 min-w-0 gap-0 justify-center rounded-md border border-[#1F6A5C]/20/90 bg-white/95 text-[#1C1E1C] shadow-sm hover:bg-white dark:border-[#192420] dark:bg-[#192420] dark:text-[#F4F3F4] dark:hover:bg-[#353835] dark:hover:border-[#3d413d]"
-    : "h-9 min-h-9 px-3 gap-2 rounded-md border border-[#1F6A5C]/20/90 bg-white/95 text-[#1C1E1C] shadow-sm hover:bg-white dark:border-[#192420] dark:bg-[#192420] dark:text-[#F4F3F4] dark:hover:bg-[#353835] dark:hover:border-[#3d413d]";
+    ? "h-9 w-9 min-w-0 gap-0 justify-center rounded-md border border-[#1F6A5C]/20 bg-white/95 text-[#1C1E1C] shadow-sm hover:bg-white dark:border-[#192420] dark:bg-[#192420] dark:text-[#F4F3F4] dark:hover:bg-[#353835] dark:hover:border-[#3d413d]"
+    : "h-9 min-h-9 px-3 gap-2 rounded-md border border-[#1F6A5C]/20 bg-white/95 text-[#1C1E1C] shadow-sm hover:bg-white dark:border-[#192420] dark:bg-[#192420] dark:text-[#F4F3F4] dark:hover:bg-[#353835] dark:hover:border-[#3d413d]";
 
   const sidebarListClass =
     "bg-white text-[#1C1E1C] border border-[#1F6A5C]/20 shadow-xl ring-1 ring-black/5 rounded-md dark:bg-[#1B2620] dark:text-[#F4F3F4] dark:border-[#192420] dark:ring-white/5 z-[200]";

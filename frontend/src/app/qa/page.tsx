@@ -94,7 +94,7 @@ const SEV_COLOR: Record<string, string> = {
   high:     "text-orange-400 bg-orange-400/10 border-orange-400/30",
   medium:   "text-amber-400 bg-amber-400/10 border-amber-400/30",
   low:      "text-teal-400 bg-teal-400/10 border-teal-400/30",
-  info:     "text-[#1F6A5C]/60 bg-[#50BFA0]/40/10 border-[#1F6A5C]/35/20",
+  info:     "text-[#1F6A5C]/60 bg-[#50BFA0]/40 border-[#1F6A5C]/35",
 };
 
 function SevBadge({ severity }: { severity: string }) {
@@ -338,7 +338,7 @@ export default function QaPage() {
                   </div>
 
                   {loading ? (
-                    <div className="space-y-3">{[1,2,3,4].map(i => <div key={i} className="h-20 rounded-xl bg-[#50BFA0]/15/60 dark:bg-[#192420]/60 animate-pulse" />)}</div>
+                    <div className="space-y-3">{[1,2,3,4].map(i => <div key={i} className="h-20 rounded-xl bg-[#50BFA0]/15 dark:bg-[#192420]/60 animate-pulse" />)}</div>
                   ) : reviews.length === 0 ? (
                     <div className="flex flex-col items-center py-16 text-[#1F6A5C]/60">
                       <IoCheckmarkCircle size={48} className="mb-3 opacity-30" />
@@ -487,7 +487,7 @@ export default function QaPage() {
                 <div className={`${glass} p-5`}>
                   <h2 className="font-bold text-[#1C1E1C] dark:text-white text-lg mb-5">Analyst Scorecards</h2>
                   {loading ? (
-                    <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-16 rounded-xl bg-[#50BFA0]/15/60 dark:bg-[#192420]/60 animate-pulse" />)}</div>
+                    <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-16 rounded-xl bg-[#50BFA0]/15 dark:bg-[#192420]/60 animate-pulse" />)}</div>
                   ) : scorecards.length === 0 ? (
                     <div className="flex flex-col items-center py-16 text-[#1F6A5C]/60">
                       <MdOutlineShield size={48} className="mb-3 opacity-30" />

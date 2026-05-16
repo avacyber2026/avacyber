@@ -32,7 +32,7 @@ function statusStyles(s: string): string {
   if (u.includes("updated")) return "bg-violet-500/12 text-violet-800 dark:text-violet-200 border-violet-500/25";
   if (u.includes("new")) return "bg-sky-500/12 text-sky-800 dark:text-sky-200 border-sky-500/25";
   if (u.includes("active")) return "bg-amber-500/12 text-amber-900 dark:text-amber-200 border-amber-500/25";
-  return "bg-[#F4F3F4]/500/10 text-[#103E36] dark:text-[#F4F3F4]/80 border-[#1F6A5C]/50/20";
+  return "bg-[#F4F3F4]/500 text-[#103E36] dark:text-[#F4F3F4]/80 border-[#1F6A5C]/50";
 }
 
 export interface IncidentLogCardProps {
