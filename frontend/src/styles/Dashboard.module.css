@@ -53,7 +53,7 @@
 /* Тёмная тема: карточки #103E36 на фоне #1C1E1C (app kit) */
 :global(.dark) .glass {
   background: #1E2128;
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border: 1px solid #2D3139;
   box-shadow: none;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;

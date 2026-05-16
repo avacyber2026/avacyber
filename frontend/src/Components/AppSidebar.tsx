@@ -37,12 +37,12 @@ interface AppSidebarProps {
 const S = {
   bg: "#103E36",
   borderRight: "rgba(63,255,163,0.08)",
-  divider: "rgba(255,255,255,0.04)",
+  divider: "#2D3139",
   mint: "#3FFFA3",
   mintBg: "rgba(63,255,163,0.08)",
   textPrimary: "#F4F3F4",
   textMuted: "rgba(244,243,244,0.50)",
-  hoverBg: "rgba(255,255,255,0.04)",
+  hoverBg: "#2D3139",
   controlMuted: "rgba(244,243,244,0.40)",
 };
 
@@ -149,7 +149,7 @@ function SidebarContent({
                   } ${
                     isActive
                       ? "text-[#3FFFA3] bg-[rgba(63,255,163,0.08)]"
-                      : "text-[rgba(244,243,244,0.50)] hover:text-[rgba(244,243,244,0.88)] hover:bg-[rgba(255,255,255,0.04)]"
+                      : "text-[rgba(244,243,244,0.50)] hover:text-[rgba(244,243,244,0.88)] hover:bg-[#2D3139]"
                   }`}
                   whileTap={{ scale: 0.97 }}
                 >
@@ -197,7 +197,7 @@ function SidebarContent({
                 <motion.div
                   className={`flex items-center cursor-pointer rounded-lg transition-colors ${
                     showLabels ? "gap-3 px-3 py-[7px]" : "justify-center px-0 py-[9px]"
-                  } text-[rgba(244,243,244,0.50)] hover:text-[rgba(244,243,244,0.88)] hover:bg-[rgba(255,255,255,0.04)]`}
+                  } text-[rgba(244,243,244,0.50)] hover:text-[rgba(244,243,244,0.88)] hover:bg-[#2D3139]`}
                   whileTap={{ scale: 0.97 }}
                 >
                   <span className="shrink-0 flex items-center justify-center w-[18px] h-[18px]">
