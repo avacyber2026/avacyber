@@ -343,7 +343,7 @@ export default function DashboardPage() {
     <>
       <SideMenu />
       <VStack className="w-full min-h-screen items-stretch">
-        <div className={`${reportLayout.main} min-h-screen bg-[#E4EDEA] dark:bg-[#1C1E1C] relative z-0`}>
+        <div className={`${reportLayout.main} min-h-screen bg-[#D8E8E3] dark:bg-[#1C1E1C] relative z-0`}>
           <Box className="relative px-4 pb-12 pt-4 md:px-6 lg:px-8 max-w-[1600px] mx-auto w-full">
             {/* Hero */}
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="mb-8">

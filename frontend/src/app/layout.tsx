@@ -40,7 +40,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${rethinkSans.className} bg-[#F4F3F4] dark:bg-[#1C1E1C] text-[#1C1E1C] dark:text-[#F4F3F4]`}>
+      <body className={`${rethinkSans.className} bg-[#D8E8E3] dark:bg-[#1C1E1C] text-[#1C1E1C] dark:text-[#F4F3F4]`}>
         <Providers>{children}</Providers>
         <Toaster
           position="top-center"
