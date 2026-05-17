@@ -521,7 +521,7 @@ export function TicketsSimple() {
   const openCount = fromUserRows.filter(t => !t.status?.toLowerCase().includes("resolved")).length;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 w-full">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-4 flex-wrap">
