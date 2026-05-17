@@ -632,10 +632,10 @@ export function TicketsSimple() {
                 onDragOver={e => { e.preventDefault(); setDragOverId(x.id as number); }}
                 onDragLeave={() => setDragOverId(null)}
                 onDrop={e => handleFileDrop(e, x.id as number)}
-                className={`${card} p-4 cursor-pointer transition-all h-[76px] flex flex-col justify-center
+                className={`${card} px-4 py-3 cursor-pointer transition-all
                   ${hasSiem ? "border-red-500/30 dark:border-red-500/20" : ""}
                   ${isDragTarget ? "border-[#3FFFA3]/60 dark:border-[#3FFFA3]/40 bg-[#3FFFA3]/5" : "hover:border-[#1F6A5C]/30"}
-                  ${unread ? "border-l-2 border-l-[#3FFFA3]" : ""}
+                  ${unread ? "border-l-[3px] border-l-[#3FFFA3]" : ""}
                 `}>
                 {hasSiem && (
                   <div className="flex items-center gap-2 mb-2 px-2 py-1 rounded-lg bg-red-500/8 border border-red-500/20">
@@ -643,7 +643,8 @@ export function TicketsSimple() {
                     <span className="text-xs font-semibold text-red-400">SIEM: {siemHits[0].rule_name}{siemHits.length > 1 && ` +${siemHits.length - 1}`}</span>
                   </div>
                 )}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4 w-full">
+                  {/* Unread dot + icon */}
                   <div className="relative shrink-0">
                     <div className="w-9 h-9 rounded-lg bg-[#F4F3F4] dark:bg-[#1c1e1c] flex items-center justify-center text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45">
                       {x.type === "Activity Verification" ? <MdOutlineVerified size={17} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" /> :
@@ -652,25 +653,40 @@ export function TicketsSimple() {
                     </div>
                     {unread && <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#3FFFA3] border-2 border-white dark:border-[#1E2128]" />}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-0.5">
-                      <span className="text-xs font-bold uppercase tracking-wide text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40 shrink-0">{x.type || "Incident"}</span>
-                      {x.priority && <span className={`text-xs px-1.5 py-0.5 rounded border font-semibold capitalize shrink-0 ${priorityColor(x.priority)}`}>{x.priority}</span>}
-                    </div>
-                    <p className={`text-sm line-clamp-1 ${unread ? "font-bold text-[#1C1E1C] dark:text-white" : "font-semibold text-[#1C1E1C]/80 dark:text-[#F4F3F4]/80"}`}>{x.title}</p>
-                    <p className="text-xs text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 line-clamp-1 mt-0.5">
-                      {x.fromUser && <span className="mr-1.5 font-mono">{x.fromUser}</span>}
-                      {x.text?.slice(0, 80)}{(x.text?.length ?? 0) > 80 ? "…" : ""}
+
+                  {/* Sender — fixed width like email client */}
+                  <div className="w-44 shrink-0 min-w-0">
+                    <p className={`text-sm truncate ${unread ? "font-bold text-[#1C1E1C] dark:text-white" : "font-medium text-[#1C1E1C]/70 dark:text-[#F4F3F4]/60"}`}>
+                      {x.fromUser || "—"}
                     </p>
+                    <span className={`text-xs px-1.5 py-0.5 rounded border font-semibold capitalize ${priorityColor(x.priority || "low")}`}>
+                      {x.priority || "low"}
+                    </span>
                   </div>
-                  <div className="text-right shrink-0 flex flex-col items-end gap-1">
-                    <span className={`text-xs px-2 py-0.5 rounded-full border font-semibold ${st.cls}`}>{st.label}</span>
-                    <p className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40">{formatRelativeTime(x.createdAt, locale)}</p>
-                    {(x.attachmentCount ?? 0) > 0 && (
-                      <span className="text-xs text-[#3FFFA3] flex items-center gap-0.5">
-                        <IoAttachOutline size={11} />{x.attachmentCount}
+
+                  {/* Subject + preview — fills all remaining space */}
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-sm truncate ${unread ? "font-bold text-[#1C1E1C] dark:text-white" : "font-semibold text-[#1C1E1C]/80 dark:text-[#F4F3F4]/80"}`}>
+                      {x.title}
+                      <span className="font-normal text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40 ml-2">
+                        — {x.text?.slice(0, 120)}{(x.text?.length ?? 0) > 120 ? "…" : ""}
                       </span>
-                    )}
+                    </p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40 uppercase tracking-wide font-semibold">{x.type}</span>
+                      {(x.attachmentCount ?? 0) > 0 && (
+                        <span className="text-xs text-[#3FFFA3] flex items-center gap-0.5">
+                          <IoAttachOutline size={11} />{x.attachmentCount}
+                        </span>
+                      )}
+                      {x.answer && <span className="text-xs text-[#3FFFA3] font-semibold">✓ Replied</span>}
+                    </div>
+                  </div>
+
+                  {/* Status + time — right edge */}
+                  <div className="shrink-0 text-right flex flex-col items-end gap-1">
+                    <span className={`text-xs px-2 py-0.5 rounded-full border font-semibold whitespace-nowrap ${st.cls}`}>{st.label}</span>
+                    <p className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40 whitespace-nowrap">{formatRelativeTime(x.createdAt, locale)}</p>
                   </div>
                 </div>
               </motion.div>
