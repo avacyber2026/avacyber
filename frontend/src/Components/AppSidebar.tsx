@@ -115,15 +115,19 @@ function SidebarContent({
             )}
           </>
         ) : (
-          <SidebarHoverTooltip label="Expand sidebar" enabled>
-            <button
-              type="button"
-              onClick={toggleCollapsed}
-              className="flex flex-col items-center gap-1 transition-opacity hover:opacity-80"
-            >
-              <LogoMark size={28} />
-            </button>
-          </SidebarHoverTooltip>
+          <div className="flex flex-col items-center gap-1.5">
+            <LogoMark size={28} />
+            <SidebarHoverTooltip label="Expand sidebar" enabled>
+              <button
+                type="button"
+                onClick={toggleCollapsed}
+                className="p-1.5 rounded-md transition-colors hover:bg-[rgba(255,255,255,0.10)]"
+                style={{ color: S.mint }}
+              >
+                <IoChevronForward size={14} />
+              </button>
+            </SidebarHoverTooltip>
+          </div>
         )}
       </div>
 
