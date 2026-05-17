@@ -51,7 +51,7 @@ function LogoMark({ size = 30 }: { size?: number }) {
     <img
       src="/logo-dark.png"
       alt="SOChub"
-      className="rounded-[7px] shrink-0 select-none"
+      className="shrink-0 select-none"
       style={{ width: size, height: size, objectFit: "cover" }}
       draggable={false}
     />
