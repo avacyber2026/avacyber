@@ -643,39 +643,41 @@ export function TicketsSimple() {
                     <span className="text-xs font-semibold text-red-400">SIEM: {siemHits[0].rule_name}{siemHits.length > 1 && ` +${siemHits.length - 1}`}</span>
                   </div>
                 )}
-                <div className="flex items-center gap-3 overflow-hidden">
-                  {/* Icon + unread dot */}
+                <div className="flex items-center gap-3">
+                  {/* Icon */}
                   <div className="relative shrink-0">
-                    <div className="w-8 h-8 rounded-lg bg-[#F4F3F4] dark:bg-[#1c1e1c] flex items-center justify-center text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45">
-                      {x.type === "Activity Verification" ? <MdOutlineVerified size={15} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" /> :
-                       x.type === "Security Announcement" ? <MdOutlineMarkEmailRead size={15} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" /> :
+                    <div className="w-9 h-9 rounded-lg bg-[#F4F3F4] dark:bg-[#1c1e1c] flex items-center justify-center text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45">
+                      {x.type === "Activity Verification" ? <MdOutlineVerified size={17} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" /> :
+                       x.type === "Security Announcement" ? <MdOutlineMarkEmailRead size={17} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" /> :
                        cat.icon}
                     </div>
-                    {unread && <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-[#3FFFA3] border border-white dark:border-[#1E2128]" />}
+                    {unread && <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#3FFFA3] border-2 border-white dark:border-[#1E2128]" />}
                   </div>
 
-                  {/* Main content — takes all available space */}
+                  {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <p className={`text-sm truncate flex-1 min-w-0 ${unread ? "font-bold text-[#1C1E1C] dark:text-white" : "font-semibold text-[#1C1E1C]/80 dark:text-[#F4F3F4]/75"}`}>
+                    {/* Row 1: title + badges + time */}
+                    <div className="flex items-center gap-2">
+                      <p className={`text-sm truncate flex-1 min-w-0 ${unread ? "font-bold text-[#1C1E1C] dark:text-white" : "font-semibold text-[#1C1E1C]/80 dark:text-[#F4F3F4]/80"}`}>
                         {x.title}
                       </p>
                       {x.priority && <span className={`text-xs px-1.5 py-0.5 rounded border font-semibold capitalize shrink-0 ${priorityColor(x.priority)}`}>{x.priority}</span>}
                       <span className={`text-xs px-2 py-0.5 rounded-full border font-semibold shrink-0 ${st.cls}`}>{st.label}</span>
-                      <p className="text-xs text-[#1C1E1C]/45 dark:text-[#F4F3F4]/40 shrink-0 whitespace-nowrap">{formatRelativeTime(x.createdAt, locale)}</p>
+                      <span className="text-xs text-[#1C1E1C]/45 dark:text-[#F4F3F4]/40 shrink-0 whitespace-nowrap">{formatRelativeTime(x.createdAt, locale)}</span>
                     </div>
-                    <div className="flex items-center gap-1.5 mt-0.5 min-w-0">
-                      <span className="text-xs font-mono text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40 truncate max-w-[140px] shrink-0">{x.fromUser || ""}</span>
-                      <span className="text-[#1C1E1C]/30 dark:text-[#F4F3F4]/25 shrink-0">·</span>
-                      <p className="text-xs text-[#1C1E1C]/55 dark:text-[#F4F3F4]/40 truncate min-w-0">
-                        {x.text?.slice(0, 120)}{(x.text?.length ?? 0) > 120 ? "…" : ""}
-                      </p>
+                    {/* Row 2: sender · preview */}
+                    <div className="flex items-center gap-1.5 mt-1 min-w-0">
+                      <span className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/45 shrink-0 font-medium">{x.fromUser || ""}</span>
+                      <span className="text-[#1C1E1C]/25 dark:text-[#F4F3F4]/20 shrink-0">·</span>
+                      <span className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40 truncate min-w-0">
+                        {x.text?.slice(0, 140)}{(x.text?.length ?? 0) > 140 ? "…" : ""}
+                      </span>
                       {(x.attachmentCount ?? 0) > 0 && (
-                        <span className="text-xs text-[#3FFFA3] flex items-center gap-0.5 shrink-0">
+                        <span className="text-xs text-[#3FFFA3] flex items-center gap-0.5 shrink-0 ml-1">
                           <IoAttachOutline size={11} />{x.attachmentCount}
                         </span>
                       )}
-                      {x.answer && <span className="text-xs text-[#3FFFA3] font-semibold shrink-0">✓</span>}
+                      {x.answer && <span className="text-xs text-[#3FFFA3] font-bold shrink-0 ml-1">✓</span>}
                     </div>
                   </div>
                 </div>
