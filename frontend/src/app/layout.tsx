@@ -21,8 +21,8 @@ export const metadata: Metadata = {
   title: "SOChub",
   description: "SOChub — AI-Native SIEM & Security Operations Platform",
   icons: {
-    icon: "/logo.png",
-    apple: "/logo.png",
+    icon: "/ava-logo-v2.png",
+    apple: "/ava-logo-v2.png",
   },
 };
 

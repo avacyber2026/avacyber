@@ -49,7 +49,7 @@ const S = {
 function LogoMark({ size = 30 }: { size?: number }) {
   return (
     <img
-      src="/logo-dark.png"
+      src="/ava-logo-v2.png"
       alt="SOChub"
       className="shrink-0 select-none"
       style={{ width: size, height: size, objectFit: "cover" }}
