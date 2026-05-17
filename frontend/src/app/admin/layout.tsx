@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Admin — AVA-CYBER",
-  description: "Admin panel — AVA-CYBER",
+  title: "SOChub",
+  description: "SOChub — AI-Native SIEM & Security Operations Platform",
 };
 
 export default function AdminLayout({

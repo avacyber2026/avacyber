@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Incidents — AVA Cyber",
-  description: "Incidents — AVA Cyber",
+  title: "SOChub",
+  description: "SOChub — AI-Native SIEM & Security Operations Platform",
 };
 
 export default function TicketsLayout({

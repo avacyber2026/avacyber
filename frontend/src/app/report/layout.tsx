@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Report — AVA Cyber",
-  description: "Reported activity — AVA Cyber",
+  title: "SOChub",
+  description: "SOChub — AI-Native SIEM & Security Operations Platform",
 };
 
 export default function ReportLayout({
