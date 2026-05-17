@@ -126,6 +126,9 @@ export function TicketsSimple() {
   const [sourceFilter, setSourceFilter] = useState<string>("all");
   const [activeTab, setActiveTab] = useState<"action" | "mine" | "all">("action");
   const [socTab, setSocTab] = useState<"all" | "from_users" | "sent_to_users" | "grc" | "pentesting" | "vuln_mgmt">("all");
+  const [statusFilter, setStatusFilter] = useState<"all" | "open" | "closed">("all");
+  const [localRead, setLocalRead] = useState<Set<number>>(new Set());
+  const [dragOverId, setDragOverId] = useState<number | null>(null);
   const [siemMatches, setSiemMatches] = useState<Record<string, SiemMatch[]>>({});
   const [siemLoading, setSiemLoading] = useState(false);
 
@@ -254,14 +257,16 @@ export function TicketsSimple() {
 
   const socFilteredRows = useMemo(() => {
     const q = search.trim().toLowerCase();
-    const rows = getSocTabRows();
+    let rows = getSocTabRows();
+    if (statusFilter === "open") rows = rows.filter(t => !t.status?.toLowerCase().includes("resolved"));
+    if (statusFilter === "closed") rows = rows.filter(t => t.status?.toLowerCase().includes("resolved"));
     if (!q) return rows;
     return rows.filter(t =>
       t.title?.toLowerCase().includes(q) ||
       t.text?.toLowerCase().includes(q) ||
       String(t.id).includes(q)
     );
-  }, [socTab, ticketRows, search, fromUserRows, sentToUserRows, grcRows, pentestingRows, vulnMgmtRows]);
+  }, [socTab, statusFilter, ticketRows, search, fromUserRows, sentToUserRows, grcRows, pentestingRows, vulnMgmtRows]);
 
   // ── General filtered rows (for non-security-team roles) ────────────────────
 
@@ -278,6 +283,35 @@ export function TicketsSimple() {
       return (r.subject && r.subject.toLowerCase().includes(q)) || String(r.id).toLowerCase().includes(q);
     });
   }, [mergedRows, search]);
+
+  // ── Read tracking ─────────────────────────────────────────────────────────
+
+  function isRead(ticket: Ticket): boolean {
+    return (ticket as Ticket & { isRead?: boolean }).isRead === true || localRead.has(ticket.id as number);
+  }
+
+  function markRead(id: number) {
+    setLocalRead(prev => new Set(prev).add(id));
+    api.post(`/tickets/${id}/read`).catch(() => {});
+  }
+
+  // ── File drop ─────────────────────────────────────────────────────────────
+
+  async function handleFileDrop(e: React.DragEvent, ticketId: number) {
+    e.preventDefault();
+    setDragOverId(null);
+    const files = Array.from(e.dataTransfer.files);
+    if (!files.length) return;
+    const form = new FormData();
+    files.forEach(f => form.append("files", f));
+    try {
+      await api.patch(`/tickets/${ticketId}`, form, { headers: { "Content-Type": "multipart/form-data" } });
+      toast({ title: `${files.length} file${files.length > 1 ? "s" : ""} attached`, status: "success", duration: 3000 });
+      setTicketRows(prev => prev.map(t => t.id === ticketId ? { ...t, attachmentCount: (t.attachmentCount ?? 0) + files.length } : t));
+    } catch {
+      toast({ title: "Upload failed", status: "error", duration: 3000 });
+    }
+  }
 
   // ── Answer ─────────────────────────────────────────────────────────────────
 
@@ -509,9 +543,20 @@ export function TicketsSimple() {
             )}
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
+          {/* Open / Closed toggle */}
+          <div className="flex rounded-lg overflow-hidden border border-white/20 dark:border-white/10">
+            {(["all","open","closed"] as const).map(f => (
+              <button key={f} onClick={() => setStatusFilter(f)}
+                className={`px-3 py-1.5 text-xs font-semibold capitalize transition-all ${
+                  statusFilter === f
+                    ? "bg-gradient-to-r from-[#1F6A5C] to-[#50BFA0] text-white"
+                    : "bg-white/10 dark:bg-[#1E2128] text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 hover:bg-white/20 dark:hover:bg-white/5"
+                }`}>{f}</button>
+            ))}
+          </div>
           <Link href="/tickets/new"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white shadow-sm hover:opacity-90 transition-opacity">
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#1F6A5C] to-[#50BFA0] text-white shadow-sm hover:opacity-90 transition-opacity">
             <MdAdd size={16} /> Send Request
           </Link>
         </div>
@@ -578,43 +623,52 @@ export function TicketsSimple() {
             const st = statusInfo(x.status || "");
             const cat = categoryForValue((x as Ticket & { category?: string }).category);
 
+            const unread = !isRead(x);
+            const isDragTarget = dragOverId === x.id;
+
             return (
               <motion.div key={x.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
-                onClick={() => router.push(`/tickets/${x.id}`)}
-                className={`${card} p-4 cursor-pointer hover:border-[#1F6A5C]/30 transition-colors ${hasSiem ? "border-red-500/30 dark:border-red-500/20" : ""}`}>
+                onClick={() => { markRead(x.id as number); router.push(`/tickets/${x.id}`); }}
+                onDragOver={e => { e.preventDefault(); setDragOverId(x.id as number); }}
+                onDragLeave={() => setDragOverId(null)}
+                onDrop={e => handleFileDrop(e, x.id as number)}
+                className={`${card} p-4 cursor-pointer transition-all h-[76px] flex flex-col justify-center
+                  ${hasSiem ? "border-red-500/30 dark:border-red-500/20" : ""}
+                  ${isDragTarget ? "border-[#3FFFA3]/60 dark:border-[#3FFFA3]/40 bg-[#3FFFA3]/5" : "hover:border-[#1F6A5C]/30"}
+                  ${unread ? "border-l-2 border-l-[#3FFFA3]" : ""}
+                `}>
                 {hasSiem && (
-                  <div className="flex items-center gap-2 mb-3 px-2 py-1.5 rounded-lg bg-red-500/8 border border-red-500/20">
-                    <IoAlertCircle size={14} className="text-red-400 shrink-0" />
-                    <span className="text-xs font-semibold text-red-400">SIEM Match:</span>
-                    <span className={`text-xs font-semibold ${sevColor(siemHits[0].severity)}`}>
-                      {siemHits[0].rule_name}{siemHits.length > 1 && ` +${siemHits.length - 1} more`}
-                    </span>
+                  <div className="flex items-center gap-2 mb-2 px-2 py-1 rounded-lg bg-red-500/8 border border-red-500/20">
+                    <IoAlertCircle size={13} className="text-red-400 shrink-0" />
+                    <span className="text-xs font-semibold text-red-400">SIEM: {siemHits[0].rule_name}{siemHits.length > 1 && ` +${siemHits.length - 1}`}</span>
                   </div>
                 )}
-                <div className="flex items-center gap-3 min-h-[56px]">
-                  <div className="w-9 h-9 rounded-lg bg-[#F4F3F4] dark:bg-[#1c1e1c] flex items-center justify-center text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 shrink-0">
-                    {x.type === "Activity Verification" ? <MdOutlineVerified size={17} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" /> :
-                     x.type === "Security Announcement" ? <MdOutlineMarkEmailRead size={17} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" /> :
-                     cat.icon}
+                <div className="flex items-center gap-3">
+                  <div className="relative shrink-0">
+                    <div className="w-9 h-9 rounded-lg bg-[#F4F3F4] dark:bg-[#1c1e1c] flex items-center justify-center text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45">
+                      {x.type === "Activity Verification" ? <MdOutlineVerified size={17} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" /> :
+                       x.type === "Security Announcement" ? <MdOutlineMarkEmailRead size={17} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" /> :
+                       cat.icon}
+                    </div>
+                    {unread && <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#3FFFA3] border-2 border-white dark:border-[#1E2128]" />}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                      <span className="text-xs font-bold uppercase tracking-wide text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 dark:text-[#F4F3F4]/55">{x.type || "Incident"}</span>
-                      {x.priority && <span className={`text-xs px-1.5 py-0.5 rounded border font-semibold capitalize ${priorityColor(x.priority)}`}>{x.priority}</span>}
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <span className="text-xs font-bold uppercase tracking-wide text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40 shrink-0">{x.type || "Incident"}</span>
+                      {x.priority && <span className={`text-xs px-1.5 py-0.5 rounded border font-semibold capitalize shrink-0 ${priorityColor(x.priority)}`}>{x.priority}</span>}
                     </div>
-                    <p className="text-sm font-semibold text-[#1C1E1C] dark:text-white line-clamp-1">{x.title}</p>
-                    <p className="text-xs text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 line-clamp-1 mt-0.5">
-                      {x.fromUser && <span className="mr-2 font-mono">{x.fromUser}</span>}
-                      {x.text?.slice(0, 100)}{(x.text?.length ?? 0) > 100 ? "…" : ""}
+                    <p className={`text-sm line-clamp-1 ${unread ? "font-bold text-[#1C1E1C] dark:text-white" : "font-semibold text-[#1C1E1C]/80 dark:text-[#F4F3F4]/80"}`}>{x.title}</p>
+                    <p className="text-xs text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 line-clamp-1 mt-0.5">
+                      {x.fromUser && <span className="mr-1.5 font-mono">{x.fromUser}</span>}
+                      {x.text?.slice(0, 80)}{(x.text?.length ?? 0) > 80 ? "…" : ""}
                     </p>
-                    {x.answer && <p className="text-xs text-emerald-500 mt-1 font-semibold">✓ Responded: {x.answer}</p>}
                   </div>
-                  <div className="text-right shrink-0">
+                  <div className="text-right shrink-0 flex flex-col items-end gap-1">
                     <span className={`text-xs px-2 py-0.5 rounded-full border font-semibold ${st.cls}`}>{st.label}</span>
-                    <p className="text-xs text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mt-1">{formatRelativeTime(x.createdAt, locale)}</p>
+                    <p className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40">{formatRelativeTime(x.createdAt, locale)}</p>
                     {(x.attachmentCount ?? 0) > 0 && (
-                      <span className="text-xs text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 flex items-center gap-0.5 justify-end mt-0.5">
-                        <IoAttachOutline size={12} />{x.attachmentCount}
+                      <span className="text-xs text-[#3FFFA3] flex items-center gap-0.5">
+                        <IoAttachOutline size={11} />{x.attachmentCount}
                       </span>
                     )}
                   </div>

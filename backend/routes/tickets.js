@@ -179,11 +179,13 @@ router.get('/', authMiddleware, async (req, res) => {
                 t.siem_alert_id as "siemAlertId",
                 ${attCountSql}t.id) as "attachmentCount",
                 (SELECT COUNT(*)::int FROM ticket_recipients tr2 WHERE tr2.ticket_id = t.id) as "recipientCount",
-                (SELECT COUNT(*)::int FROM ticket_recipients tr3 WHERE tr3.ticket_id = t.id AND tr3.acknowledged_at IS NOT NULL) as "acknowledgedCount"
+                (SELECT COUNT(*)::int FROM ticket_recipients tr3 WHERE tr3.ticket_id = t.id AND tr3.acknowledged_at IS NOT NULL) as "acknowledgedCount",
+                CASE WHEN tr_read.ticket_id IS NOT NULL THEN true ELSE false END as "isRead"
          FROM tickets t
          LEFT JOIN users u ON LOWER(TRIM(u.email)) = LOWER(TRIM(t.created_by))
+         LEFT JOIN ticket_reads tr_read ON tr_read.ticket_id = t.id AND LOWER(tr_read.user_email) = LOWER($1)
          ORDER BY t.id DESC`,
-        []
+        [email]
       );
     }
 
@@ -521,6 +523,22 @@ router.get('/:id', authMiddleware, async (req, res) => {
     res.json(mapTicketForClient(rowWithAtt, role));
   } catch (err) {
     console.error('Get ticket error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Mark ticket as read
+router.post('/:id/read', authMiddleware, async (req, res) => {
+  try {
+    const { email } = req.user;
+    const id = parseInt(req.params.id);
+    await pool.query(
+      `INSERT INTO ticket_reads (ticket_id, user_email) VALUES ($1, $2)
+       ON CONFLICT (ticket_id, user_email) DO NOTHING`,
+      [id, email]
+    );
+    res.json({ ok: true });
+  } catch (err) {
     res.status(500).json({ error: 'Server error' });
   }
 });
