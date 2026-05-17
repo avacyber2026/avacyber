@@ -50,7 +50,7 @@ function LogoMark({ size = 30 }: { size?: number }) {
   return (
     <img
       src="/logo-dark.png"
-      alt="AVA Cyber"
+      alt="SOChub"
       className="rounded-[7px] shrink-0 select-none"
       style={{ width: size, height: size, objectFit: "cover" }}
       draggable={false}
@@ -100,7 +100,7 @@ function SidebarContent({
             <div className="flex items-center gap-2.5">
               <LogoMark size={30} />
               <span className="font-semibold text-[15px] tracking-tight" style={{ color: S.textPrimary }}>
-                AVA Cyber
+                SOChub
               </span>
             </div>
             {mode === "desktop" && (
@@ -362,7 +362,7 @@ export function AppSidebar({
           <div className="flex items-center gap-2.5">
             <LogoMark size={28} />
             <span className="font-semibold text-[15px] tracking-tight" style={{ color: S.textPrimary }}>
-              AVA Cyber
+              SOChub
             </span>
           </div>
           <button
