@@ -86,7 +86,7 @@ function statusInfo(status: string) {
   if (s.includes("resolved")) return { label: "Resolved", cls: "text-emerald-500 bg-emerald-500/10 border-emerald-500/25" };
   if (s.includes("updated")) return { label: "Updated", cls: "text-violet-400 bg-violet-400/10 border-violet-400/25" };
   if (s.includes("progress")) return { label: "In Progress", cls: "text-blue-400 bg-blue-400/10 border-blue-400/25" };
-  return { label: "Open", cls: "text-sky-400 bg-sky-400/10 border-sky-400/25" };
+  return { label: "Open", cls: "text-[#3FFFA3] bg-[#3FFFA3]/10 border-[#3FFFA3]/25" };
 }
 
 function sevColor(sev: string) {
