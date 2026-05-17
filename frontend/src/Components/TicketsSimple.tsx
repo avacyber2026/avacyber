@@ -83,10 +83,10 @@ function priorityColor(p?: string) {
 
 function statusInfo(status: string) {
   const s = (status || "").toLowerCase();
-  if (s.includes("resolved")) return { label: "Resolved", cls: "text-emerald-500 bg-emerald-500/10 border-emerald-500/25" };
-  if (s.includes("updated")) return { label: "Updated", cls: "text-violet-400 bg-violet-400/10 border-violet-400/25" };
-  if (s.includes("progress")) return { label: "In Progress", cls: "text-blue-400 bg-blue-400/10 border-blue-400/25" };
-  return { label: "Open", cls: "text-[#50BFA0] bg-[#50BFA0]/10 border-[#50BFA0]/25" };
+  if (s.includes("resolved")) return { label: "Resolved", cls: "text-emerald-500 bg-emerald-500/10 border-emerald-500/25", style: undefined };
+  if (s.includes("updated")) return { label: "Updated", cls: "text-violet-400 bg-violet-400/10 border-violet-400/25", style: undefined };
+  if (s.includes("progress")) return { label: "In Progress", cls: "text-blue-400 bg-blue-400/10 border-blue-400/25", style: undefined };
+  return { label: "Open", cls: "rounded-full border font-semibold", style: { color: "#50BFA0", background: "rgba(80,191,160,0.12)", borderColor: "rgba(80,191,160,0.35)" } };
 }
 
 function sevColor(sev: string) {
@@ -662,7 +662,7 @@ export function TicketsSimple() {
                         {x.title}
                       </p>
                       {x.priority && <span className={`text-xs px-1.5 py-0.5 rounded border font-semibold capitalize shrink-0 ${priorityColor(x.priority)}`}>{x.priority}</span>}
-                      <span className={`text-xs px-2 py-0.5 rounded-full border font-semibold shrink-0 ${st.cls}`}>{st.label}</span>
+                      <span className={`text-xs px-2 py-0.5 rounded-full border font-semibold shrink-0 ${st.cls}`} style={st.style}>{st.label}</span>
                       <span className="text-xs text-[#1C1E1C]/45 dark:text-[#F4F3F4]/40 shrink-0 whitespace-nowrap">{formatRelativeTime(x.createdAt, locale)}</span>
                     </div>
                     {/* Row 2: sender · preview */}
