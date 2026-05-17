@@ -460,15 +460,15 @@ export default function SiemPage() {
           {/* ── Header ── */}
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between mb-6 flex-wrap gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#103E36] to-[#1F6A5C] flex items-center justify-center text-white shadow-lg shadow-emerald-900/20">
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#1F6A5C] to-[#50BFA0] flex items-center justify-center text-white shadow-lg shadow-[#1F6A5C]/30">
                 <MdSecurity size={22} />
               </div>
               <div>
                 <h1 className="text-2xl font-extrabold tracking-tight text-[#1C1E1C] dark:text-white leading-tight">SIEM</h1>
                 <p className="text-sm text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45">Security Information &amp; Event Management</p>
               </div>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#3FFFA3]/10 border border-[#3FFFA3]/30 text-[#3FFFA3] text-xs font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#3FFFA3] animate-pulse" />
                 Live
               </span>
             </div>
@@ -521,7 +521,7 @@ export default function SiemPage() {
               <button key={t.key} onClick={() => setTab(t.key)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
                   tab === t.key
-                    ? "bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white shadow-md shadow-emerald-900/15"
+                    ? "bg-gradient-to-r from-[#1F6A5C] to-[#50BFA0] text-white shadow-md shadow-[#1F6A5C]/20"
                     : "text-[#1F6A5C] dark:text-[#F4F3F4]/60 hover:bg-white/60 dark:hover:bg-white/[0.06]"
                 }`}>
                 {t.icon}
@@ -592,7 +592,7 @@ export default function SiemPage() {
                                 <div className="text-sm font-semibold text-[#1C1E1C] dark:text-white truncate">{s.name}</div>
                                 <div className="text-xs text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55">{s.event_count.toLocaleString()} events</div>
                               </div>
-                              <span className={`w-2 h-2 rounded-full ${s.enabled ? "bg-emerald-500" : "bg-[#50BFA0]/40"}`} />
+                              <span className={`w-2 h-2 rounded-full ${s.enabled ? "bg-[#3FFFA3]" : "bg-[#50BFA0]/30"}`} />
                             </div>
                           ))}
                         </div>
@@ -633,7 +633,7 @@ export default function SiemPage() {
                         <button key={f} onClick={() => setAlertFilter(f)}
                           className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${
                             alertFilter === f
-                              ? "bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white"
+                              ? "bg-gradient-to-r from-[#1F6A5C] to-[#50BFA0] text-white"
                               : "border border-white/20 dark:border-white/10 bg-white/20 dark:bg-[#1E2128]/40 text-[#1F6A5C] dark:text-[#F4F3F4]/60"
                           }`}>
                           {f}
@@ -685,7 +685,7 @@ export default function SiemPage() {
                             )}
                             {a.status !== "resolved" && (
                               <button onClick={(e) => { e.stopPropagation(); openResolveModal(a.id); }}
-                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500/10 border border-emerald-500/25 text-emerald-500 hover:bg-emerald-500/20 transition-colors whitespace-nowrap">
+                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#3FFFA3]/10 border border-[#3FFFA3]/30 text-[#3FFFA3] hover:bg-[#3FFFA3]/20 transition-colors whitespace-nowrap">
                                 <MdCheck size={13} /> Resolve
                               </button>
                             )}
@@ -714,7 +714,7 @@ export default function SiemPage() {
                         />
                       </div>
                       <button onClick={() => { setEventSearch(eventSearchInput); fetchEvents(eventSearchInput); }}
-                        className="px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white">
+                        className="px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#1F6A5C] to-[#50BFA0] text-white shadow-sm shadow-[#1F6A5C]/30">
                         Search
                       </button>
                     </div>
@@ -992,7 +992,7 @@ export default function SiemPage() {
                             <div className="flex items-center gap-2 mb-0.5">
                               <span className="font-semibold text-[#1C1E1C] dark:text-white">{s.name}</span>
                               <span className="text-xs px-2 py-0.5 rounded-full bg-[#F4F3F4] dark:bg-[#1E2128] text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 border border-[#1F6A5C]/20 dark:border-[#3d4240] capitalize">{s.type}</span>
-                              <span className={`w-2 h-2 rounded-full ${s.enabled ? "bg-emerald-500" : "bg-[#50BFA0]/40"}`} />
+                              <span className={`w-2 h-2 rounded-full ${s.enabled ? "bg-[#3FFFA3]" : "bg-[#50BFA0]/30"}`} />
                             </div>
                             <div className="flex gap-4 text-xs text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55">
                               <span>{s.event_count.toLocaleString()} events total</span>

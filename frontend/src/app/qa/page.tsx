@@ -78,7 +78,7 @@ interface QaStats {
 const glass = "rounded-xl border border-white/20 dark:border-white/10 bg-white/20 dark:bg-[#1E2128]";
 
 const VERDICT_STYLE: Record<string, string> = {
-  pass: "text-emerald-500 bg-emerald-500/10 border-emerald-500/25",
+  pass: "text-[#3FFFA3] bg-[#3FFFA3]/10 border-[#3FFFA3]/25",
   flag: "text-amber-400 bg-amber-400/10 border-amber-400/25",
   fail: "text-red-400 bg-red-400/10 border-red-400/25",
 };
@@ -238,7 +238,7 @@ export default function QaPage() {
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
             className="flex items-center justify-between mb-6 flex-wrap gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#103E36] to-[#1F6A5C] flex items-center justify-center text-white shadow-lg shadow-emerald-900/20">
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#1F6A5C] to-[#50BFA0] flex items-center justify-center text-white shadow-lg shadow-[#1F6A5C]/30">
                 <FaUserShield size={20} />
               </div>
               <div>
@@ -285,7 +285,7 @@ export default function QaPage() {
               <button key={t} onClick={() => setTab(t)}
                 className={`flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold transition-all capitalize ${
                   tab === t
-                    ? "bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white shadow-md"
+                    ? "bg-gradient-to-r from-[#1F6A5C] to-[#50BFA0] text-white shadow-md shadow-[#1F6A5C]/20"
                     : "text-[#1F6A5C] dark:text-[#F4F3F4]/60 hover:bg-white/60 dark:hover:bg-white/[0.06]"
                 }`}>
                 {t === "queue" ? (
@@ -312,7 +312,7 @@ export default function QaPage() {
                         <button key={v} onClick={() => setVerdictFilter(v)}
                           className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wide transition-all ${
                             verdictFilter === v
-                              ? v === "all" ? "bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white"
+                              ? v === "all" ? "bg-gradient-to-r from-[#1F6A5C] to-[#50BFA0] text-white"
                                 : v === "fail" ? "bg-red-500/15 border border-red-500/30 text-red-400"
                                 : v === "flag" ? "bg-amber-400/15 border border-amber-400/30 text-amber-400"
                                 : "bg-emerald-500/15 border border-emerald-500/30 text-emerald-500"
