@@ -125,7 +125,7 @@ export function TicketsSimple() {
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [sourceFilter, setSourceFilter] = useState<string>("all");
   const [activeTab, setActiveTab] = useState<"action" | "mine" | "all">("action");
-  const [socTab, setSocTab] = useState<"all" | "from_users" | "sent_to_users" | "team_comms">("all");
+  const [socTab, setSocTab] = useState<"all" | "from_users" | "sent_to_users" | "grc" | "pentesting" | "vuln_mgmt">("all");
   const [siemMatches, setSiemMatches] = useState<Record<string, SiemMatch[]>>({});
   const [siemLoading, setSiemLoading] = useState(false);
 
@@ -228,21 +228,28 @@ export function TicketsSimple() {
     [ticketRows]
   );
 
-  const teamCommsRows = useMemo(() =>
-    ticketRows.filter(t => {
-      const assignedTo = t.assignedTo || "";
-      const createdByRole = t.createdByRole || "";
-      return TEAM_ROLE_NAMES.includes(assignedTo) ||
-        (TEAM_ROLE_NAMES.includes(createdByRole) && !["GSOC","Security Manager","Admin"].includes(createdByRole));
-    }),
+  const grcRows = useMemo(() =>
+    ticketRows.filter(t => t.type === "Policy Notification" || t.type === "Notification"),
+    [ticketRows]
+  );
+
+  const pentestingRows = useMemo(() =>
+    ticketRows.filter(t => t.type === "Investigation" || t.type === "Investigation Response"),
+    [ticketRows]
+  );
+
+  const vulnMgmtRows = useMemo(() =>
+    ticketRows.filter(t => t.type === "Vulnerability Coordination"),
     [ticketRows]
   );
 
   function getSocTabRows(): Ticket[] {
     if (socTab === "from_users") return fromUserRows;
     if (socTab === "sent_to_users") return sentToUserRows;
-    if (socTab === "team_comms") return teamCommsRows;
-    return ticketRows; // "all"
+    if (socTab === "grc") return grcRows;
+    if (socTab === "pentesting") return pentestingRows;
+    if (socTab === "vuln_mgmt") return vulnMgmtRows;
+    return ticketRows;
   }
 
   const socFilteredRows = useMemo(() => {
@@ -254,7 +261,7 @@ export function TicketsSimple() {
       t.text?.toLowerCase().includes(q) ||
       String(t.id).includes(q)
     );
-  }, [socTab, ticketRows, search, fromUserRows, sentToUserRows, teamCommsRows]);
+  }, [socTab, ticketRows, search, fromUserRows, sentToUserRows, grcRows, pentestingRows, vulnMgmtRows]);
 
   // ── General filtered rows (for non-security-team roles) ────────────────────
 
@@ -511,12 +518,14 @@ export function TicketsSimple() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-0 border-b border-[#1F6A5C]/20 dark:border-white/8">
+      <div className="flex gap-0 border-b border-[#1F6A5C]/20 dark:border-white/8 flex-wrap">
         {([
           { key: "all", label: "All", count: ticketRows.length },
           { key: "from_users", label: "From Users", count: fromUserRows.length },
           { key: "sent_to_users", label: "To Users", count: sentToUserRows.length },
-          { key: "team_comms", label: "Comms", count: teamCommsRows.length },
+          { key: "grc", label: "GRC", count: grcRows.length },
+          { key: "pentesting", label: "Pentesting", count: pentestingRows.length },
+          { key: "vuln_mgmt", label: "Vuln Mgmt", count: vulnMgmtRows.length },
         ] as const).map(tab => (
           <button key={tab.key} onClick={() => setSocTab(tab.key)}
             className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px transition-all ${
@@ -552,7 +561,9 @@ export function TicketsSimple() {
           <p className="text-sm font-medium text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55">
             {socTab === "from_users" ? "No reports from users yet" :
              socTab === "sent_to_users" ? "No requests sent to users yet" :
-             socTab === "team_comms" ? "No comms yet" :
+             socTab === "grc" ? "No GRC communications yet" :
+             socTab === "pentesting" ? "No Pentesting investigations yet" :
+             socTab === "vuln_mgmt" ? "No vulnerability coordination tickets yet" :
              "No requests found"}
           </p>
           <p className="text-xs mt-1 text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 dark:text-[#F4F3F4]/65">
