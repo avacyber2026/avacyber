@@ -162,7 +162,7 @@ const SOURCE_ICON: Record<string, React.ReactNode> = {
   custom:   <FaServer size={14} />,
 };
 
-const glass = "rounded-xl border border-white/10 dark:border-white/5 bg-white/10 dark:bg-[#1C1E1C]";
+const glass = "rounded-xl border border-white/20 dark:border-white/10 bg-white/20 dark:bg-[#1E2128]";
 
 // ── Status filter tabs ─────────────────────────────────────────────────────────
 
@@ -551,7 +551,7 @@ export default function SiemPage() {
                     ) : (
                       <div className="space-y-2">
                         {alerts.slice(0, 8).map((a) => (
-                          <div key={a.id} onClick={() => setSelectedAlert(a)} className="flex items-center gap-3 rounded-lg px-3 py-3 border border-white/20 dark:border-white/5 bg-white/20 dark:bg-transparent hover:bg-white/30 dark:hover:bg-white/5 transition-colors cursor-pointer">
+                          <div key={a.id} onClick={() => setSelectedAlert(a)} className="flex items-center gap-3 rounded-lg px-3 py-3 border border-white/20 dark:border-white/10 bg-white/20 dark:bg-[#1E2128]/40 hover:bg-white/30 dark:hover:bg-[#1E2128]/70 transition-colors cursor-pointer">
                             <AiScore score={a.ai_score} />
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 flex-wrap">
@@ -634,7 +634,7 @@ export default function SiemPage() {
                           className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${
                             alertFilter === f
                               ? "bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white"
-                              : "border border-white/20 dark:border-white/5 bg-white/20 dark:bg-transparent text-[#1F6A5C] dark:text-[#F4F3F4]/60"
+                              : "border border-white/20 dark:border-white/10 bg-white/20 dark:bg-[#1E2128]/40 text-[#1F6A5C] dark:text-[#F4F3F4]/60"
                           }`}>
                           {f}
                         </button>
@@ -647,7 +647,7 @@ export default function SiemPage() {
                   ) : (
                     <div className="space-y-2">
                       {filteredAlerts.map((a) => (
-                        <div key={a.id} onClick={() => setSelectedAlert(a)} className="flex items-start gap-4 rounded-xl px-4 py-4 border border-white/20 dark:border-white/5 bg-white/20 dark:bg-transparent hover:bg-white/30 dark:hover:bg-white/5 transition-colors cursor-pointer">
+                        <div key={a.id} onClick={() => setSelectedAlert(a)} className="flex items-start gap-4 rounded-xl px-4 py-4 border border-white/20 dark:border-white/10 bg-white/20 dark:bg-[#1E2128]/40 hover:bg-white/30 dark:hover:bg-[#1E2128]/70 transition-colors cursor-pointer">
                           <AiScore score={a.ai_score} />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap mb-1">
@@ -984,7 +984,7 @@ export default function SiemPage() {
                   ) : (
                     <div className="space-y-3">
                       {sources.map((s) => (
-                        <div key={s.id} className="flex items-center gap-4 rounded-xl px-4 py-4 border border-white/20 dark:border-white/5 bg-white/20 dark:bg-transparent">
+                        <div key={s.id} className="flex items-center gap-4 rounded-xl px-4 py-4 border border-white/20 dark:border-white/10 bg-white/20 dark:bg-[#1E2128]/40">
                           <div className="w-10 h-10 rounded-xl bg-[#1F6A5C]/12 dark:bg-white/[0.05] flex items-center justify-center text-[#1F6A5C] dark:text-[#F4F3F4]/55">
                             {SOURCE_ICON[s.type] ?? <FaServer size={16} />}
                           </div>

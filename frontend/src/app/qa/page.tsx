@@ -75,7 +75,7 @@ interface QaStats {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-const glass = "rounded-xl border border-white/60 dark:border-white/8 bg-white/55 dark:bg-[#1E2128] shadow-[0_4px_24px_-8px_rgba(31,106,92,0.12)]";
+const glass = "rounded-xl border border-white/20 dark:border-white/10 bg-white/20 dark:bg-[#1E2128]";
 
 const VERDICT_STYLE: Record<string, string> = {
   pass: "text-emerald-500 bg-emerald-500/10 border-emerald-500/25",
@@ -231,7 +231,7 @@ export default function QaPage() {
   return (
     <>
       <SideMenu />
-      <div className="min-h-screen bg-[#F4F3F4] dark:bg-[#1C1E1C]" style={{ paddingLeft: "var(--app-sidebar-width, 308px)" }}>
+      <div className="min-h-screen bg-[#C8D5D1] dark:bg-[#1C1E1C]" style={{ paddingLeft: "var(--app-sidebar-width, 308px)" }}>
         <div className="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8 py-6 pb-16">
 
           {/* ── Header ── */}
@@ -252,7 +252,7 @@ export default function QaPage() {
               )}
             </div>
             <button onClick={fetchData}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border border-white/70 dark:border-white/8 bg-white/60 dark:bg-[#1E2128] text-[#103E36] dark:text-[#F4F3F4]/80 hover:bg-white/90 dark:hover:bg-white/[0.06] transition-colors">
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border border-white/20 dark:border-white/10 bg-white/20 dark:bg-[#1E2128] text-[#103E36] dark:text-[#F4F3F4]/80 hover:bg-white/30 dark:hover:bg-[#1E2128]/70 transition-colors">
               <MdRefresh size={16} /> Refresh
             </button>
           </motion.div>
@@ -316,7 +316,7 @@ export default function QaPage() {
                                 : v === "fail" ? "bg-red-500/15 border border-red-500/30 text-red-400"
                                 : v === "flag" ? "bg-amber-400/15 border border-amber-400/30 text-amber-400"
                                 : "bg-emerald-500/15 border border-emerald-500/30 text-emerald-500"
-                              : "border border-white/60 dark:border-white/8 bg-white/40 dark:bg-[#1E2128]/40 text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55"
+                              : "border border-white/20 dark:border-white/10 bg-white/20 dark:bg-[#1E2128]/40 text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55"
                           }`}>
                           {v}
                         </button>
@@ -329,7 +329,7 @@ export default function QaPage() {
                           className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize transition-all ${
                             statusFilter === s
                               ? "bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white"
-                              : "border border-white/60 dark:border-white/8 bg-white/40 dark:bg-[#1E2128]/40 text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55"
+                              : "border border-white/20 dark:border-white/10 bg-white/20 dark:bg-[#1E2128]/40 text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55"
                           }`}>
                           {s}
                         </button>
@@ -351,7 +351,7 @@ export default function QaPage() {
                         <div key={r.id} className={`rounded-xl border transition-colors ${
                           r.ai_verdict === "fail" ? "border-red-500/20 bg-red-500/3 dark:bg-red-500/5"
                           : r.ai_verdict === "flag" ? "border-amber-400/20 bg-amber-400/3 dark:bg-amber-400/5"
-                          : "border-white/50 dark:border-white/8 bg-white/40 dark:bg-[#1E2128]/40"
+                          : "border-white/20 dark:border-white/10 bg-white/20 dark:bg-[#1E2128]/40"
                         }`}>
                           {/* Review header */}
                           <div className="flex items-start gap-4 px-4 py-4">
