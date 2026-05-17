@@ -162,7 +162,7 @@ const SOURCE_ICON: Record<string, React.ReactNode> = {
   custom:   <FaServer size={14} />,
 };
 
-const glass = "rounded-xl border border-white/60 dark:border-white/8 bg-white/55 dark:bg-[#1E2128] shadow-[0_4px_24px_-8px_rgba(31,106,92,0.12)]";
+const glass = "rounded-xl border border-black/8 dark:border-white/8 bg-white/10 dark:bg-[#1E2128] shadow-[0_2px_12px_-4px_rgba(31,106,92,0.06)]";
 
 // ── Status filter tabs ─────────────────────────────────────────────────────────
 
@@ -454,7 +454,7 @@ export default function SiemPage() {
   return (
     <>
       <SideMenu />
-      <div className="min-h-screen bg-[#F4F3F4] dark:bg-[#1C1E1C]" style={{ paddingLeft: "var(--app-sidebar-width, 308px)" }}>
+      <div className="min-h-screen bg-[#C8D5D1] dark:bg-[#1C1E1C]" style={{ paddingLeft: "var(--app-sidebar-width, 308px)" }}>
         <div className="max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 py-6 pb-16">
 
           {/* ── Header ── */}
@@ -474,7 +474,7 @@ export default function SiemPage() {
             </div>
             <button
               onClick={fetchAll}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border border-white/70 dark:border-white/8 bg-white/60 dark:bg-[#1E2128] text-[#103E36] dark:text-[#F4F3F4]/80 hover:bg-white/90 dark:hover:bg-white/[0.06] transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border border-black/8 dark:border-white/8 bg-white/15 dark:bg-[#1E2128] text-[#103E36] dark:text-[#F4F3F4]/80 hover:bg-white/28 dark:hover:bg-white/[0.06] transition-colors"
             >
               <MdRefresh size={16} />
               Refresh
@@ -551,7 +551,7 @@ export default function SiemPage() {
                     ) : (
                       <div className="space-y-2">
                         {alerts.slice(0, 8).map((a) => (
-                          <div key={a.id} onClick={() => setSelectedAlert(a)} className="flex items-center gap-3 rounded-lg px-3 py-3 border border-white/50 dark:border-white/8 bg-white/40 dark:bg-[#1E2128]/40 hover:bg-white/70 dark:hover:bg-white/[0.06] transition-colors cursor-pointer">
+                          <div key={a.id} onClick={() => setSelectedAlert(a)} className="flex items-center gap-3 rounded-lg px-3 py-3 border border-black/6 dark:border-white/8 bg-white/8 dark:bg-[#1E2128]/40 hover:bg-white/18 dark:hover:bg-white/[0.06] transition-colors cursor-pointer">
                             <AiScore score={a.ai_score} />
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 flex-wrap">
@@ -634,7 +634,7 @@ export default function SiemPage() {
                           className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${
                             alertFilter === f
                               ? "bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white"
-                              : "border border-white/60 dark:border-white/8 bg-white/40 dark:bg-[#1E2128]/40 text-[#1F6A5C] dark:text-[#F4F3F4]/60"
+                              : "border border-black/8 dark:border-white/8 bg-white/8 dark:bg-[#1E2128]/40 text-[#1F6A5C] dark:text-[#F4F3F4]/60"
                           }`}>
                           {f}
                         </button>
@@ -647,7 +647,7 @@ export default function SiemPage() {
                   ) : (
                     <div className="space-y-2">
                       {filteredAlerts.map((a) => (
-                        <div key={a.id} onClick={() => setSelectedAlert(a)} className="flex items-start gap-4 rounded-xl px-4 py-4 border border-white/50 dark:border-white/8 bg-white/40 dark:bg-[#1E2128]/40 hover:bg-white/70 dark:hover:bg-white/[0.06] transition-colors cursor-pointer">
+                        <div key={a.id} onClick={() => setSelectedAlert(a)} className="flex items-start gap-4 rounded-xl px-4 py-4 border border-black/6 dark:border-white/8 bg-white/8 dark:bg-[#1E2128]/40 hover:bg-white/18 dark:hover:bg-white/[0.06] transition-colors cursor-pointer">
                           <AiScore score={a.ai_score} />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap mb-1">
@@ -821,8 +821,8 @@ export default function SiemPage() {
                         {rules.map((r) => (
                           <div key={r.id} className={`flex items-start gap-4 rounded-xl px-4 py-4 border transition-colors ${
                             r.enabled
-                              ? "border-white/50 dark:border-white/8 bg-white/40 dark:bg-[#1E2128]/40"
-                              : "border-white/30 dark:border-white/8/50 bg-white/20 dark:bg-[#1E2128]/20 opacity-60"
+                              ? "border-black/6 dark:border-white/8 bg-white/8 dark:bg-[#1E2128]/40"
+                              : "border-black/4 dark:border-white/8/50 bg-white/4 dark:bg-[#1E2128]/20 opacity-60"
                           }`}>
                             {/* Toggle */}
                             <button onClick={() => toggleRule(r)}
@@ -984,7 +984,7 @@ export default function SiemPage() {
                   ) : (
                     <div className="space-y-3">
                       {sources.map((s) => (
-                        <div key={s.id} className="flex items-center gap-4 rounded-xl px-4 py-4 border border-white/50 dark:border-white/8 bg-white/40 dark:bg-[#1E2128]/40">
+                        <div key={s.id} className="flex items-center gap-4 rounded-xl px-4 py-4 border border-black/6 dark:border-white/8 bg-white/8 dark:bg-[#1E2128]/40">
                           <div className="w-10 h-10 rounded-xl bg-[#1F6A5C]/12 dark:bg-white/[0.05] flex items-center justify-center text-[#1F6A5C] dark:text-[#F4F3F4]/55">
                             {SOURCE_ICON[s.type] ?? <FaServer size={16} />}
                           </div>
@@ -1131,7 +1131,7 @@ export default function SiemPage() {
                 </div>
 
                 {/* AI Triage */}
-                <div className="rounded-xl border border-white/60 dark:border-white/8 bg-white/55 dark:bg-[#1E2128] p-4">
+                <div className="rounded-xl border border-black/8 dark:border-white/8 bg-white/10 dark:bg-[#1E2128] p-4">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <MdAutoAwesome size={16} className="text-purple-400" />
@@ -1155,7 +1155,7 @@ export default function SiemPage() {
                 </div>
 
                 {/* AI Investigation */}
-                <div className="rounded-xl border border-white/60 dark:border-white/8 bg-white/55 dark:bg-[#1E2128] p-4">
+                <div className="rounded-xl border border-black/8 dark:border-white/8 bg-white/10 dark:bg-[#1E2128] p-4">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <MdAutoAwesome size={16} className="text-blue-400" />
