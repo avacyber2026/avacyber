@@ -575,13 +575,13 @@ export function TicketsSimple() {
           <button key={tab.key} onClick={() => setSocTab(tab.key)}
             className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px transition-all ${
               socTab === tab.key
-                ? "border-[#1F6A5C] text-[#1F6A5C] dark:text-[#F4F3F4]/55"
-                : "border-transparent text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 dark:text-[#F4F3F4]/55 hover:text-[#103E36] dark:hover:text-[#F4F3F4]/60"
+                ? "border-[#3FFFA3] text-[#3FFFA3]"
+                : "border-transparent text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 hover:text-[#3FFFA3]/70 dark:hover:text-[#3FFFA3]/70"
             }`}>
             {tab.label}
             {tab.count > 0 && (
               <span className={`text-xs px-1.5 py-0.5 rounded-full font-bold ${
-                socTab === tab.key ? "bg-[#1F6A5C]/15 text-[#1F6A5C] dark:text-[#F4F3F4]/55" : "bg-[#F4F3F4] dark:bg-[#1E2128] text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45"
+                socTab === tab.key ? "bg-[#3FFFA3]/15 text-[#3FFFA3]" : "bg-[#F4F3F4] dark:bg-[#1E2128] text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45"
               }`}>{tab.count}</span>
             )}
           </button>
