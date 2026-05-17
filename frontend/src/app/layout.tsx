@@ -23,6 +23,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/ava-logo-v2.png",
     apple: "/ava-logo-v2.png",
+    shortcut: "/ava-logo-v2.png",
   },
 };
 
