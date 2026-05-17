@@ -343,7 +343,7 @@ export default function DashboardPage() {
     <>
       <SideMenu />
       <VStack className="w-full min-h-screen items-stretch">
-        <div className={`${reportLayout.main} min-h-screen bg-[#F4F3F4] dark:bg-[#1C1E1C] relative z-0`}>
+        <div className={`${reportLayout.main} min-h-screen bg-[#E4EDEA] dark:bg-[#1C1E1C] relative z-0`}>
           <Box className="relative px-4 pb-12 pt-4 md:px-6 lg:px-8 max-w-[1600px] mx-auto w-full">
             {/* Hero */}
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="mb-8">
@@ -647,7 +647,7 @@ export default function DashboardPage() {
                         className={`text-center rounded-lg py-3 px-1 border transition-all ${
                           isToday
                             ? "bg-gradient-to-br from-[#103E36] to-[#1F6A5C] text-white border-transparent shadow-lg dark:shadow-[0_4px_18px_-4px_rgba(0,0,0,0.32)] scale-[1.02]"
-                            : "bg-white/50 dark:bg-[#1E2128]/55 border-white/60 dark:border-white/8 text-[#103E36] dark:text-[#F4F3F4]/80"
+                            : "bg-white/30 dark:bg-[#1E2128]/55 border-white/40 dark:border-white/8 text-[#103E36] dark:text-[#F4F3F4]/80"
                         }`}
                       >
                         <div className="text-xs font-medium opacity-80">{d.toLocaleDateString(undefined, { weekday: "short" })}</div>
@@ -720,7 +720,7 @@ export default function DashboardPage() {
                       <Link
                         key={row.id}
                         href={row.href}
-                        className="flex items-center gap-3 rounded-lg px-3 py-3 border border-white/50 dark:border-white/8 bg-white/40 dark:bg-[#1E2128]/40 hover:bg-white/70 dark:hover:bg-white/[0.06] transition-colors"
+                        className="flex items-center gap-3 rounded-lg px-3 py-3 border border-white/30 dark:border-white/8 bg-white/25 dark:bg-[#1E2128]/40 hover:bg-white/45 dark:hover:bg-white/[0.06] transition-colors"
                       >
                         <div className="w-9 h-9 rounded-md bg-gradient-to-br from-[#103E36]/25 to-[#50BFA0]/30 dark:from-[#103E36]/40 dark:to-[#1F6A5C]/35 flex items-center justify-center shrink-0">
                           <Icon
