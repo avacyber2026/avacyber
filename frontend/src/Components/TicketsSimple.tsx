@@ -591,7 +591,7 @@ export function TicketsSimple() {
                     </span>
                   </div>
                 )}
-                <div className="flex items-start gap-3">
+                <div className="flex items-center gap-3 min-h-[56px]">
                   <div className="w-9 h-9 rounded-lg bg-[#F4F3F4] dark:bg-[#1c1e1c] flex items-center justify-center text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 shrink-0">
                     {x.type === "Activity Verification" ? <MdOutlineVerified size={17} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" /> :
                      x.type === "Security Announcement" ? <MdOutlineMarkEmailRead size={17} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" /> :
@@ -602,10 +602,10 @@ export function TicketsSimple() {
                       <span className="text-xs font-bold uppercase tracking-wide text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 dark:text-[#F4F3F4]/55">{x.type || "Incident"}</span>
                       {x.priority && <span className={`text-xs px-1.5 py-0.5 rounded border font-semibold capitalize ${priorityColor(x.priority)}`}>{x.priority}</span>}
                     </div>
-                    <p className="text-sm font-semibold text-[#1C1E1C] dark:text-white truncate">{x.title}</p>
-                    <p className="text-xs text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 truncate mt-0.5">
+                    <p className="text-sm font-semibold text-[#1C1E1C] dark:text-white line-clamp-1">{x.title}</p>
+                    <p className="text-xs text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 line-clamp-1 mt-0.5">
                       {x.fromUser && <span className="mr-2 font-mono">{x.fromUser}</span>}
-                      {x.text?.slice(0, 80)}{(x.text?.length ?? 0) > 80 ? "…" : ""}
+                      {x.text?.slice(0, 100)}{(x.text?.length ?? 0) > 100 ? "…" : ""}
                     </p>
                     {x.answer && <p className="text-xs text-emerald-500 mt-1 font-semibold">✓ Responded: {x.answer}</p>}
                   </div>
