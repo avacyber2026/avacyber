@@ -18,8 +18,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "SOChub",
-  description: "SOChub — AI-Native SIEM & Security Operations Platform",
+  title: "SOChub - Clarity in Security and Compliance",
+  description: "SOChub - Clarity in Security and Compliance",
   icons: {
     icon: "/ava-logo-v2.png",
     apple: "/ava-logo-v2.png",

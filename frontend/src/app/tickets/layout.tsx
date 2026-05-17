@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "SOChub",
+  title: "SOChub - Clarity in Security and Compliance",
   description: "SOChub — AI-Native SIEM & Security Operations Platform",
 };
 
