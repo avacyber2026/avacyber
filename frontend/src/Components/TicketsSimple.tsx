@@ -18,7 +18,7 @@ import {
   MdOutlineFolderShared, MdOutlineHelpOutline, MdAdd, MdRefresh,
   MdOutlineShield, MdOutlineMarkEmailRead, MdOutlineVerified,
 } from "react-icons/md";
-import { IoAlertCircle, IoBugOutline, IoAttachOutline, IoChevronDown, IoChevronUp, IoMailOutline } from "react-icons/io5";
+import { IoAlertCircle, IoBugOutline, IoAttachOutline, IoChevronDown, IoChevronUp, IoMailOutline, IoCheckmarkCircle } from "react-icons/io5";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -654,7 +654,12 @@ export function TicketsSimple() {
                     <div className="w-9 h-9 rounded-lg bg-[#F4F3F4] dark:bg-[#1c1e1c] flex items-center justify-center">
                       {ticketTypeIcon()}
                     </div>
-                    {unread && <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#3FFFA3] border-2 border-white dark:border-[#1E2128]" />}
+                    {dimmed && (
+                      <span className="absolute -bottom-1 -right-1 bg-white dark:bg-[#1E2128] rounded-full">
+                        <IoCheckmarkCircle size={14} className="text-emerald-500" />
+                      </span>
+                    )}
+                    {!dimmed && <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#3FFFA3] border-2 border-white dark:border-[#1E2128]" />}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
