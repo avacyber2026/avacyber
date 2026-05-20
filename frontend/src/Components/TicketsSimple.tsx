@@ -17,9 +17,8 @@ import {
   MdOutlineWarningAmber, MdOutlineUsb, MdOutlineAccountCircle,
   MdOutlineFolderShared, MdOutlineHelpOutline, MdAdd, MdRefresh,
   MdOutlineShield, MdOutlineMarkEmailRead, MdOutlineVerified,
-  MdOutlineEmail, MdOutlinePolicy, MdOutlineSecurity, MdOutlineInbox,
 } from "react-icons/md";
-import { IoAlertCircle, IoBugOutline, IoAttachOutline, IoChevronDown, IoChevronUp, IoMailOutline, IoSearchOutline } from "react-icons/io5";
+import { IoAlertCircle, IoBugOutline, IoAttachOutline, IoChevronDown, IoChevronUp, IoMailOutline } from "react-icons/io5";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -56,21 +55,8 @@ function categoryForValue(v?: string | null) {
   return INCIDENT_CATEGORIES.find(c => c.value === v) ?? INCIDENT_CATEGORIES[INCIDENT_CATEGORIES.length - 1];
 }
 
-function ticketTypeIcon(type: string) {
-  const cls = "text-[#1F6A5C] dark:text-[#F4F3F4]/55";
-  switch (type) {
-    case "Activity Verification":    return <MdOutlineVerified size={17} className={cls} />;
-    case "Security Announcement":    return <MdOutlineMarkEmailRead size={17} className={cls} />;
-    case "Policy Notification":      return <MdOutlinePolicy size={17} className={cls} />;
-    case "Notification":             return <MdOutlineEmail size={17} className={cls} />;
-    case "Investigation":            return <IoSearchOutline size={16} className={cls} />;
-    case "Investigation Response":   return <IoSearchOutline size={16} className={cls} />;
-    case "Vulnerability Coordination": return <MdOutlineSecurity size={17} className={cls} />;
-    case "User Report":              return <MdOutlineInbox size={17} className={cls} />;
-    case "Communication Channel":    return <IoMailOutline size={16} className={cls} />;
-    case "Security Notification":    return <MdOutlineShield size={17} className={cls} />;
-    default:                         return <IoMailOutline size={16} className={cls} />;
-  }
+function ticketTypeIcon() {
+  return <IoMailOutline size={17} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" />;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -666,7 +652,7 @@ export function TicketsSimple() {
                 <div className="flex items-center gap-3">
                   <div className="relative shrink-0">
                     <div className="w-9 h-9 rounded-lg bg-[#F4F3F4] dark:bg-[#1c1e1c] flex items-center justify-center">
-                      {ticketTypeIcon(x.type)}
+                      {ticketTypeIcon()}
                     </div>
                     {unread && <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#3FFFA3] border-2 border-white dark:border-[#1E2128]" />}
                   </div>
