@@ -221,13 +221,7 @@ export function TicketsSimple() {
   );
 
   const sentToUserRows = useMemo(() =>
-    ticketRows.filter(t => {
-      const assignedTo = t.assignedTo || "";
-      const createdByRole = t.createdByRole || "";
-      const isTeamCreated = TEAM_ROLE_NAMES.includes(createdByRole);
-      const isAssignedToUser = assignedTo && !TEAM_ROLE_NAMES.includes(assignedTo) && assignedTo !== "MULTI" && assignedTo !== "";
-      return isTeamCreated && isAssignedToUser;
-    }),
+    ticketRows.filter(t => t.type === "Activity Verification" || t.type === "Security Announcement"),
     [ticketRows]
   );
 
