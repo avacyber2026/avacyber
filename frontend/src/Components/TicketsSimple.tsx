@@ -633,7 +633,7 @@ export function TicketsSimple() {
                 onDragOver={e => { e.preventDefault(); setDragOverId(x.id as number); }}
                 onDragLeave={() => setDragOverId(null)}
                 onDrop={e => handleFileDrop(e, x.id as number)}
-                style={dimmed ? { opacity: 0.4 } : undefined}
+                style={dimmed ? { opacity: 0.28, filter: "grayscale(1)" } : undefined}
                 className={`${card} px-4 py-3 cursor-pointer transition-all
                   ${hasSiem ? "border-red-500/30 dark:border-red-500/20" : ""}
                   ${isDragTarget ? "border-[#3FFFA3]/60 dark:border-[#3FFFA3]/40 bg-[#3FFFA3]/5" : "hover:border-[#1F6A5C]/30"}
