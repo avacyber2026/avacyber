@@ -532,7 +532,7 @@ export function TicketsSimple() {
           {/* Stats */}
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/60 dark:bg-[#1E2128] border border-white/60 dark:border-white/8">
-              <span className="w-2 h-2 rounded-full bg-sky-400" />
+              <span className="w-2 h-2 rounded-full bg-[#3FFFA3] animate-pulse" />
               <span className="text-sm font-semibold text-[#103E36] dark:text-[#F4F3F4]/80">{openCount} open</span>
             </div>
             {siemMatchedCount > 0 && (
