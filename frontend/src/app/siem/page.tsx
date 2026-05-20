@@ -555,7 +555,7 @@ export default function SiemPage() {
                             <AiScore score={a.ai_score} />
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 flex-wrap">
-                                <span className="text-xs font-mono text-[#1C1E1C]/40 dark:text-[#F4F3F4]/30">#{a.id}</span>
+                                <span className="text-xs font-mono font-bold text-[#1F6A5C]/70 dark:text-[#3FFFA3]/50">#{a.id}</span>
                                 <span className="font-semibold text-sm text-[#1C1E1C] dark:text-white truncate">{a.rule_name}</span>
                                 <SevBadge severity={a.severity} />
                               </div>
@@ -652,7 +652,7 @@ export default function SiemPage() {
                           <AiScore score={a.ai_score} />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap mb-1">
-                              <span className="text-xs font-mono text-[#1C1E1C]/40 dark:text-[#F4F3F4]/30">#{a.id}</span>
+                              <span className="text-xs font-mono font-bold text-[#1F6A5C]/70 dark:text-[#3FFFA3]/50">#{a.id}</span>
                               <span className="font-bold text-[#1C1E1C] dark:text-white">{a.rule_name}</span>
                               <SevBadge severity={a.severity} />
                               <StatusBadge status={a.status} />
