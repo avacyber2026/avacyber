@@ -615,17 +615,17 @@ export function TicketsSimple() {
             {socTab === "sent_to_users" ? 'Click "Send Request" to send an activity verification or announcement.' : ""}
           </p>
         </div>
-      ) : (
-        <div className="space-y-2">
-          {socFilteredRows.map((x) => {
+      ) : (() => {
+          const openRows     = socFilteredRows.filter(x => !x.status?.toLowerCase().includes("resolved"));
+          const resolvedRows = socFilteredRows.filter(x =>  x.status?.toLowerCase().includes("resolved"));
+
+          const renderRow = (x: Ticket, dimmed: boolean) => {
             const siemHits = getSiemMatchForTicket(x);
             const hasSiem = siemHits.length > 0;
             const st = statusInfo(x.status || "");
             const cat = categoryForValue((x as Ticket & { category?: string }).category);
-
-            const unread = !isRead(x);
+            const unread = !dimmed && !isRead(x);
             const isDragTarget = dragOverId === x.id;
-            const isResolved = x.status?.toLowerCase().includes("resolved");
 
             return (
               <motion.div key={x.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
@@ -633,11 +633,11 @@ export function TicketsSimple() {
                 onDragOver={e => { e.preventDefault(); setDragOverId(x.id as number); }}
                 onDragLeave={() => setDragOverId(null)}
                 onDrop={e => handleFileDrop(e, x.id as number)}
+                style={dimmed ? { opacity: 0.4 } : undefined}
                 className={`${card} px-4 py-3 cursor-pointer transition-all
-                  ${isResolved ? "opacity-45 grayscale-[30%]" : ""}
                   ${hasSiem ? "border-red-500/30 dark:border-red-500/20" : ""}
-                  ${isDragTarget ? "border-[#3FFFA3]/60 dark:border-[#3FFFA3]/40 bg-[#3FFFA3]/5" : "hover:border-[#1F6A5C]/30 hover:opacity-100"}
-                  ${!isResolved && unread ? "border-l-[3px] border-l-[#3FFFA3]" : ""}
+                  ${isDragTarget ? "border-[#3FFFA3]/60 dark:border-[#3FFFA3]/40 bg-[#3FFFA3]/5" : "hover:border-[#1F6A5C]/30"}
+                  ${unread ? "border-l-[3px] border-l-[#3FFFA3]" : ""}
                 `}>
                 {hasSiem && (
                   <div className="flex items-center gap-2 mb-2 px-2 py-1 rounded-lg bg-red-500/8 border border-red-500/20">
@@ -646,7 +646,6 @@ export function TicketsSimple() {
                   </div>
                 )}
                 <div className="flex items-center gap-3">
-                  {/* Icon */}
                   <div className="relative shrink-0">
                     <div className="w-9 h-9 rounded-lg bg-[#F4F3F4] dark:bg-[#1c1e1c] flex items-center justify-center text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45">
                       {x.type === "Activity Verification" ? <MdOutlineVerified size={17} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" /> :
@@ -655,10 +654,7 @@ export function TicketsSimple() {
                     </div>
                     {unread && <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#3FFFA3] border-2 border-white dark:border-[#1E2128]" />}
                   </div>
-
-                  {/* Content */}
                   <div className="flex-1 min-w-0">
-                    {/* Row 1: title + badges + time */}
                     <div className="flex items-center gap-2">
                       <p className={`text-sm truncate flex-1 min-w-0 ${unread ? "font-bold text-[#1C1E1C] dark:text-white" : "font-semibold text-[#1C1E1C]/80 dark:text-[#F4F3F4]/80"}`}>
                         {x.title}
@@ -667,7 +663,6 @@ export function TicketsSimple() {
                       <span className={`text-xs px-2 py-0.5 rounded-full border font-semibold shrink-0 ${st.cls}`} style={st.style}>{st.label}</span>
                       <span className="text-xs text-[#1C1E1C]/45 dark:text-[#F4F3F4]/40 shrink-0 whitespace-nowrap">{formatRelativeTime(x.createdAt, locale)}</span>
                     </div>
-                    {/* Row 2: sender · preview */}
                     <div className="flex items-center gap-1.5 mt-1 min-w-0">
                       <span className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/45 shrink-0 font-medium">{x.fromUser || ""}</span>
                       <span className="text-[#1C1E1C]/25 dark:text-[#F4F3F4]/20 shrink-0">·</span>
@@ -685,9 +680,25 @@ export function TicketsSimple() {
                 </div>
               </motion.div>
             );
-          })}
-        </div>
-      )}
+          };
+
+          return (
+            <div className="space-y-2">
+              {openRows.map(x => renderRow(x, false))}
+              {resolvedRows.length > 0 && openRows.length > 0 && (
+                <div className="flex items-center gap-3 py-2">
+                  <div className="flex-1 h-px bg-[#1C1E1C]/10 dark:bg-white/8" />
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#1C1E1C]/35 dark:text-[#F4F3F4]/30">
+                    Resolved · {resolvedRows.length}
+                  </span>
+                  <div className="flex-1 h-px bg-[#1C1E1C]/10 dark:bg-white/8" />
+                </div>
+              )}
+              {resolvedRows.map(x => renderRow(x, true))}
+            </div>
+          );
+        })()
+      }
     </div>
   );
 }
