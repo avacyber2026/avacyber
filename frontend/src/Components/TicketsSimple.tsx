@@ -518,7 +518,8 @@ export function TicketsSimple() {
   // ══════════════════════════════════════════════════════════════════════════
 
   const siemMatchedCount = fromUserRows.filter(t => getSiemMatchForTicket(t).length > 0).length;
-  const openCount = fromUserRows.filter(t => !t.status?.toLowerCase().includes("resolved")).length;
+  const isOpen = (t: Ticket) => !t.status?.toLowerCase().includes("resolved");
+  const openCount = ticketRows.filter(isOpen).length;
 
   return (
     <div className="space-y-5 w-full">
@@ -565,12 +566,12 @@ export function TicketsSimple() {
       {/* Tabs */}
       <div className="flex gap-0 border-b border-[#1F6A5C]/20 dark:border-white/8 flex-wrap">
         {([
-          { key: "all", label: "All", count: ticketRows.length },
-          { key: "from_users", label: "From Users", count: fromUserRows.length },
-          { key: "sent_to_users", label: "To Users", count: sentToUserRows.length },
-          { key: "grc", label: "GRC", count: grcRows.length },
-          { key: "pentesting", label: "Pentesting", count: pentestingRows.length },
-          { key: "vuln_mgmt", label: "Vuln Mgmt", count: vulnMgmtRows.length },
+          { key: "all", label: "All", count: ticketRows.filter(isOpen).length },
+          { key: "from_users", label: "From Users", count: fromUserRows.filter(isOpen).length },
+          { key: "sent_to_users", label: "To Users", count: sentToUserRows.filter(isOpen).length },
+          { key: "grc", label: "GRC", count: grcRows.filter(isOpen).length },
+          { key: "pentesting", label: "Pentesting", count: pentestingRows.filter(isOpen).length },
+          { key: "vuln_mgmt", label: "Vuln Mgmt", count: vulnMgmtRows.filter(isOpen).length },
         ] as const).map(tab => (
           <button key={tab.key} onClick={() => setSocTab(tab.key)}
             className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px transition-all ${
