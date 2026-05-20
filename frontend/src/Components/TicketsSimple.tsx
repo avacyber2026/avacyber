@@ -255,11 +255,16 @@ export function TicketsSimple() {
     if (statusFilter === "open") rows = rows.filter(t => !t.status?.toLowerCase().includes("resolved"));
     if (statusFilter === "closed") rows = rows.filter(t => t.status?.toLowerCase().includes("resolved"));
     if (!q) return rows;
-    return rows.filter(t =>
+    const filtered = q ? rows.filter(t =>
       t.title?.toLowerCase().includes(q) ||
       t.text?.toLowerCase().includes(q) ||
       String(t.id).includes(q)
-    );
+    ) : rows;
+    return [...filtered].sort((a, b) => {
+      const aResolved = a.status?.toLowerCase().includes("resolved") ? 1 : 0;
+      const bResolved = b.status?.toLowerCase().includes("resolved") ? 1 : 0;
+      return aResolved - bResolved;
+    });
   }, [socTab, statusFilter, ticketRows, search, fromUserRows, sentToUserRows, grcRows, pentestingRows, vulnMgmtRows]);
 
   // ── General filtered rows (for non-security-team roles) ────────────────────
@@ -620,6 +625,7 @@ export function TicketsSimple() {
 
             const unread = !isRead(x);
             const isDragTarget = dragOverId === x.id;
+            const isResolved = x.status?.toLowerCase().includes("resolved");
 
             return (
               <motion.div key={x.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
@@ -628,9 +634,10 @@ export function TicketsSimple() {
                 onDragLeave={() => setDragOverId(null)}
                 onDrop={e => handleFileDrop(e, x.id as number)}
                 className={`${card} px-4 py-3 cursor-pointer transition-all
+                  ${isResolved ? "opacity-45 grayscale-[30%]" : ""}
                   ${hasSiem ? "border-red-500/30 dark:border-red-500/20" : ""}
-                  ${isDragTarget ? "border-[#3FFFA3]/60 dark:border-[#3FFFA3]/40 bg-[#3FFFA3]/5" : "hover:border-[#1F6A5C]/30"}
-                  ${unread ? "border-l-[3px] border-l-[#3FFFA3]" : ""}
+                  ${isDragTarget ? "border-[#3FFFA3]/60 dark:border-[#3FFFA3]/40 bg-[#3FFFA3]/5" : "hover:border-[#1F6A5C]/30 hover:opacity-100"}
+                  ${!isResolved && unread ? "border-l-[3px] border-l-[#3FFFA3]" : ""}
                 `}>
                 {hasSiem && (
                   <div className="flex items-center gap-2 mb-2 px-2 py-1 rounded-lg bg-red-500/8 border border-red-500/20">
