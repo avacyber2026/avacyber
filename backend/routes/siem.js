@@ -575,4 +575,65 @@ router.post('/bulk-correlate', async (req, res) => {
   }
 });
 
+// ── API Key Management (admin only) ──────────────────────────────────────────
+
+const crypto = require('crypto');
+const { requireAdmin } = require('../middleware/auth');
+
+router.get('/api-keys', requireAdmin, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT id, client_name, description, enabled, event_count, last_used_at, created_by, created_at
+       FROM siem_api_keys ORDER BY created_at DESC`
+    );
+    res.json({ keys: result.rows });
+  } catch (err) {
+    console.error('api-keys list:', err);
+    res.status(500).json({ error: 'Failed to list API keys' });
+  }
+});
+
+router.post('/api-keys', requireAdmin, async (req, res) => {
+  const { client_name, description } = req.body;
+  if (!client_name) return res.status(400).json({ error: 'client_name is required' });
+
+  const apiKey = 'ava_' + crypto.randomBytes(24).toString('hex');
+  try {
+    const result = await pool.query(
+      `INSERT INTO siem_api_keys (client_name, api_key, description, created_by)
+       VALUES ($1,$2,$3,$4) RETURNING id, client_name, api_key, description, created_at`,
+      [client_name, apiKey, description || null, req.user?.email]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error('api-keys create:', err);
+    res.status(500).json({ error: 'Failed to create API key' });
+  }
+});
+
+router.patch('/api-keys/:id', requireAdmin, async (req, res) => {
+  const { enabled } = req.body;
+  try {
+    const result = await pool.query(
+      `UPDATE siem_api_keys SET enabled = $1 WHERE id = $2 RETURNING id, client_name, enabled`,
+      [enabled, parseInt(req.params.id)]
+    );
+    if (!result.rows.length) return res.status(404).json({ error: 'Not found' });
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('api-keys patch:', err);
+    res.status(500).json({ error: 'Failed to update API key' });
+  }
+});
+
+router.delete('/api-keys/:id', requireAdmin, async (req, res) => {
+  try {
+    await pool.query(`DELETE FROM siem_api_keys WHERE id = $1`, [parseInt(req.params.id)]);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('api-keys delete:', err);
+    res.status(500).json({ error: 'Failed to delete API key' });
+  }
+});
+
 module.exports = router;

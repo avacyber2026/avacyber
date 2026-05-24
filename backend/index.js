@@ -11,6 +11,7 @@ const guideArticlesRoutes = require('./routes/guideArticles');
 const exportRoutes = require('./routes/export');
 const siemRoutes = require('./routes/siem');
 const qaRoutes   = require('./routes/qa');
+const ingestRoutes = require('./routes/ingest');
 
 const router = express.Router();
 
@@ -32,5 +33,6 @@ router.use('/guide-articles', guideArticlesRoutes);
 router.use('/export', exportRoutes);
 router.use('/siem', siemRoutes);
 router.use('/qa',   qaRoutes);
+router.use('/v1/ingest', ingestRoutes);
 
 module.exports = router;
