@@ -123,7 +123,7 @@ function parseSearch(tokens) {
 
 // ── Main parser ───────────────────────────────────────────────────────────────
 
-function parseSPL(spl) {
+function parseSPL(spl, tenantId = null) {
   const stages = spl.split('|').map(s => s.trim()).filter(Boolean);
   let searchTokens = tokenize(stages[0]);
   if (searchTokens[0]?.toLowerCase() === 'search') searchTokens = searchTokens.slice(1);
@@ -195,6 +195,7 @@ function parseSPL(spl) {
   // ── Build SQL ──────────────────────────────────────────────────────────────
 
   if (timeExpr) conds.push(timeExpr);
+  if (tenantId) conds.push(`client_name = '${esc(tenantId)}'`);
   const whereSQL = conds.length ? `WHERE ${conds.join(' AND ')}` : '';
 
   let sql;

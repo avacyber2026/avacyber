@@ -192,7 +192,7 @@ const TABS: { key: Tab; label: string; icon: React.ReactNode }[] = [
 // ── Main page ─────────────────────────────────────────────────────────────────
 
 export default function SiemPage() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, user: authUser } = useAuth();
   const router = useRouter();
   const { colorMode } = useColorMode();
   const isDark = colorMode === "dark";
@@ -204,6 +204,21 @@ export default function SiemPage() {
   const [rules, setRules] = useState<SiemRule[]>([]);
   const [sources, setSources] = useState<SiemSource[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
+
+  // Tenant switcher (superadmin only)
+  const [activeTenant, setActiveTenant] = useState<string>("all");
+  const [tenants, setTenants] = useState<{ tenant_id: string; event_count: string }[]>([]);
+  const isSuperadmin = !authUser?.tenant_id;
+
+  useEffect(() => {
+    if (isSuperadmin) {
+      api.get("/siem/tenants").then(r => setTenants(r.data.tenants ?? [])).catch(() => {});
+    }
+  }, [isSuperadmin]);
+
+  function tenantParam() {
+    return activeTenant !== "all" ? `?tenant=${activeTenant}` : "";
+  }
 
   // Rules tab state
   const [aiRulePrompt, setAiRulePrompt] = useState("");
@@ -363,11 +378,12 @@ export default function SiemPage() {
   const fetchAll = useCallback(async () => {
     if (!isAuthenticated) return;
     setDataLoading(true);
+    const tp = tenantParam();
     try {
       const [statsRes, alertsRes, eventsRes, rulesRes, sourcesRes] = await Promise.all([
-        api.get("/siem/stats"),
-        api.get("/siem/alerts?limit=20"),
-        api.get("/siem/events?limit=30"),
+        api.get(`/siem/stats${tp}`),
+        api.get(`/siem/alerts?limit=20${tp ? '&' + tp.slice(1) : ''}`),
+        api.get(`/siem/events?limit=30${tp ? '&' + tp.slice(1) : ''}`),
         api.get("/siem/rules"),
         api.get("/siem/sources"),
       ]);
@@ -383,7 +399,7 @@ export default function SiemPage() {
     }
   }, [isAuthenticated]);
 
-  useEffect(() => { fetchAll(); }, [fetchAll]);
+  useEffect(() => { fetchAll(); }, [fetchAll, activeTenant]);
 
   const fetchEvents = useCallback(async (search = "") => {
     try {
@@ -591,13 +607,27 @@ export default function SiemPage() {
                 Live
               </span>
             </div>
-            <button
-              onClick={fetchAll}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border border-black/8 dark:border-white/8 bg-white/15 dark:bg-[#1E2128] text-[#103E36] dark:text-[#F4F3F4]/80 hover:bg-white/28 dark:hover:bg-white/[0.06] transition-colors"
-            >
-              <MdRefresh size={16} />
-              Refresh
-            </button>
+            <div className="flex items-center gap-2">
+              {isSuperadmin && tenants.length > 0 && (
+                <select
+                  value={activeTenant}
+                  onChange={e => { setActiveTenant(e.target.value); setTimeout(fetchAll, 50); }}
+                  className="px-3 py-2 rounded-lg text-sm border border-white/60 dark:border-white/8 bg-white/60 dark:bg-[#1E2128] text-[#103E36] dark:text-[#F4F3F4]/80 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40"
+                >
+                  <option value="all">All Clients</option>
+                  {tenants.map(t => (
+                    <option key={t.tenant_id} value={t.tenant_id}>{t.tenant_id}</option>
+                  ))}
+                </select>
+              )}
+              <button
+                onClick={fetchAll}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border border-black/8 dark:border-white/8 bg-white/15 dark:bg-[#1E2128] text-[#103E36] dark:text-[#F4F3F4]/80 hover:bg-white/28 dark:hover:bg-white/[0.06] transition-colors"
+              >
+                <MdRefresh size={16} />
+                Refresh
+              </button>
+            </div>
           </motion.div>
 
           {/* ── Stat cards ── */}

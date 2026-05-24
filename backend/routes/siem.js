@@ -5,22 +5,38 @@ const { authMiddleware } = require('../middleware/auth');
 const router = express.Router();
 router.use(authMiddleware);
 
+// ── Tenant helper ─────────────────────────────────────────────────────────────
+// Returns SQL fragment + params for tenant filtering.
+// Superadmins (tenant_id = null) can optionally pass ?tenant= to filter to one client.
+// Client users always see only their own data.
+
+function tenantScope(user, query = {}) {
+  const tid = user.tenant_id || query.tenant || null;
+  if (!tid) return { clause: '', params: [], isSuperadmin: true };
+  return {
+    clause: `client_name = $1`,
+    params: [tid],
+    isSuperadmin: false,
+    tenant_id: tid,
+  };
+}
+
 // ── Stats ────────────────────────────────────────────────────────────────────
 
 router.get('/stats', async (req, res) => {
+  const { clause, params } = tenantScope(req.user, req.query);
+  const w = clause ? `WHERE ${clause} AND ingested_at > NOW() - INTERVAL '24 hours'` : `WHERE ingested_at > NOW() - INTERVAL '24 hours'`;
+  const aw = clause ? `WHERE ${clause} AND status = 'open'` : `WHERE status = 'open'`;
+  const tw = clause ? `WHERE ${clause} AND ingested_at > NOW() - INTERVAL '24 hours'` : `WHERE ingested_at > NOW() - INTERVAL '24 hours'`;
+
   try {
     const [events24h, activeAlerts, activeRules, activeSources, severity, trend] = await Promise.all([
-      pool.query(`SELECT COUNT(*) FROM siem_events WHERE ingested_at > NOW() - INTERVAL '24 hours'`),
-      pool.query(`SELECT COUNT(*) FROM siem_alerts WHERE status = 'open'`),
+      pool.query(`SELECT COUNT(*) FROM siem_events ${w}`, params),
+      pool.query(`SELECT COUNT(*) FROM siem_alerts ${aw}`, params),
       pool.query(`SELECT COUNT(*) FROM siem_rules WHERE enabled = true`),
       pool.query(`SELECT COUNT(*) FROM siem_sources WHERE enabled = true`),
-      pool.query(`SELECT severity, COUNT(*) as count FROM siem_alerts WHERE status = 'open' GROUP BY severity`),
-      pool.query(`
-        SELECT date_trunc('hour', ingested_at) as hour, COUNT(*) as count
-        FROM siem_events
-        WHERE ingested_at > NOW() - INTERVAL '24 hours'
-        GROUP BY hour ORDER BY hour
-      `),
+      pool.query(`SELECT severity, COUNT(*) as count FROM siem_alerts ${aw} GROUP BY severity`, params),
+      pool.query(`SELECT date_trunc('hour', ingested_at) as hour, COUNT(*) as count FROM siem_events ${tw} GROUP BY hour ORDER BY hour`, params),
     ]);
 
     const severityBreakdown = {};
@@ -44,9 +60,10 @@ router.get('/stats', async (req, res) => {
 
 router.get('/events', async (req, res) => {
   const { limit = 50, offset = 0, severity, search } = req.query;
-  const where = [];
-  const params = [];
-  let idx = 1;
+  const { clause, params: tParams } = tenantScope(req.user, req.query);
+  const where = clause ? [clause] : [];
+  const params = [...tParams];
+  let idx = params.length + 1;
 
   if (severity) { where.push(`e.severity = $${idx++}`); params.push(severity); }
   if (search) {
@@ -60,7 +77,7 @@ router.get('/events', async (req, res) => {
     const [rows, count] = await Promise.all([
       pool.query(
         `SELECT e.id, e.source_name, e.event_type, e.severity, e.source_ip,
-                e.destination_ip, e.username, e.hostname, e.raw_log, e.tags, e.ingested_at
+                e.destination_ip, e.username, e.hostname, e.raw_log, e.tags, e.client_name, e.ingested_at
          FROM siem_events e ${wc}
          ORDER BY e.ingested_at DESC LIMIT $${idx} OFFSET $${idx + 1}`,
         [...params, parseInt(limit), parseInt(offset)]
@@ -124,9 +141,10 @@ async function evaluateRules(eventId, event) {
 
 router.get('/alerts', async (req, res) => {
   const { limit = 50, offset = 0, status, severity } = req.query;
-  const where = [];
-  const params = [];
-  let idx = 1;
+  const { clause, params: tParams } = tenantScope(req.user, req.query);
+  const where = clause ? [clause] : [];
+  const params = [...tParams];
+  let idx = params.length + 1;
 
   if (status) { where.push(`status = $${idx++}`); params.push(status); }
   if (severity) { where.push(`severity = $${idx++}`); params.push(severity); }
@@ -137,7 +155,7 @@ router.get('/alerts', async (req, res) => {
     const [rows, count] = await Promise.all([
       pool.query(
         `SELECT id, rule_id, rule_name, event_id, severity, status, source_ip, username, hostname,
-                description, ai_score, ai_summary, ai_narrative, assigned_to, ticket_id, resolved_at, created_at, updated_at
+                description, ai_score, ai_summary, ai_narrative, assigned_to, ticket_id, resolved_at, client_name, created_at, updated_at
          FROM siem_alerts ${wc}
          ORDER BY created_at DESC LIMIT $${idx} OFFSET $${idx + 1}`,
         [...params, parseInt(limit), parseInt(offset)]
@@ -583,12 +601,48 @@ router.post('/search', async (req, res) => {
   const { spl } = req.body;
   if (!spl || !spl.trim()) return res.status(400).json({ error: 'spl is required' });
   try {
-    const { sql } = parseSPL(spl.trim());
+    const { clause, params: tParams } = tenantScope(req.user, req.query);
+    const { sql } = parseSPL(spl.trim(), clause ? tParams[0] : null);
     const result = await pool.query(sql);
     res.json({ rows: result.rows, total: result.rows.length, sql });
   } catch (err) {
     console.error('SPL search:', err);
     res.status(400).json({ error: err.message, hint: 'Check field names and syntax' });
+  }
+});
+
+// ── Tenant management ────────────────────────────────────────────────────────
+
+// List all tenants (distinct client_names that have sent events)
+router.get('/tenants', requireAdmin, async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT client_name as tenant_id, COUNT(*) as event_count, MAX(ingested_at) as last_event
+      FROM siem_events WHERE client_name IS NOT NULL
+      GROUP BY client_name ORDER BY last_event DESC
+    `);
+    res.json({ tenants: result.rows });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to list tenants' });
+  }
+});
+
+// Create a client user tied to a tenant
+router.post('/tenants/users', requireAdmin, async (req, res) => {
+  const bcrypt = require('bcryptjs');
+  const { email, password, first_name, last_name, tenant_id, role = 'GSOC' } = req.body;
+  if (!email || !password || !tenant_id) return res.status(400).json({ error: 'email, password, tenant_id required' });
+  try {
+    const hash = await bcrypt.hash(password, 10);
+    const result = await pool.query(
+      `INSERT INTO users (email, password_hash, role, approved, first_name, last_name, tenant_id)
+       VALUES ($1,$2,$3,true,$4,$5,$6) RETURNING id, email, role, tenant_id`,
+      [email.toLowerCase(), hash, role, first_name || '', last_name || '', tenant_id]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    if (err.code === '23505') return res.status(409).json({ error: 'Email already exists' });
+    res.status(500).json({ error: 'Failed to create user' });
   }
 });
 

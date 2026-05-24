@@ -53,7 +53,7 @@ router.post('/login', async (req, res) => {
     }
 
     const result = await pool.query(
-      'SELECT id, email, password_hash, role, approved, rejection_comment, first_name, last_name FROM users WHERE email = $1',
+      'SELECT id, email, password_hash, role, approved, rejection_comment, first_name, last_name, tenant_id FROM users WHERE email = $1',
       [email.trim().toLowerCase()]
     );
 
@@ -76,7 +76,7 @@ router.post('/login', async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
+      { id: user.id, email: user.email, role: user.role, tenant_id: user.tenant_id || null },
       process.env.JWT_SECRET || 'secret',
       { expiresIn: '7d' }
     );
@@ -84,7 +84,7 @@ router.post('/login', async (req, res) => {
     const displayName = [user.first_name, user.last_name ? user.last_name[0] + '.' : ''].filter(Boolean).join(' ') || user.email;
     res.json({
       token,
-      user: { email: user.email, role: user.role, firstName: user.first_name, lastName: user.last_name, displayName },
+      user: { email: user.email, role: user.role, firstName: user.first_name, lastName: user.last_name, displayName, tenant_id: user.tenant_id || null },
     });
   } catch (err) {
     console.error('Login error:', err);

@@ -6,6 +6,7 @@ import type { UserStatus } from "@/types";
 export interface AuthUser {
   email: string;
   role: string;
+  tenant_id?: string | null;
 }
 
 export interface UseAuthResult {
@@ -31,8 +32,8 @@ export function useAuth(): UseAuthResult {
     setRole(r);
     if (u) {
       try {
-        const parsed = JSON.parse(u) as { email?: string; role?: string };
-        setUser(parsed ? { email: parsed.email ?? "", role: parsed.role ?? "" } : null);
+        const parsed = JSON.parse(u) as { email?: string; role?: string; tenant_id?: string | null };
+        setUser(parsed ? { email: parsed.email ?? "", role: parsed.role ?? "", tenant_id: parsed.tenant_id ?? null } : null);
       } catch {
         setUser(null);
       }
