@@ -575,6 +575,23 @@ router.post('/bulk-correlate', async (req, res) => {
   }
 });
 
+// ── SPL Search ───────────────────────────────────────────────────────────────
+
+const { parseSPL } = require('../services/splParser');
+
+router.post('/search', async (req, res) => {
+  const { spl } = req.body;
+  if (!spl || !spl.trim()) return res.status(400).json({ error: 'spl is required' });
+  try {
+    const { sql } = parseSPL(spl.trim());
+    const result = await pool.query(sql);
+    res.json({ rows: result.rows, total: result.rows.length, sql });
+  } catch (err) {
+    console.error('SPL search:', err);
+    res.status(400).json({ error: err.message, hint: 'Check field names and syntax' });
+  }
+});
+
 // ── API Key Management (admin only) ──────────────────────────────────────────
 
 const crypto = require('crypto');

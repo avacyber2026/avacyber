@@ -237,6 +237,58 @@ export default function SiemPage() {
   const [eventSearch, setEventSearch] = useState("");
   const [eventSearchInput, setEventSearchInput] = useState("");
 
+  // SPL search state
+  const [splQuery, setSplQuery] = useState("");
+  const [splResults, setSplResults] = useState<Record<string, unknown>[] | null>(null);
+  const [splSQL, setSplSQL] = useState<string | null>(null);
+  const [splLoading, setSplLoading] = useState(false);
+  const [splError, setSplError] = useState<string | null>(null);
+  const [splMode, setSplMode] = useState(false);
+
+  async function runSPL() {
+    if (!splQuery.trim()) return;
+    setSplLoading(true); setSplError(null); setSplSQL(null); setSplResults(null);
+    try {
+      const res = await api.post("/siem/search", { spl: splQuery });
+      setSplResults(res.data.rows);
+      setSplSQL(res.data.sql);
+    } catch (err: unknown) {
+      const e = err as { response?: { data?: { error?: string } } };
+      setSplError(e?.response?.data?.error || "Search failed");
+    } finally {
+      setSplLoading(false);
+    }
+  }
+
+  // SPL rule builder state
+  const [splRuleQuery, setSplRuleQuery] = useState("");
+  const [splRuleName, setSplRuleName] = useState("");
+  const [splRuleSeverity, setSplRuleSeverity] = useState("medium");
+  const [splRuleDesc, setSplRuleDesc] = useState("");
+  const [splRuleSaving, setSplRuleSaving] = useState(false);
+  const [showSplRuleBuilder, setShowSplRuleBuilder] = useState(false);
+
+  async function saveSplRule() {
+    if (!splRuleQuery.trim() || !splRuleName.trim()) return toast.error("Name and SPL query required");
+    setSplRuleSaving(true);
+    try {
+      await api.post("/siem/rules", {
+        name: splRuleName,
+        description: splRuleDesc || `SPL: ${splRuleQuery}`,
+        severity: splRuleSeverity,
+        logic: { type: "spl", spl: splRuleQuery },
+        sigma_yaml: `title: ${splRuleName}\nstatus: experimental\nlevel: ${splRuleSeverity}\ndetection:\n  spl: '${splRuleQuery}'`,
+      });
+      toast.success("Detection rule saved");
+      setSplRuleName(""); setSplRuleQuery(""); setSplRuleDesc(""); setShowSplRuleBuilder(false);
+      fetchAll();
+    } catch {
+      toast.error("Failed to save rule");
+    } finally {
+      setSplRuleSaving(false);
+    }
+  }
+
   // Clients (API keys) tab state
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [showAddKey, setShowAddKey] = useState(false);
@@ -768,66 +820,216 @@ export default function SiemPage() {
 
               {/* ────────── EVENTS ────────── */}
               {tab === "events" && (
-                <div className={`${glass} p-5`}>
-                  <div className="flex items-center gap-3 mb-5 flex-wrap">
-                    <h2 className="font-bold text-[#1C1E1C] dark:text-white text-lg flex-1">Live Event Stream</h2>
-                    <div className="flex gap-2 items-center">
-                      <div className="relative">
-                        <IoSearch size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45" />
-                        <input
-                          value={eventSearchInput}
-                          onChange={(e) => setEventSearchInput(e.target.value)}
-                          onKeyDown={(e) => { if (e.key === "Enter") { setEventSearch(eventSearchInput); fetchEvents(eventSearchInput); }}}
-                          placeholder="Search logs, IPs, usernames…"
-                          className="pl-8 pr-3 py-2 rounded-lg text-sm border border-white/60 dark:border-white/8 bg-white/60 dark:bg-[#1C1E1C] text-[#103E36] dark:text-[#F4F3F4]/80 placeholder:text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40 w-64"
-                        />
-                      </div>
-                      <button onClick={() => { setEventSearch(eventSearchInput); fetchEvents(eventSearchInput); }}
-                        className="px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#1F6A5C] to-[#50BFA0] text-white shadow-sm shadow-[#1F6A5C]/30">
-                        Search
+                <div className="space-y-4">
+                  {/* SPL Search Bar */}
+                  <div className={`${glass} p-4`}>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-xs font-bold text-[#1F6A5C] dark:text-[#3FFFA3] uppercase tracking-wider">SPL Search</span>
+                      <button onClick={() => setSplMode(m => !m)}
+                        className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/35 hover:text-[#1F6A5C] dark:hover:text-[#3FFFA3] transition-colors">
+                        {splMode ? "← back to stream" : "switch to SPL"}
                       </button>
                     </div>
+                    <div className="flex gap-2">
+                      <div className="flex-1 relative">
+                        <input
+                          value={splQuery}
+                          onChange={e => setSplQuery(e.target.value)}
+                          onKeyDown={e => { if (e.key === "Enter" && !splLoading) { setSplMode(true); runSPL(); }}}
+                          placeholder='search event_type=auth_failure earliest=-1h | stats count by source_ip | where count > 3 | sort -count'
+                          className="w-full px-4 py-2.5 rounded-lg text-sm font-mono border border-white/60 dark:border-white/8 bg-white/70 dark:bg-[#1C1E1C] text-[#103E36] dark:text-[#3FFFA3] placeholder:text-[#1C1E1C]/35 dark:placeholder:text-[#F4F3F4]/20 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40"
+                        />
+                      </div>
+                      <button onClick={() => { setSplMode(true); runSPL(); }} disabled={splLoading || !splQuery.trim()}
+                        className="px-5 py-2.5 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white disabled:opacity-50 flex items-center gap-2 whitespace-nowrap">
+                        {splLoading ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <IoSearch size={15} />}
+                        Run
+                      </button>
+                      {splMode && (
+                        <button onClick={() => { setSplMode(false); setSplResults(null); setSplSQL(null); setSplError(null); setSplQuery(""); }}
+                          className="px-4 py-2.5 rounded-lg text-sm font-semibold border border-white/60 dark:border-white/8 text-[#1C1E1C]/60 dark:text-[#F4F3F4]/50">
+                          Clear
+                        </button>
+                      )}
+                    </div>
+                    {/* Quick examples */}
+                    <div className="flex gap-2 mt-2 flex-wrap">
+                      {[
+                        "search event_type=auth_failure earliest=-1h",
+                        "search severity=high | stats count by source_ip | sort -count",
+                        "search source_name=cloudflare earliest=-24h | stats count by event_type",
+                        "search event_type=auth_failure earliest=-5m | stats count by source_ip | where count > 3",
+                      ].map(ex => (
+                        <button key={ex} onClick={() => { setSplQuery(ex); setSplMode(true); }}
+                          className="text-xs px-2 py-1 rounded font-mono bg-[#1F6A5C]/8 dark:bg-[#1F6A5C]/15 text-[#1F6A5C] dark:text-[#3FFFA3]/70 hover:bg-[#1F6A5C]/15 transition-colors truncate max-w-xs">
+                          {ex}
+                        </button>
+                      ))}
+                    </div>
+                    {splSQL && (
+                      <div className="mt-2 px-3 py-2 rounded-lg bg-black/10 dark:bg-black/30">
+                        <span className="text-xs text-[#1C1E1C]/40 dark:text-[#F4F3F4]/25 font-mono">→ {splSQL}</span>
+                      </div>
+                    )}
+                    {splError && <p className="text-xs text-red-400 mt-2">{splError}</p>}
                   </div>
 
-                  {events.length === 0 ? (
-                    <EmptyState icon={<MdOutlineStream size={40} />} title="No events ingested yet"
-                      sub="Send logs to the ingest API at POST /siem/events/ingest or connect a log source." />
-                  ) : (
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-sm">
-                        <thead>
-                          <tr className="text-left text-xs font-bold uppercase tracking-wider text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 border-b border-white/40 dark:border-white/8">
-                            <th className="pb-3 pr-4">Time</th>
-                            <th className="pb-3 pr-4">Source</th>
-                            <th className="pb-3 pr-4">Type</th>
-                            <th className="pb-3 pr-4">Severity</th>
-                            <th className="pb-3 pr-4">IP</th>
-                            <th className="pb-3 pr-4">User</th>
-                            <th className="pb-3">Message</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-white/30 dark:divide-[#103E36]/60">
-                          {events.map((e) => (
-                            <tr key={e.id} className="hover:bg-white/30 dark:hover:bg-white/[0.06]/30 transition-colors">
-                              <td className="py-2.5 pr-4 text-xs text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 whitespace-nowrap font-mono">{formatRelative(e.ingested_at)}</td>
-                              <td className="py-2.5 pr-4 text-xs font-semibold text-[#103E36] dark:text-[#F4F3F4]/80 whitespace-nowrap">{e.source_name ?? "—"}</td>
-                              <td className="py-2.5 pr-4 text-xs font-mono text-[#1F6A5C] dark:text-[#F4F3F4]/60 whitespace-nowrap">{e.event_type}</td>
-                              <td className="py-2.5 pr-4"><SevBadge severity={e.severity} /></td>
-                              <td className="py-2.5 pr-4 text-xs font-mono text-[#1F6A5C] dark:text-[#F4F3F4]/60 whitespace-nowrap">{e.source_ip ?? "—"}</td>
-                              <td className="py-2.5 pr-4 text-xs text-[#1F6A5C] dark:text-[#F4F3F4]/60 whitespace-nowrap">{e.username ?? "—"}</td>
-                              <td className="py-2.5 text-xs text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 max-w-xs truncate">{e.raw_log ?? "—"}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
+                  {/* Results */}
+                  <div className={`${glass} p-5`}>
+                    {splMode && splResults !== null ? (
+                      <>
+                        <div className="flex items-center justify-between mb-4">
+                          <h2 className="font-bold text-[#1C1E1C] dark:text-white text-lg">Search Results</h2>
+                          <span className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40">{splResults.length} rows</span>
+                        </div>
+                        {splResults.length === 0 ? (
+                          <EmptyState icon={<IoSearch size={36} />} title="No results" sub="Try adjusting your SPL query or time range." />
+                        ) : (
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="text-left text-xs font-bold uppercase tracking-wider text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 border-b border-white/40 dark:border-white/8">
+                                  {Object.keys(splResults[0]).map(col => (
+                                    <th key={col} className="pb-3 pr-4">{col}</th>
+                                  ))}
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-white/30 dark:divide-[#103E36]/60">
+                                {splResults.map((row, i) => (
+                                  <tr key={i} className="hover:bg-white/30 dark:hover:bg-white/[0.04] transition-colors">
+                                    {Object.entries(row).map(([col, val]) => (
+                                      <td key={col} className="py-2.5 pr-4 text-xs font-mono text-[#1C1E1C]/80 dark:text-[#F4F3F4]/70 whitespace-nowrap max-w-xs truncate">
+                                        {col === 'severity' ? <SevBadge severity={String(val)} /> : String(val ?? '—')}
+                                      </td>
+                                    ))}
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex items-center justify-between mb-4">
+                          <h2 className="font-bold text-[#1C1E1C] dark:text-white text-lg">Live Event Stream</h2>
+                          <button onClick={() => fetchAll()} className="text-xs text-[#1F6A5C] dark:text-[#F4F3F4]/55 hover:underline flex items-center gap-1"><MdRefresh size={13} /> Refresh</button>
+                        </div>
+                        {events.length === 0 ? (
+                          <EmptyState icon={<MdOutlineStream size={40} />} title="No events ingested yet"
+                            sub="Send logs to the ingest API or connect a log source." />
+                        ) : (
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="text-left text-xs font-bold uppercase tracking-wider text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 border-b border-white/40 dark:border-white/8">
+                                  <th className="pb-3 pr-4">Time</th>
+                                  <th className="pb-3 pr-4">Source</th>
+                                  <th className="pb-3 pr-4">Type</th>
+                                  <th className="pb-3 pr-4">Severity</th>
+                                  <th className="pb-3 pr-4">IP</th>
+                                  <th className="pb-3 pr-4">User</th>
+                                  <th className="pb-3">Message</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-white/30 dark:divide-[#103E36]/60">
+                                {events.map((e) => (
+                                  <tr key={e.id} className="hover:bg-white/30 dark:hover:bg-white/[0.04] transition-colors">
+                                    <td className="py-2.5 pr-4 text-xs text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 whitespace-nowrap font-mono">{formatRelative(e.ingested_at)}</td>
+                                    <td className="py-2.5 pr-4 text-xs font-semibold text-[#103E36] dark:text-[#F4F3F4]/80 whitespace-nowrap">{e.source_name ?? "—"}</td>
+                                    <td className="py-2.5 pr-4 text-xs font-mono text-[#1F6A5C] dark:text-[#F4F3F4]/60 whitespace-nowrap">{e.event_type}</td>
+                                    <td className="py-2.5 pr-4"><SevBadge severity={e.severity} /></td>
+                                    <td className="py-2.5 pr-4 text-xs font-mono text-[#1F6A5C] dark:text-[#F4F3F4]/60 whitespace-nowrap">{e.source_ip ?? "—"}</td>
+                                    <td className="py-2.5 pr-4 text-xs text-[#1F6A5C] dark:text-[#F4F3F4]/60 whitespace-nowrap">{e.username ?? "—"}</td>
+                                    <td className="py-2.5 text-xs text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 max-w-xs truncate">{e.raw_log ?? "—"}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
                 </div>
               )}
 
               {/* ────────── RULES (DETECTIONS) ────────── */}
               {tab === "rules" && (
                 <div className="space-y-5">
+
+                  {/* SPL Rule Builder */}
+                  <div className={`${glass} p-5`}>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <MdOutlineRule size={18} className="text-[#1F6A5C] dark:text-[#3FFFA3]" />
+                        <h2 className="font-bold text-[#1C1E1C] dark:text-white">SPL Detection Builder</h2>
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-[#1F6A5C]/10 border border-[#1F6A5C]/25 text-[#1F6A5C] dark:text-[#3FFFA3] font-semibold">SPL</span>
+                      </div>
+                      <button onClick={() => setShowSplRuleBuilder(s => !s)}
+                        className="text-xs text-[#1F6A5C] dark:text-[#F4F3F4]/55 hover:underline flex items-center gap-1">
+                        {showSplRuleBuilder ? "Collapse" : "New SPL Rule"} <IoChevronDown size={12} className={`transition-transform ${showSplRuleBuilder ? "rotate-180" : ""}`} />
+                      </button>
+                    </div>
+                    <p className="text-sm text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 mb-3">Write a detection using SPL syntax. The query runs against incoming events in real time.</p>
+
+                    <AnimatePresence>
+                      {showSplRuleBuilder && (
+                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
+                          <div className="space-y-3 pt-1">
+                            <input value={splRuleName} onChange={e => setSplRuleName(e.target.value)}
+                              placeholder="Detection name (e.g. Brute Force SSH)"
+                              className="w-full px-3 py-2 rounded-lg text-sm border border-white/60 dark:border-white/8 bg-white/70 dark:bg-[#1C1E1C] text-[#103E36] dark:text-[#F4F3F4]/80 placeholder:text-[#1C1E1C]/40 dark:placeholder:text-[#F4F3F4]/25 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40" />
+                            <input value={splRuleQuery} onChange={e => setSplRuleQuery(e.target.value)}
+                              placeholder="search event_type=auth_failure earliest=-5m | stats count by source_ip | where count > 5"
+                              className="w-full px-3 py-2 rounded-lg text-sm font-mono border border-white/60 dark:border-white/8 bg-white/70 dark:bg-[#1C1E1C] text-[#103E36] dark:text-[#3FFFA3] placeholder:text-[#1C1E1C]/35 dark:placeholder:text-[#F4F3F4]/20 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40" />
+                            <div className="flex gap-3 flex-wrap">
+                              <input value={splRuleDesc} onChange={e => setSplRuleDesc(e.target.value)}
+                                placeholder="Description (optional)"
+                                className="flex-1 min-w-[200px] px-3 py-2 rounded-lg text-sm border border-white/60 dark:border-white/8 bg-white/70 dark:bg-[#1C1E1C] text-[#103E36] dark:text-[#F4F3F4]/80 placeholder:text-[#1C1E1C]/40 dark:placeholder:text-[#F4F3F4]/25 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40" />
+                              <select value={splRuleSeverity} onChange={e => setSplRuleSeverity(e.target.value)}
+                                className="px-3 py-2 rounded-lg text-sm border border-white/60 dark:border-white/8 bg-white/70 dark:bg-[#1C1E1C] text-[#103E36] dark:text-[#F4F3F4]/80 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40">
+                                <option value="critical">Critical</option>
+                                <option value="high">High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
+                                <option value="info">Info</option>
+                              </select>
+                            </div>
+                            <div className="flex gap-2">
+                              <button onClick={saveSplRule} disabled={splRuleSaving}
+                                className="px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white disabled:opacity-50">
+                                {splRuleSaving ? "Saving…" : "Save Detection"}
+                              </button>
+                              <button onClick={() => setShowSplRuleBuilder(false)}
+                                className="px-4 py-2 rounded-lg text-sm font-semibold border border-white/60 dark:border-white/8 text-[#1F6A5C] dark:text-[#F4F3F4]/60">
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    {/* SPL cheatsheet */}
+                    <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {[
+                        ["Brute force SSH", "search event_type=auth_failure earliest=-5m | stats count by source_ip | where count > 5 | sort -count"],
+                        ["Failed MFA repeated", "search event_type=auth_failure source_name=jumpcloud earliest=-10m | stats count by username | where count > 3"],
+                        ["Cloudflare DDoS spike", "search source_name=cloudflare event_type=ddos_drop earliest=-5m | stats count by source_ip | sort -count"],
+                        ["New admin account", "search event_type=user_created severity=medium earliest=-24h"],
+                        ["High severity last hour", "search severity=high earliest=-1h | stats count by event_type | sort -count"],
+                        ["Suspicious IPs", "search severity=high earliest=-24h | stats count by source_ip | where count > 10 | sort -count"],
+                      ].map(([label, spl]) => (
+                        <button key={label} onClick={() => { setSplRuleQuery(spl); setSplRuleName(label as string); setShowSplRuleBuilder(true); }}
+                          className="text-left px-3 py-2 rounded-lg border border-white/30 dark:border-white/8 bg-white/20 dark:bg-[#1E2128]/30 hover:bg-[#1F6A5C]/8 transition-colors">
+                          <div className="text-xs font-semibold text-[#1C1E1C] dark:text-white mb-0.5">{label}</div>
+                          <div className="text-xs font-mono text-[#1F6A5C] dark:text-[#3FFFA3]/60 truncate">{spl}</div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
                   {/* AI Rule Builder */}
                   <div className={`${glass} p-5`}>
                     <div className="flex items-center gap-2 mb-3">
