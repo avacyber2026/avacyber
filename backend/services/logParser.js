@@ -26,11 +26,10 @@ const SYSLOG_SEVERITY_KEYWORDS = {
   emerg: 'critical', emergency: 'critical',
   alert: 'critical',
   crit: 'critical', critical: 'critical',
-  err: 'high', error: 'high',
-  warn: 'medium', warning: 'medium',
-  notice: 'low',
-  info: 'info', informational: 'info',
-  debug: 'info',
+  err: 'high', error: 'high', high: 'high',
+  warn: 'medium', warning: 'medium', medium: 'medium',
+  notice: 'low', low: 'low',
+  info: 'info', informational: 'info', debug: 'info',
 };
 
 function mapSeverity(raw) {
