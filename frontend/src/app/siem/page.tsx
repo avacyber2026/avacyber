@@ -99,6 +99,18 @@ interface SiemSource {
   created_at: string;
 }
 
+interface ApiKey {
+  id: number;
+  client_name: string;
+  description: string | null;
+  enabled: boolean;
+  event_count: number;
+  last_used_at: string | null;
+  created_by: string | null;
+  created_at: string;
+  api_key?: string; // only returned on creation
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 const SEV_COLOR: Record<string, string> = {
@@ -166,7 +178,7 @@ const glass = "rounded-xl border border-white/20 dark:border-white/10 bg-white/2
 
 // ── Status filter tabs ─────────────────────────────────────────────────────────
 
-type Tab = "overview" | "alerts" | "events" | "rules" | "sources";
+type Tab = "overview" | "alerts" | "events" | "rules" | "sources" | "clients";
 
 const TABS: { key: Tab; label: string; icon: React.ReactNode }[] = [
   { key: "overview", label: "Overview",  icon: <MdOutlineShield size={16} /> },
@@ -174,6 +186,7 @@ const TABS: { key: Tab; label: string; icon: React.ReactNode }[] = [
   { key: "events",   label: "Events",    icon: <MdOutlineStream size={16} /> },
   { key: "rules",    label: "Detections",icon: <MdOutlineRule size={16} /> },
   { key: "sources",  label: "Sources",   icon: <MdOutlineStorage size={16} /> },
+  { key: "clients",  label: "Clients",   icon: <FaNetworkWired size={14} /> },
 ];
 
 // ── Main page ─────────────────────────────────────────────────────────────────
@@ -223,6 +236,60 @@ export default function SiemPage() {
   // Events tab state
   const [eventSearch, setEventSearch] = useState("");
   const [eventSearchInput, setEventSearchInput] = useState("");
+
+  // Clients (API keys) tab state
+  const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
+  const [showAddKey, setShowAddKey] = useState(false);
+  const [newKeyClient, setNewKeyClient] = useState("");
+  const [newKeyDesc, setNewKeyDesc] = useState("");
+  const [createdKey, setCreatedKey] = useState<string | null>(null);
+  const [keyLoading, setKeyLoading] = useState(false);
+
+  const fetchApiKeys = useCallback(async () => {
+    try {
+      const res = await api.get("/siem/api-keys");
+      setApiKeys(res.data.keys ?? []);
+    } catch { /* silent */ }
+  }, []);
+
+  useEffect(() => { if (tab === "clients") fetchApiKeys(); }, [tab, fetchApiKeys]);
+
+  async function createApiKey() {
+    if (!newKeyClient.trim()) return toast.error("Client name is required");
+    setKeyLoading(true);
+    try {
+      const res = await api.post("/siem/api-keys", { client_name: newKeyClient.trim(), description: newKeyDesc.trim() || undefined });
+      setCreatedKey(res.data.api_key);
+      setNewKeyClient("");
+      setNewKeyDesc("");
+      setShowAddKey(false);
+      fetchApiKeys();
+      toast.success("API key created");
+    } catch {
+      toast.error("Failed to create key");
+    } finally {
+      setKeyLoading(false);
+    }
+  }
+
+  async function toggleApiKey(id: number, enabled: boolean) {
+    try {
+      await api.patch(`/siem/api-keys/${id}`, { enabled });
+      setApiKeys(prev => prev.map(k => k.id === id ? { ...k, enabled } : k));
+    } catch {
+      toast.error("Failed to update key");
+    }
+  }
+
+  async function deleteApiKey(id: number) {
+    try {
+      await api.delete(`/siem/api-keys/${id}`);
+      setApiKeys(prev => prev.filter(k => k.id !== id));
+      toast.success("Key revoked");
+    } catch {
+      toast.error("Failed to revoke key");
+    }
+  }
 
   // Alerts tab state
   const [alertFilter, setAlertFilter] = useState<string>("all");
@@ -1008,6 +1075,124 @@ export default function SiemPage() {
                               <code className="text-xs font-mono text-[#1F6A5C] dark:text-[#F4F3F4]/55">POST /siem/events/ingest</code>
                             </div>
                             <button onClick={() => deleteSource(s.id)}
+                              className="p-2 rounded-lg hover:bg-red-500/10 text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 hover:text-red-400 transition-colors">
+                              <MdClose size={16} />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+              {tab === "clients" && (
+                <div className={`${glass} p-5`}>
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h2 className="font-bold text-[#1C1E1C] dark:text-white text-lg">Client API Keys</h2>
+                      <p className="text-xs text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mt-0.5">Generate keys for clients to send logs to your SIEM</p>
+                    </div>
+                    <button onClick={() => { setShowAddKey(true); setCreatedKey(null); }}
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white shadow-md hover:opacity-90 transition-opacity">
+                      <MdAdd size={16} /> New Client
+                    </button>
+                  </div>
+
+                  {/* Ingest endpoints reference */}
+                  <div className="mb-4 rounded-xl border border-[#1F6A5C]/20 bg-[#1F6A5C]/5 p-4">
+                    <p className="text-xs font-semibold text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 mb-2">Ingest endpoints</p>
+                    <div className="space-y-1">
+                      {[
+                        ["Cloudflare Logpush", "POST https://ingest.ava-cyber.com/v1/ingest/cloudflare"],
+                        ["JumpCloud webhook", "POST https://ingest.ava-cyber.com/v1/ingest/jumpcloud"],
+                        ["Generic JSON / any source", "POST https://ingest.ava-cyber.com/v1/ingest/events"],
+                        ["Syslog (UDP/TCP)", "ingest.ava-cyber.com : 514"],
+                      ].map(([label, url]) => (
+                        <div key={label} className="flex items-center gap-3">
+                          <span className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40 w-44 shrink-0">{label}</span>
+                          <code className="text-xs font-mono text-[#1F6A5C] dark:text-[#3FFFA3]/70">{url}</code>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40 mt-2">All HTTP endpoints require header: <code className="font-mono">X-AVA-API-Key: &lt;key&gt;</code></p>
+                  </div>
+
+                  {/* New key form */}
+                  <AnimatePresence>
+                    {showAddKey && (
+                      <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
+                        className="mb-4 rounded-xl border border-[#1F6A5C]/30 bg-[#1F6A5C]/5 p-4 overflow-hidden">
+                        <h3 className="font-semibold text-[#1C1E1C] dark:text-white mb-3">Generate API Key</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                          <input value={newKeyClient} onChange={e => setNewKeyClient(e.target.value)}
+                            placeholder="Client name (e.g. Privateum)"
+                            className="px-3 py-2 rounded-lg text-sm border border-white/60 dark:border-white/8 bg-white/80 dark:bg-[#1C1E1C] text-[#103E36] dark:text-[#F4F3F4]/80 placeholder:text-[#1C1E1C]/40 dark:placeholder:text-[#F4F3F4]/25 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40" />
+                          <input value={newKeyDesc} onChange={e => setNewKeyDesc(e.target.value)}
+                            placeholder="Description (optional)"
+                            className="px-3 py-2 rounded-lg text-sm border border-white/60 dark:border-white/8 bg-white/80 dark:bg-[#1C1E1C] text-[#103E36] dark:text-[#F4F3F4]/80 placeholder:text-[#1C1E1C]/40 dark:placeholder:text-[#F4F3F4]/25 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40" />
+                        </div>
+                        <div className="flex gap-2">
+                          <button onClick={createApiKey} disabled={keyLoading}
+                            className="px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white disabled:opacity-50">
+                            {keyLoading ? "Generating…" : "Generate Key"}
+                          </button>
+                          <button onClick={() => setShowAddKey(false)}
+                            className="px-4 py-2 rounded-lg text-sm font-semibold border border-white/60 dark:border-white/8 text-[#1F6A5C] dark:text-[#F4F3F4]/60">
+                            Cancel
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Newly created key — show once */}
+                  <AnimatePresence>
+                    {createdKey && (
+                      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                        className="mb-4 rounded-xl border border-[#3FFFA3]/30 bg-[#3FFFA3]/5 p-4">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-sm font-semibold text-[#1C1E1C] dark:text-white">API Key Generated — copy it now, it won&apos;t be shown again</span>
+                          <button onClick={() => setCreatedKey(null)} className="text-[#1C1E1C]/40 dark:text-[#F4F3F4]/30 hover:text-[#1C1E1C] dark:hover:text-white"><MdClose size={16} /></button>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <code className="flex-1 text-sm font-mono text-[#1F6A5C] dark:text-[#3FFFA3] bg-white/60 dark:bg-[#1C1E1C]/60 px-3 py-2 rounded-lg break-all">{createdKey}</code>
+                          <button onClick={() => { navigator.clipboard.writeText(createdKey); toast.success("Copied"); }}
+                            className="px-3 py-2 rounded-lg text-sm font-semibold bg-[#1F6A5C] text-white hover:opacity-90 shrink-0">
+                            Copy
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Keys list */}
+                  {apiKeys.length === 0 ? (
+                    <EmptyState icon={<FaNetworkWired size={36} />} title="No clients yet" sub='Click "New Client" to generate an API key for your first client.' />
+                  ) : (
+                    <div className="space-y-3">
+                      {apiKeys.map(k => (
+                        <div key={k.id} className="flex items-center gap-4 rounded-xl px-4 py-4 border border-white/20 dark:border-white/10 bg-white/20 dark:bg-[#1E2128]/40">
+                          <div className="w-10 h-10 rounded-xl bg-[#1F6A5C]/12 dark:bg-white/[0.05] flex items-center justify-center text-[#1F6A5C] dark:text-[#F4F3F4]/55">
+                            <FaNetworkWired size={16} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-0.5">
+                              <span className="font-semibold text-[#1C1E1C] dark:text-white">{k.client_name}</span>
+                              <span className={`w-2 h-2 rounded-full ${k.enabled ? "bg-[#3FFFA3]" : "bg-red-400"}`} />
+                              <span className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40">{k.enabled ? "active" : "disabled"}</span>
+                            </div>
+                            <div className="flex gap-4 text-xs text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55">
+                              <span>{k.event_count.toLocaleString()} events received</span>
+                              {k.last_used_at && <span>Last used {formatRelative(k.last_used_at)}</span>}
+                              {k.description && <span>{k.description}</span>}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <button onClick={() => toggleApiKey(k.id, !k.enabled)}
+                              className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${k.enabled ? "border-orange-400/30 text-orange-400 hover:bg-orange-400/10" : "border-[#3FFFA3]/30 text-[#1F6A5C] dark:text-[#3FFFA3] hover:bg-[#3FFFA3]/10"}`}>
+                              {k.enabled ? "Disable" : "Enable"}
+                            </button>
+                            <button onClick={() => deleteApiKey(k.id)}
                               className="p-2 rounded-lg hover:bg-red-500/10 text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 hover:text-red-400 transition-colors">
                               <MdClose size={16} />
                             </button>
