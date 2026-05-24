@@ -1,6 +1,7 @@
 const express = require('express');
 const pool = require('../db/pool');
-const { authMiddleware } = require('../middleware/auth');
+const { authMiddleware, requireAdmin } = require('../middleware/auth');
+const crypto = require('crypto');
 
 const router = express.Router();
 router.use(authMiddleware);
@@ -647,9 +648,6 @@ router.post('/tenants/users', requireAdmin, async (req, res) => {
 });
 
 // ── API Key Management (admin only) ──────────────────────────────────────────
-
-const crypto = require('crypto');
-const { requireAdmin } = require('../middleware/auth');
 
 router.get('/api-keys', requireAdmin, async (req, res) => {
   try {
