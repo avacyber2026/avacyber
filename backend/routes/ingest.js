@@ -1,104 +1,133 @@
 /**
  * Public ingest API — authenticated by API key (X-AVA-API-Key header), not JWT.
- * Clients ship logs here; no user session required.
  *
- * POST /api/v1/ingest/events       — single event
- * POST /api/v1/ingest/events/batch — up to 500 events
- * GET  /api/v1/ingest/health       — liveness check (no auth)
+ * GET  /v1/ingest/health              — liveness (no auth)
+ * POST /v1/ingest/events              — generic single event or raw JSON
+ * POST /v1/ingest/events/batch        — up to 500 events
+ * POST /v1/ingest/cloudflare          — Cloudflare Logpush (single or array)
+ * POST /v1/ingest/jumpcloud           — JumpCloud Directory Insights webhook
+ * POST /v1/ingest/raw                 — raw syslog line or plain text over HTTP
  */
 const express = require('express');
 const pool = require('../db/pool');
 const { apiKeyMiddleware } = require('../middleware/apiKey');
+const {
+  normalizeCloudflare,
+  normalizeJumpCloud,
+  normalizeGenericJSON,
+  normalizeSyslog,
+} = require('../services/logParser');
 
 const router = express.Router();
 
-// ── Health (no auth) ──────────────────────────────────────────────────────────
+// ── Health ────────────────────────────────────────────────────────────────────
 
 router.get('/health', (req, res) => {
   res.json({ status: 'ok', version: '1' });
 });
 
-// ── Single event ──────────────────────────────────────────────────────────────
+// ── Cloudflare Logpush ────────────────────────────────────────────────────────
 
-router.post('/events', apiKeyMiddleware, async (req, res) => {
-  const { client_name } = req.apiClient;
+router.post('/cloudflare', apiKeyMiddleware, async (req, res) => {
   try {
-    const id = await ingestOne(req.body, client_name);
-    res.status(201).json({ id });
+    const events = normalizeCloudflare(req.body);
+    const ids = await insertMany(events, req.apiClient.client_name);
+    res.status(201).json({ ingested: ids.length });
   } catch (err) {
-    console.error('ingest single:', err);
-    res.status(500).json({ error: 'Failed to ingest event' });
+    console.error('ingest/cloudflare:', err);
+    res.status(500).json({ error: 'Failed to ingest' });
   }
 });
 
-// ── Batch (up to 500) ─────────────────────────────────────────────────────────
+// ── JumpCloud webhook ─────────────────────────────────────────────────────────
+
+router.post('/jumpcloud', apiKeyMiddleware, async (req, res) => {
+  try {
+    const events = normalizeJumpCloud(req.body);
+    const ids = await insertMany(events, req.apiClient.client_name);
+    res.status(201).json({ ingested: ids.length });
+  } catch (err) {
+    console.error('ingest/jumpcloud:', err);
+    res.status(500).json({ error: 'Failed to ingest' });
+  }
+});
+
+// ── Raw syslog line over HTTP ─────────────────────────────────────────────────
+
+router.post('/raw', apiKeyMiddleware, express.text({ type: '*/*' }), async (req, res) => {
+  try {
+    const raw = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+    const sourceIp = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip;
+    const event = normalizeSyslog(raw, sourceIp);
+    const [id] = await insertMany([event], req.apiClient.client_name);
+    res.status(201).json({ id });
+  } catch (err) {
+    console.error('ingest/raw:', err);
+    res.status(500).json({ error: 'Failed to ingest' });
+  }
+});
+
+// ── Generic single event ──────────────────────────────────────────────────────
+
+router.post('/events', apiKeyMiddleware, async (req, res) => {
+  try {
+    const sourceName = req.body?.source_name || req.apiClient.client_name;
+    const events = normalizeGenericJSON(req.body, sourceName);
+    const [id] = await insertMany(events, req.apiClient.client_name);
+    res.status(201).json({ id });
+  } catch (err) {
+    console.error('ingest/events:', err);
+    res.status(500).json({ error: 'Failed to ingest' });
+  }
+});
+
+// ── Batch ─────────────────────────────────────────────────────────────────────
 
 router.post('/events/batch', apiKeyMiddleware, async (req, res) => {
-  const events = req.body;
-  if (!Array.isArray(events)) return res.status(400).json({ error: 'Body must be a JSON array' });
-  if (events.length > 500) return res.status(400).json({ error: 'Max 500 events per batch' });
+  if (!Array.isArray(req.body)) return res.status(400).json({ error: 'Body must be a JSON array' });
+  if (req.body.length > 500) return res.status(400).json({ error: 'Max 500 events per batch' });
 
-  const { client_name } = req.apiClient;
   try {
-    const ids = await Promise.all(events.map(e => ingestOne(e, client_name)));
+    const sourceName = req.apiClient.client_name;
+    const events = normalizeGenericJSON(req.body, sourceName);
+    const ids = await insertMany(events, sourceName);
     res.status(201).json({ ingested: ids.length, ids });
   } catch (err) {
-    console.error('ingest batch:', err);
+    console.error('ingest/batch:', err);
     res.status(500).json({ error: 'Failed to ingest batch' });
   }
 });
 
-// ── Core ingest logic ─────────────────────────────────────────────────────────
+// ── Core insert ───────────────────────────────────────────────────────────────
 
-async function ingestOne(body, clientName) {
-  const {
-    source_name, event_type, severity,
-    source_ip, destination_ip, username, hostname,
-    raw_log, tags, normalized,
-  } = body;
-
-  const resolvedSource = source_name || clientName;
-
-  let sourceId = null;
-  if (resolvedSource) {
-    const src = await pool.query(
-      `SELECT id FROM siem_sources WHERE name = $1 LIMIT 1`,
-      [resolvedSource]
+async function insertMany(events, clientName) {
+  const ids = [];
+  for (const e of events) {
+    const result = await pool.query(
+      `INSERT INTO siem_events
+         (source_name, event_type, severity, source_ip, destination_ip,
+          username, hostname, raw_log, normalized, tags, client_name)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+       RETURNING id`,
+      [
+        e.source_name || clientName,
+        e.event_type || 'generic',
+        e.severity || 'info',
+        e.source_ip || null,
+        e.destination_ip || null,
+        e.username || null,
+        e.hostname || null,
+        e.raw_log || null,
+        JSON.stringify(e.normalized || {}),
+        e.tags || [],
+        clientName,
+      ]
     );
-    if (src.rows.length) {
-      sourceId = src.rows[0].id;
-      pool.query(
-        `UPDATE siem_sources SET last_seen = NOW(), event_count = event_count + 1 WHERE id = $1`,
-        [sourceId]
-      ).catch(() => {});
-    }
+    const id = result.rows[0].id;
+    ids.push(id);
+    evaluateRules(id, e).catch(() => {});
   }
-
-  const result = await pool.query(
-    `INSERT INTO siem_events
-       (source_id, source_name, event_type, severity, source_ip, destination_ip,
-        username, hostname, raw_log, normalized, tags, client_name)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
-     RETURNING id`,
-    [
-      sourceId,
-      resolvedSource,
-      event_type || 'generic',
-      severity || 'info',
-      source_ip || null,
-      destination_ip || null,
-      username || null,
-      hostname || null,
-      raw_log || null,
-      normalized ? JSON.stringify(normalized) : '{}',
-      tags || [],
-      clientName,
-    ]
-  );
-
-  const eventId = result.rows[0].id;
-  evaluateRules(eventId, { source_name: resolvedSource, event_type, severity, source_ip, username, hostname }).catch(() => {});
-  return eventId;
+  return ids;
 }
 
 async function evaluateRules(eventId, event) {
@@ -116,7 +145,7 @@ async function evaluateRules(eventId, event) {
       [
         rule.id, rule.name, eventId, rule.severity,
         event.source_ip, event.username, event.hostname,
-        `Rule "${rule.name}" matched on event from ${event.source_name || 'unknown source'}`,
+        `Rule "${rule.name}" matched on event from ${event.source_name || 'unknown'}`,
         event.client_name || null,
       ]
     ).catch(() => {});

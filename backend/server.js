@@ -68,4 +68,12 @@ server.listen(PORT, () => {
   } catch (err) {
     console.warn('SLA cron not started (install node-cron):', err.message);
   }
+
+  // Syslog listener (UDP + TCP port 514, or SYSLOG_UDP_PORT / SYSLOG_TCP_PORT)
+  try {
+    const syslogListener = require('./services/syslogListener');
+    syslogListener.start();
+  } catch (err) {
+    console.warn('Syslog listener not started:', err.message);
+  }
 });
