@@ -614,13 +614,14 @@ router.post('/search', async (req, res) => {
 
 // ── Tenant management ────────────────────────────────────────────────────────
 
-// List all tenants (distinct client_names that have sent events)
+// List all tenants from API keys (source of truth for registered clients)
 router.get('/tenants', requireAdmin, async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT client_name as tenant_id, COUNT(*) as event_count, MAX(ingested_at) as last_event
-      FROM siem_events WHERE client_name IS NOT NULL
-      GROUP BY client_name ORDER BY last_event DESC
+      SELECT DISTINCT client_name as tenant_id
+      FROM siem_api_keys
+      WHERE enabled = true
+      ORDER BY client_name ASC
     `);
     res.json({ tenants: result.rows });
   } catch (err) {
