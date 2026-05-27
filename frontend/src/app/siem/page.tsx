@@ -589,7 +589,7 @@ export default function SiemPage() {
   return (
     <>
       <SideMenu />
-      <div className="min-h-screen bg-[#C8D5D1] dark:bg-[#1C1E1C]" style={{ paddingLeft: "var(--app-sidebar-width, 308px)" }}>
+      <div className="min-h-screen bg-[#F4F3F4] dark:bg-[#131517]" style={{ paddingLeft: "var(--app-sidebar-width, 308px)" }}>
         <div className="max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 py-6 pb-16">
 
           {/* ── Header ── */}
