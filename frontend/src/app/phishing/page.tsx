@@ -374,9 +374,9 @@ export default function PhishingPage() {
 
   if (editingTemplate) {
     return (
-      <div className={`flex min-h-screen ${isDark ? "dark" : ""} bg-[#F4F3F4] dark:bg-[#131517]`}>
+      <div className={`${isDark ? "dark" : ""} min-h-screen bg-[#F4F3F4] dark:bg-[#131517]`} style={{ paddingLeft: "var(--app-sidebar-width, 308px)" }}>
         <SideMenu />
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex flex-col" style={{ height: "100vh" }}>
           {/* Editor header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-white/20 dark:border-white/8 bg-white/40 dark:bg-[#1A1C1F]">
             <div className="flex items-center gap-3">
@@ -504,9 +504,9 @@ export default function PhishingPage() {
       setEditingGroup(g => g && ({ ...g, user_emails: g.user_emails.filter(x => x !== em) }));
 
     return (
-      <div className={`flex min-h-screen ${isDark ? "dark" : ""} bg-[#F4F3F4] dark:bg-[#131517]`}>
+      <div className={`${isDark ? "dark" : ""} min-h-screen bg-[#F4F3F4] dark:bg-[#131517]`} style={{ paddingLeft: "var(--app-sidebar-width, 308px)" }}>
         <SideMenu />
-        <div className="flex-1 max-w-2xl mx-auto px-6 py-10 space-y-6">
+        <div className="max-w-2xl mx-auto px-6 py-10 space-y-6">
           <div className="flex items-center gap-3">
             <button onClick={() => setEditingGroup(null)} className="p-1.5 rounded-lg hover:bg-white/20 dark:hover:bg-white/8 transition-colors text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55">
               <MdArrowBack size={18} />
@@ -560,10 +560,10 @@ export default function PhishingPage() {
   // ── Main layout ─────────────────────────────────────────────────────────────
 
   return (
-    <div className={`flex min-h-screen ${isDark ? "dark" : ""} bg-[#F4F3F4] dark:bg-[#131517]`}>
+    <div className={`${isDark ? "dark" : ""} min-h-screen bg-[#F4F3F4] dark:bg-[#131517]`} style={{ paddingLeft: "var(--app-sidebar-width, 308px)" }}>
       <SideMenu />
 
-      <div className="flex-1 overflow-y-auto px-6 py-8 max-w-7xl mx-auto w-full">
+      <div className="overflow-y-auto px-6 py-8 max-w-7xl mx-auto w-full">
 
         {/* ── Header ── */}
         <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}
