@@ -214,6 +214,45 @@ router.delete('/templates/:id', async (req, res) => {
   }
 });
 
+// ── CSV Export ────────────────────────────────────────────────────────────────
+
+router.get('/export/csv', async (req, res) => {
+  try {
+    const { rows } = await pool.query(`
+      SELECT c.id, c.name, c.type, c.status,
+        t.name AS template_name,
+        c.total_sent, c.total_opened, c.total_clicked, c.total_reported,
+        c.scheduled_at, c.started_at, c.completed_at, c.created_at
+      FROM phishing_campaigns c
+      LEFT JOIN phishing_templates t ON c.template_id = t.id
+      ORDER BY c.created_at DESC
+    `);
+
+    const esc = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+    const fmt = d => d ? new Date(d).toISOString().slice(0, 16) : '';
+
+    const headers = ['ID','Name','Type','Status','Template','Sent','Opened','Clicked','Reported','Click Rate %','Report Rate %','Scheduled At','Started At','Completed At','Created At'];
+    const csvRows = rows.map(r => {
+      const sent = parseInt(r.total_sent) || 0;
+      return [
+        r.id, esc(r.name), r.type, r.status, esc(r.template_name || ''),
+        r.total_sent, r.total_opened, r.total_clicked, r.total_reported,
+        sent > 0 ? ((parseInt(r.total_clicked) / sent) * 100).toFixed(1) : '0',
+        sent > 0 ? ((parseInt(r.total_reported) / sent) * 100).toFixed(1) : '0',
+        fmt(r.scheduled_at), fmt(r.started_at), fmt(r.completed_at), fmt(r.created_at),
+      ].join(',');
+    });
+
+    const filename = `phishing-campaigns-${new Date().toISOString().slice(0, 10)}.csv`;
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.send([headers.join(','), ...csvRows].join('\r\n'));
+  } catch (err) {
+    console.error('Phishing CSV export error:', err);
+    res.status(500).json({ error: 'Export failed' });
+  }
+});
+
 // ── User Groups ───────────────────────────────────────────────────────────────
 
 router.get('/groups', async (req, res) => {

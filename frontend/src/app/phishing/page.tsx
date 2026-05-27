@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 import {
   MdOutlineEmail, MdAdd, MdClose, MdEdit, MdDelete, MdPlayArrow,
   MdOutlineBarChart, MdArrowBack, MdOutlineGroup, MdCode, MdPreview,
-  MdCheck, MdRefresh,
+  MdCheck, MdRefresh, MdFileDownload,
 } from "react-icons/md";
 import {
   IoFishOutline, IoLinkOutline, IoDocumentAttachOutline, IoQrCodeOutline,
@@ -289,6 +289,20 @@ export default function PhishingPage() {
       toast.success("Campaign launched");
     } catch {
       toast.error("Cannot launch campaign");
+    }
+  }
+
+  async function exportCampaignsCsv() {
+    try {
+      const r = await api.get("/phishing/export/csv", { responseType: "blob" });
+      const url = URL.createObjectURL(r.data);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `phishing-campaigns-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      toast.error("Export failed");
     }
   }
 
@@ -608,6 +622,10 @@ export default function PhishingPage() {
             <button onClick={fetchStats}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border border-black/8 dark:border-white/8 bg-white/15 dark:bg-[#1E2128] text-[#103E36] dark:text-[#F4F3F4]/80 hover:bg-white/28 dark:hover:bg-white/[0.06] transition-colors">
               <MdRefresh size={16} />Refresh
+            </button>
+            <button onClick={exportCampaignsCsv}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border border-black/8 dark:border-white/8 bg-white/15 dark:bg-[#1E2128] text-[#103E36] dark:text-[#F4F3F4]/80 hover:bg-white/28 dark:hover:bg-white/[0.06] transition-colors">
+              <MdFileDownload size={16} />Export CSV
             </button>
             {tab === "campaigns" && (
               <button onClick={() => { setShowWizard(true); setWizardStep(1); }}
