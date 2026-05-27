@@ -210,6 +210,12 @@ export default function PhishingPage() {
   const [isNewTemplate, setIsNewTemplate] = useState(false);
   const [previewMode, setPreviewMode] = useState(false);
 
+  // Template preview modal (templates tab + wizard)
+  const [previewingTemplate, setPreviewingTemplate] = useState<PhishingTemplate | null>(null);
+  const [previewShowCode, setPreviewShowCode] = useState(false);
+  // Wizard step-2 hover preview
+  const [wizardHoverTemplate, setWizardHoverTemplate] = useState<PhishingTemplate | null>(null);
+
   // Group editor
   const [editingGroup, setEditingGroup] = useState<PhishingGroup | null>(null);
   const [isNewGroup, setIsNewGroup] = useState(false);
@@ -842,32 +848,57 @@ export default function PhishingPage() {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                {templates.map(t => (
-                  <motion.div key={t.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-                    className={`${glass} p-5 flex flex-col gap-3`}>
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex-1 min-w-0">
-                        <div className="font-bold text-[#1C1E1C] dark:text-white truncate">{t.name}</div>
-                        <div className="text-xs text-[#1C1E1C]/60 dark:text-[#F4F3F4]/40 mt-0.5 truncate">{t.from_name} &lt;{t.from_email}&gt;</div>
+                {templates.map((t, i) => (
+                  <motion.div key={t.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
+                    className={`${glass} flex flex-col overflow-hidden`}>
+
+                    {/* ── Mini email preview ── */}
+                    <div className="relative bg-white overflow-hidden cursor-pointer group"
+                      style={{ height: 180 }}
+                      onClick={() => { setPreviewingTemplate(t); setPreviewShowCode(false); }}>
+                      <iframe
+                        srcDoc={t.html_body || "<div style='display:flex;align-items:center;justify-content:center;height:100%;color:#999;font-family:sans-serif;font-size:13px'>No HTML yet</div>"}
+                        sandbox="allow-same-origin"
+                        title={t.name}
+                        className="absolute top-0 left-0 pointer-events-none border-0"
+                        style={{ width: 600, height: 400, transform: "scale(0.46)", transformOrigin: "top left" }}
+                      />
+                      {/* hover overlay */}
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <span className="bg-white/90 text-[#1C1E1C] text-xs font-bold px-3 py-1.5 rounded-full shadow flex items-center gap-1.5">
+                          <MdPreview size={14} /> Preview
+                        </span>
                       </div>
                     </div>
-                    <div className="text-xs bg-white/20 dark:bg-[#1C1E1C]/60 rounded-lg px-3 py-2 text-[#1C1E1C]/80 dark:text-[#F4F3F4]/65 truncate border border-white/20 dark:border-white/8">
-                      📧 {t.subject}
-                    </div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <TypeBadge type={t.type} />
-                      <DiffBadge difficulty={t.difficulty} />
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-semibold capitalize ${CAT_COLOR[t.category] ?? CAT_COLOR.general}`}>{t.category}</span>
-                    </div>
-                    <div className="flex items-center gap-2 pt-1 border-t border-white/15 dark:border-white/8">
-                      <button onClick={() => { setEditingTemplate(t); setIsNewTemplate(false); setPreviewMode(false); }}
-                        className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-semibold border border-white/20 dark:border-white/8 text-[#103E36]/80 dark:text-[#F4F3F4]/65 hover:bg-white/20 dark:hover:bg-white/[0.04] transition-colors">
-                        <MdEdit size={14} />Edit HTML
-                      </button>
-                      <button onClick={() => deleteTemplate(t.id)}
-                        className="p-2 rounded-lg text-red-400/60 hover:bg-red-400/10 hover:text-red-400 transition-colors border border-transparent hover:border-red-400/20">
-                        <MdDelete size={14} />
-                      </button>
+
+                    {/* ── Card info ── */}
+                    <div className="p-4 flex flex-col gap-2.5 flex-1">
+                      <div>
+                        <div className="font-bold text-sm text-[#1C1E1C] dark:text-white truncate">{t.name}</div>
+                        <div className="text-xs text-[#1C1E1C]/55 dark:text-[#F4F3F4]/40 mt-0.5 truncate">{t.from_name} &lt;{t.from_email}&gt;</div>
+                      </div>
+                      <div className="text-xs bg-white/20 dark:bg-[#1C1E1C]/60 rounded-lg px-2.5 py-1.5 text-[#1C1E1C]/80 dark:text-[#F4F3F4]/65 truncate border border-white/20 dark:border-white/8">
+                        📧 {t.subject}
+                      </div>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <TypeBadge type={t.type} />
+                        <DiffBadge difficulty={t.difficulty} />
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-semibold capitalize ${CAT_COLOR[t.category] ?? CAT_COLOR.general}`}>{t.category}</span>
+                      </div>
+                      <div className="flex items-center gap-2 pt-1 border-t border-white/15 dark:border-white/8">
+                        <button onClick={() => { setPreviewingTemplate(t); setPreviewShowCode(false); }}
+                          className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-semibold border border-white/20 dark:border-white/8 text-[#103E36]/80 dark:text-[#F4F3F4]/65 hover:bg-white/20 dark:hover:bg-white/[0.04] transition-colors">
+                          <MdPreview size={14} />Preview
+                        </button>
+                        <button onClick={() => { setEditingTemplate(t); setIsNewTemplate(false); setPreviewMode(false); }}
+                          className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-semibold bg-[#1F6A5C]/10 border border-[#1F6A5C]/20 text-[#1F6A5C] dark:text-[#3FFFA3] hover:bg-[#1F6A5C]/20 transition-colors">
+                          <MdCode size={14} />Edit HTML
+                        </button>
+                        <button onClick={() => deleteTemplate(t.id)}
+                          className="p-2 rounded-lg text-red-400/60 hover:bg-red-400/10 hover:text-red-400 transition-colors">
+                          <MdDelete size={14} />
+                        </button>
+                      </div>
                     </div>
                   </motion.div>
                 ))}
@@ -931,7 +962,7 @@ export default function PhishingPage() {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
-              className={`w-full max-w-2xl rounded-2xl border border-white/20 dark:border-white/10 bg-white/90 dark:bg-[#1A1C1F] shadow-2xl overflow-hidden`}>
+              className={`w-full ${wizardStep === 2 ? "max-w-4xl" : "max-w-2xl"} rounded-2xl border border-white/20 dark:border-white/10 bg-white/90 dark:bg-[#1A1C1F] shadow-2xl overflow-hidden transition-all duration-300`}>
 
               {/* Wizard header */}
               <div className="flex items-center justify-between px-6 py-4 border-b border-white/20 dark:border-white/8">
@@ -949,7 +980,7 @@ export default function PhishingPage() {
                 <motion.div animate={{ width: `${(wizardStep / 4) * 100}%` }} className="h-full bg-gradient-to-r from-[#1F6A5C] to-[#50BFA0] transition-all" />
               </div>
 
-              <div className="p-6 overflow-y-auto max-h-[60vh]">
+              <div className={`p-6 overflow-y-auto ${wizardStep === 2 ? "max-h-[72vh]" : "max-h-[60vh]"}`}>
 
                 {/* Step 1: Type + name */}
                 {wizardStep === 1 && (
@@ -986,32 +1017,67 @@ export default function PhishingPage() {
                   </div>
                 )}
 
-                {/* Step 2: Template */}
+                {/* Step 2: Template — split panel */}
                 {wizardStep === 2 && (
-                  <div>
-                    <div className="text-sm font-bold text-[#1C1E1C] dark:text-white mb-3">Choose an email template</div>
-                    {templates.length === 0 ? (
-                      <div className="text-center py-8 text-[#1C1E1C]/50 dark:text-[#F4F3F4]/35 text-sm">
-                        No templates yet. <button onClick={() => { setShowWizard(false); setTab("templates"); openNewTemplate(); }} className="text-[#1F6A5C] dark:text-[#3FFFA3] hover:underline">Create one first.</button>
-                      </div>
-                    ) : (
-                      <div className="space-y-2">
-                        {templates.map(t => (
-                          <button key={t.id} onClick={() => setDraft(d => ({ ...d, template_id: t.id }))}
-                            className={`w-full flex items-start gap-3 p-4 rounded-xl border-2 text-left transition-all ${draft.template_id === t.id ? "border-[#1F6A5C] bg-[#1F6A5C]/8 dark:bg-[#1F6A5C]/15" : "border-white/20 dark:border-white/8 hover:border-[#1F6A5C]/40 hover:bg-white/15 dark:hover:bg-white/[0.04]"}`}>
-                            <div className="flex-1 min-w-0">
-                              <div className="font-semibold text-sm text-[#1C1E1C] dark:text-white">{t.name}</div>
-                              <div className="text-xs text-[#1C1E1C]/60 dark:text-[#F4F3F4]/40 mt-0.5 truncate">📧 {t.subject}</div>
-                              <div className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/35 mt-0.5">{t.from_name} &lt;{t.from_email}&gt;</div>
-                            </div>
-                            <div className="flex flex-col gap-1.5 items-end flex-shrink-0">
+                  <div className="flex gap-4" style={{ height: 440 }}>
+                    {/* Left: template list */}
+                    <div className="w-64 flex-shrink-0 overflow-y-auto space-y-1.5 pr-1">
+                      <div className="text-xs font-bold text-[#1C1E1C]/60 dark:text-[#F4F3F4]/40 uppercase tracking-wider mb-2">Choose template</div>
+                      {templates.length === 0 ? (
+                        <div className="text-center py-8 text-[#1C1E1C]/50 dark:text-[#F4F3F4]/35 text-xs">
+                          No templates yet.<br />
+                          <button onClick={() => { setShowWizard(false); setTab("templates"); openNewTemplate(); }} className="text-[#1F6A5C] dark:text-[#3FFFA3] hover:underline mt-1">Create one first.</button>
+                        </div>
+                      ) : (
+                        templates.map(t => (
+                          <button key={t.id}
+                            onClick={() => { setDraft(d => ({ ...d, template_id: t.id })); setWizardHoverTemplate(t); }}
+                            onMouseEnter={() => setWizardHoverTemplate(t)}
+                            className={`w-full flex flex-col gap-1 p-3 rounded-xl border-2 text-left transition-all ${draft.template_id === t.id ? "border-[#1F6A5C] bg-[#1F6A5C]/10 dark:bg-[#1F6A5C]/20" : "border-white/20 dark:border-white/8 hover:border-[#1F6A5C]/40 hover:bg-white/15 dark:hover:bg-white/[0.04]"}`}>
+                            <div className="font-semibold text-xs text-[#1C1E1C] dark:text-white leading-snug">{t.name}</div>
+                            <div className="text-[10px] text-[#1C1E1C]/50 dark:text-[#F4F3F4]/35 truncate">{t.from_name}</div>
+                            <div className="flex gap-1 mt-0.5">
                               <TypeBadge type={t.type} />
                               <DiffBadge difficulty={t.difficulty} />
                             </div>
                           </button>
-                        ))}
-                      </div>
-                    )}
+                        ))
+                      )}
+                    </div>
+
+                    {/* Right: live preview */}
+                    <div className="flex-1 rounded-xl overflow-hidden border border-white/20 dark:border-white/10 bg-white flex flex-col">
+                      {(wizardHoverTemplate ?? (draft.template_id ? templates.find(t => t.id === draft.template_id) : null)) ? (
+                        <>
+                          {/* mini header */}
+                          <div className="flex-shrink-0 px-3 py-2 border-b border-gray-100 bg-gray-50 flex items-center gap-2">
+                            <div className="flex gap-1">
+                              <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
+                              <div className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
+                              <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
+                            </div>
+                            <div className="flex-1 bg-white border border-gray-200 rounded text-[10px] text-gray-400 px-2 py-0.5 text-center truncate">
+                              {(wizardHoverTemplate ?? templates.find(t => t.id === draft.template_id))?.subject}
+                            </div>
+                          </div>
+                          <div className="flex-1 overflow-hidden relative">
+                            <iframe
+                              key={(wizardHoverTemplate ?? templates.find(t => t.id === draft.template_id))?.id}
+                              srcDoc={(wizardHoverTemplate ?? templates.find(t => t.id === draft.template_id))?.html_body ?? ""}
+                              sandbox="allow-same-origin"
+                              className="absolute top-0 left-0 border-0"
+                              style={{ width: "167%", height: "167%", transform: "scale(0.6)", transformOrigin: "top left", pointerEvents: "none" }}
+                              title="preview"
+                            />
+                          </div>
+                        </>
+                      ) : (
+                        <div className="flex-1 flex flex-col items-center justify-center gap-2 text-gray-300">
+                          <MdPreview size={36} />
+                          <span className="text-sm">Hover a template to preview</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
 
@@ -1098,6 +1164,75 @@ export default function PhishingPage() {
                     className="inline-flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#1F6A5C] to-[#50BFA0] text-white shadow hover:opacity-90 transition-opacity disabled:opacity-40">
                     {loading ? "Creating…" : "Create Campaign"}
                   </button>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Template Preview Modal ────────────────────────────────────────────── */}
+      <AnimatePresence>
+        {previewingTemplate && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4"
+            onClick={e => { if (e.target === e.currentTarget) setPreviewingTemplate(null); }}>
+            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
+              className="w-full max-w-2xl flex flex-col rounded-2xl overflow-hidden shadow-2xl border border-white/20 dark:border-white/10 bg-white dark:bg-[#1A1C1F]"
+              style={{ height: "82vh" }}>
+
+              {/* Modal header */}
+              <div className="flex-shrink-0 flex items-center justify-between px-5 py-3.5 border-b border-gray-100 dark:border-white/8 bg-gray-50 dark:bg-[#1A1C1F]">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div>
+                    <div className="font-bold text-sm text-[#1C1E1C] dark:text-white truncate">{previewingTemplate.name}</div>
+                    <div className="text-xs text-[#1C1E1C]/55 dark:text-[#F4F3F4]/40 truncate">{previewingTemplate.from_name} &lt;{previewingTemplate.from_email}&gt;</div>
+                  </div>
+                  <div className="flex gap-1.5 flex-shrink-0">
+                    <TypeBadge type={previewingTemplate.type} />
+                    <DiffBadge difficulty={previewingTemplate.difficulty} />
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0 ml-3">
+                  <button
+                    onClick={() => setPreviewShowCode(c => !c)}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${previewShowCode ? "bg-[#1F6A5C]/15 border-[#1F6A5C]/30 text-[#1F6A5C] dark:text-[#3FFFA3]" : "border-white/20 dark:border-white/8 text-[#103E36]/70 dark:text-[#F4F3F4]/55 hover:bg-white/20 dark:hover:bg-white/[0.06]"}`}>
+                    {previewShowCode ? <><MdPreview size={13} />Preview</> : <><MdCode size={13} />HTML</>}
+                  </button>
+                  <button
+                    onClick={() => { setEditingTemplate(previewingTemplate); setIsNewTemplate(false); setPreviewMode(false); setPreviewingTemplate(null); }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#1F6A5C] to-[#50BFA0] text-white shadow hover:opacity-90 transition-opacity">
+                    <MdEdit size={13} />Edit HTML
+                  </button>
+                  <button onClick={() => setPreviewingTemplate(null)}
+                    className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/8 transition-colors text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40">
+                    <MdClose size={18} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Subject bar */}
+              <div className="flex-shrink-0 px-5 py-2.5 border-b border-gray-100 dark:border-white/8 bg-white dark:bg-[#1C1E1C]/50">
+                <div className="text-xs text-gray-400 dark:text-[#F4F3F4]/30 mb-0.5">Subject</div>
+                <div className="text-sm font-medium text-[#1C1E1C] dark:text-[#F4F3F4]/80">{previewingTemplate.subject}</div>
+              </div>
+
+              {/* Content: preview or code */}
+              <div className="flex-1 overflow-hidden">
+                {previewShowCode ? (
+                  <textarea
+                    readOnly
+                    value={previewingTemplate.html_body}
+                    className="w-full h-full p-4 font-mono text-xs resize-none outline-none bg-[#0d1117] text-[#e6edf3] leading-relaxed border-0"
+                    spellCheck={false}
+                  />
+                ) : (
+                  <iframe
+                    srcDoc={previewingTemplate.html_body}
+                    sandbox="allow-same-origin"
+                    className="w-full h-full border-0"
+                    title={previewingTemplate.name}
+                  />
                 )}
               </div>
             </motion.div>
