@@ -213,6 +213,8 @@ export default function PhishingPage() {
   // Template preview modal (templates tab + wizard)
   const [previewingTemplate, setPreviewingTemplate] = useState<PhishingTemplate | null>(null);
   const [previewShowCode, setPreviewShowCode] = useState(false);
+  const [previewHtmlDraft, setPreviewHtmlDraft] = useState("");
+  const [previewDirty, setPreviewDirty] = useState(false);
   // Wizard step-2 hover preview
   const [wizardHoverTemplate, setWizardHoverTemplate] = useState<PhishingTemplate | null>(null);
 
@@ -259,6 +261,9 @@ export default function PhishingPage() {
   useEffect(() => { if (tab === "groups")     fetchGroups(); }, [tab, fetchGroups]);
   useEffect(() => { if (tab === "campaigns" || showWizard) fetchTemplates(); }, [tab, showWizard, fetchTemplates]);
   useEffect(() => { if (showWizard) fetchGroups(); }, [showWizard, fetchGroups]);
+  useEffect(() => {
+    if (previewingTemplate) { setPreviewHtmlDraft(previewingTemplate.html_body); setPreviewDirty(false); setPreviewShowCode(false); }
+  }, [previewingTemplate?.id]);
 
   async function openCampaignDetail(c: PhishingCampaign) {
     setDetailLoading(true);
@@ -329,6 +334,22 @@ export default function PhishingPage() {
       setEditingTemplate(null);
     } catch {
       toast.error("Failed to save template");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function saveTemplateHtmlFromPreview() {
+    if (!previewingTemplate) return;
+    try {
+      setLoading(true);
+      const r = await api.put(`/phishing/templates/${previewingTemplate.id}`, { html_body: previewHtmlDraft });
+      setTemplates(p => p.map(t => t.id === previewingTemplate.id ? r.data : t));
+      setPreviewingTemplate(prev => prev ? { ...prev, html_body: previewHtmlDraft } : null);
+      setPreviewDirty(false);
+      toast.success("HTML saved");
+    } catch {
+      toast.error("Failed to save");
     } finally {
       setLoading(false);
     }
@@ -1119,18 +1140,21 @@ export default function PhishingPage() {
                   <div className="space-y-4">
                     <div className="text-sm font-bold text-[#1C1E1C] dark:text-white mb-1">Schedule or launch now</div>
                     <div className="grid grid-cols-2 gap-3">
-                      {[
-                        { label: "Launch Now",      sub: "Start the campaign immediately",  val: "" },
-                        { label: "Schedule Later",  sub: "Pick a date and time to send",    val: "later" },
-                      ].map(o => (
-                        <button key={o.val} onClick={() => setDraft(d => ({ ...d, scheduled_at: o.val === "" ? "" : d.scheduled_at || "" }))}
-                          className={`flex flex-col items-start gap-1 p-4 rounded-xl border-2 text-left transition-all ${(o.val === "" ? !draft.scheduled_at : !!draft.scheduled_at) ? "border-[#1F6A5C] bg-[#1F6A5C]/8 dark:bg-[#1F6A5C]/15" : "border-white/20 dark:border-white/8 hover:border-[#1F6A5C]/40"}`}>
-                          <span className="font-semibold text-sm text-[#1C1E1C] dark:text-white">{o.label}</span>
-                          <span className="text-xs text-[#1C1E1C]/55 dark:text-[#F4F3F4]/40">{o.sub}</span>
-                        </button>
-                      ))}
+                      <button onClick={() => setDraft(d => ({ ...d, scheduled_at: "" }))}
+                        className={`flex flex-col items-start gap-1 p-4 rounded-xl border-2 text-left transition-all ${!draft.scheduled_at ? "border-[#1F6A5C] bg-[#1F6A5C]/8 dark:bg-[#1F6A5C]/15" : "border-white/20 dark:border-white/8 hover:border-[#1F6A5C]/40"}`}>
+                        <span className="font-semibold text-sm text-[#1C1E1C] dark:text-white">Launch Now</span>
+                        <span className="text-xs text-[#1C1E1C]/55 dark:text-[#F4F3F4]/40">Start the campaign immediately</span>
+                      </button>
+                      <button onClick={() => {
+                        const def = new Date(); def.setDate(def.getDate() + 1); def.setHours(9, 0, 0, 0);
+                        setDraft(d => ({ ...d, scheduled_at: d.scheduled_at || def.toISOString().slice(0, 16) }));
+                      }}
+                        className={`flex flex-col items-start gap-1 p-4 rounded-xl border-2 text-left transition-all ${!!draft.scheduled_at ? "border-[#1F6A5C] bg-[#1F6A5C]/8 dark:bg-[#1F6A5C]/15" : "border-white/20 dark:border-white/8 hover:border-[#1F6A5C]/40"}`}>
+                        <span className="font-semibold text-sm text-[#1C1E1C] dark:text-white">Schedule Later</span>
+                        <span className="text-xs text-[#1C1E1C]/55 dark:text-[#F4F3F4]/40">Pick a date and time to send</span>
+                      </button>
                     </div>
-                    {draft.scheduled_at !== "" && (
+                    {!!draft.scheduled_at && (
                       <div>
                         <label className="block text-xs font-semibold text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 mb-1.5">Schedule date &amp; time</label>
                         <input type="datetime-local" className={inp} value={draft.scheduled_at}
@@ -1197,13 +1221,14 @@ export default function PhishingPage() {
                   <button
                     onClick={() => setPreviewShowCode(c => !c)}
                     className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${previewShowCode ? "bg-[#1F6A5C]/15 border-[#1F6A5C]/30 text-[#1F6A5C] dark:text-[#3FFFA3]" : "border-white/20 dark:border-white/8 text-[#103E36]/70 dark:text-[#F4F3F4]/55 hover:bg-white/20 dark:hover:bg-white/[0.06]"}`}>
-                    {previewShowCode ? <><MdPreview size={13} />Preview</> : <><MdCode size={13} />HTML</>}
+                    {previewShowCode ? <><MdPreview size={13} />Preview</> : <><MdCode size={13} />Edit HTML</>}
                   </button>
-                  <button
-                    onClick={() => { setEditingTemplate(previewingTemplate); setIsNewTemplate(false); setPreviewMode(false); setPreviewingTemplate(null); }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#1F6A5C] to-[#50BFA0] text-white shadow hover:opacity-90 transition-opacity">
-                    <MdEdit size={13} />Edit HTML
-                  </button>
+                  {previewShowCode && previewDirty && (
+                    <button onClick={saveTemplateHtmlFromPreview} disabled={loading}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#1F6A5C] to-[#50BFA0] text-white shadow hover:opacity-90 transition-opacity disabled:opacity-50">
+                      <MdCheck size={13} />{loading ? "Saving…" : "Save"}
+                    </button>
+                  )}
                   <button onClick={() => setPreviewingTemplate(null)}
                     className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/8 transition-colors text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40">
                     <MdClose size={18} />
@@ -1217,18 +1242,19 @@ export default function PhishingPage() {
                 <div className="text-sm font-medium text-[#1C1E1C] dark:text-[#F4F3F4]/80">{previewingTemplate.subject}</div>
               </div>
 
-              {/* Content: preview or code */}
+              {/* Content: preview or editable code */}
               <div className="flex-1 overflow-hidden">
                 {previewShowCode ? (
                   <textarea
-                    readOnly
-                    value={previewingTemplate.html_body}
+                    value={previewHtmlDraft}
+                    onChange={e => { setPreviewHtmlDraft(e.target.value); setPreviewDirty(true); }}
                     className="w-full h-full p-4 font-mono text-xs resize-none outline-none bg-[#0d1117] text-[#e6edf3] leading-relaxed border-0"
                     spellCheck={false}
+                    placeholder="Paste or write your email HTML here…"
                   />
                 ) : (
                   <iframe
-                    srcDoc={previewingTemplate.html_body}
+                    srcDoc={previewHtmlDraft || previewingTemplate.html_body}
                     sandbox="allow-same-origin"
                     className="w-full h-full border-0"
                     title={previewingTemplate.name}
