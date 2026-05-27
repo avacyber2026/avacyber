@@ -285,8 +285,8 @@ export default function QaPage() {
               <button key={t} onClick={() => setTab(t)}
                 className={`flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold transition-all capitalize ${
                   tab === t
-                    ? "bg-gradient-to-r from-[#1F6A5C] to-[#50BFA0] text-white shadow-md shadow-[#1F6A5C]/20"
-                    : "text-[#1F6A5C] dark:text-[#F4F3F4]/60 hover:bg-white/60 dark:hover:bg-white/[0.06]"
+                    ? "bg-gradient-to-r from-[#1F6A5C] to-[#50BFA0] text-white shadow"
+                    : "text-[#103E36]/70 dark:text-[#F4F3F4]/55 hover:bg-white/20 dark:hover:bg-white/[0.04]"
                 }`}>
                 {t === "queue" ? (
                   <><IoWarning size={15} /> QA Queue {pendingCount > 0 && <span className="ml-1 px-1.5 py-0.5 rounded-full bg-amber-400/20 text-amber-400 text-xs font-bold">{pendingCount}</span>}</>
