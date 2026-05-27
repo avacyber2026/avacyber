@@ -152,7 +152,7 @@ function SidebarContent({
                     showLabels ? "gap-3 px-3 py-[7px]" : "justify-center px-0 py-[9px]"
                   } ${
                     isActive
-                      ? "text-[#3FFFA3] bg-[rgba(63,255,163,0.08)]"
+                      ? "text-white bg-white/10 font-semibold"
                       : "text-[rgba(244,243,244,0.50)] hover:text-[rgba(244,243,244,0.88)] hover:bg-[#2D3139]"
                   }`}
                   whileTap={{ scale: 0.97 }}
@@ -160,7 +160,7 @@ function SidebarContent({
                   {isActive && showLabels && (
                     <div
                       className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-[18px] rounded-r-full"
-                      style={{ background: S.mint }}
+                      style={{ background: "rgba(255,255,255,0.7)" }}
                     />
                   )}
                   <span className="shrink-0 flex items-center justify-center w-[18px] h-[18px] text-[15px]">
@@ -252,7 +252,7 @@ function SidebarContent({
                 <button
                   type="button"
                   className="p-1.5 rounded-md transition-colors hover:bg-[rgba(255,255,255,0.06)]"
-                  style={{ color: settingsActive ? S.mint : S.controlMuted }}
+                  style={{ color: settingsActive ? "white" : S.controlMuted }}
                 >
                   <FaCog size={14} />
                 </button>
@@ -293,7 +293,7 @@ function SidebarContent({
                 <button
                   type="button"
                   className="p-1.5 rounded-md"
-                  style={{ color: settingsActive ? S.mint : S.controlMuted }}
+                  style={{ color: settingsActive ? "white" : S.controlMuted }}
                 >
                   <FaCog size={14} />
                 </button>
