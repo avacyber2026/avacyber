@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
 import { FaUserCog, FaChartLine, FaBook, FaPhone, FaBell, FaUser, FaUserShield } from "react-icons/fa";
-import { IoGitPullRequestSharp } from "react-icons/io5";
+import { IoGitPullRequestSharp, IoFishOutline } from "react-icons/io5";
 import { MdSecurity } from "react-icons/md";
 import type { UserStatus } from "@/types";
 import { useAuth } from "@/hooks/useAuth";
@@ -34,7 +34,8 @@ export function SideMenu() {
     const base = getBaseLinks(t, unreadNotifications);
     if (type !== "End-User") {
       base.splice(1, 0, { name: "SIEM", icon: <MdSecurity size={16} />, link: "/siem" });
-      base.splice(2, 0, { name: "AI QA", icon: <FaUserShield size={14} />, link: "/qa" });
+      base.splice(2, 0, { name: "Phishing", icon: <IoFishOutline size={16} />, link: "/phishing" });
+      base.splice(3, 0, { name: "AI QA", icon: <FaUserShield size={14} />, link: "/qa" });
     }
     return base;
   }, [type, t, unreadNotifications]);
