@@ -262,7 +262,7 @@ export default function PhishingPage() {
   useEffect(() => { if (tab === "campaigns" || showWizard) fetchTemplates(); }, [tab, showWizard, fetchTemplates]);
   useEffect(() => { if (showWizard) fetchGroups(); }, [showWizard, fetchGroups]);
   useEffect(() => {
-    if (previewingTemplate) { setPreviewHtmlDraft(previewingTemplate.html_body); setPreviewDirty(false); setPreviewShowCode(false); }
+    if (previewingTemplate) { setPreviewHtmlDraft(previewingTemplate.html_body); setPreviewDirty(false); }
   }, [previewingTemplate?.id]);
 
   async function openCampaignDetail(c: PhishingCampaign) {
@@ -1039,29 +1039,44 @@ export default function PhishingPage() {
                 )}
 
                 {/* Step 2: Template — split panel */}
-                {wizardStep === 2 && (
+                {wizardStep === 2 && (() => {
+                  const typeTemplates = templates.filter(t => t.type === draft.type);
+                  return (
                   <div className="flex gap-4" style={{ height: 440 }}>
-                    {/* Left: template list */}
-                    <div className="w-64 flex-shrink-0 overflow-y-auto space-y-1.5 pr-1">
-                      <div className="text-xs font-bold text-[#1C1E1C]/60 dark:text-[#F4F3F4]/40 uppercase tracking-wider mb-2">Choose template</div>
-                      {templates.length === 0 ? (
-                        <div className="text-center py-8 text-[#1C1E1C]/50 dark:text-[#F4F3F4]/35 text-xs">
-                          No templates yet.<br />
-                          <button onClick={() => { setShowWizard(false); setTab("templates"); openNewTemplate(); }} className="text-[#1F6A5C] dark:text-[#3FFFA3] hover:underline mt-1">Create one first.</button>
+                    {/* Left: template list filtered by campaign type */}
+                    <div className="w-72 flex-shrink-0 overflow-y-auto space-y-1.5 pr-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="text-xs font-bold text-[#1C1E1C]/60 dark:text-[#F4F3F4]/40 uppercase tracking-wider">
+                          {draft.type === "url" ? "URL" : draft.type === "attachment" ? "Attachment" : "QR Code"} templates
+                        </div>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#1F6A5C]/15 text-[#1F6A5C] dark:text-[#3FFFA3] font-bold">{typeTemplates.length}</span>
+                      </div>
+                      {typeTemplates.length === 0 ? (
+                        <div className="text-center py-8 text-[#1C1E1C]/50 dark:text-[#F4F3F4]/35 text-xs space-y-2">
+                          <div>No {draft.type} templates yet.</div>
+                          <button onClick={() => { setShowWizard(false); setTab("templates"); openNewTemplate(); }}
+                            className="text-[#1F6A5C] dark:text-[#3FFFA3] hover:underline">Create one first.</button>
                         </div>
                       ) : (
-                        templates.map(t => (
-                          <button key={t.id}
-                            onClick={() => { setDraft(d => ({ ...d, template_id: t.id })); setWizardHoverTemplate(t); }}
-                            onMouseEnter={() => setWizardHoverTemplate(t)}
-                            className={`w-full flex flex-col gap-1 p-3 rounded-xl border-2 text-left transition-all ${draft.template_id === t.id ? "border-[#1F6A5C] bg-[#1F6A5C]/10 dark:bg-[#1F6A5C]/20" : "border-white/20 dark:border-white/8 hover:border-[#1F6A5C]/40 hover:bg-white/15 dark:hover:bg-white/[0.04]"}`}>
-                            <div className="font-semibold text-xs text-[#1C1E1C] dark:text-white leading-snug">{t.name}</div>
-                            <div className="text-[10px] text-[#1C1E1C]/50 dark:text-[#F4F3F4]/35 truncate">{t.from_name}</div>
-                            <div className="flex gap-1 mt-0.5">
-                              <TypeBadge type={t.type} />
+                        typeTemplates.map(t => (
+                          <div key={t.id} className="group relative">
+                            <button
+                              onClick={() => { setDraft(d => ({ ...d, template_id: t.id })); setWizardHoverTemplate(t); }}
+                              onMouseEnter={() => setWizardHoverTemplate(t)}
+                              className={`w-full flex flex-col gap-1 p-3 rounded-xl border-2 text-left transition-all pr-8 ${draft.template_id === t.id ? "border-[#1F6A5C] bg-[#1F6A5C]/10 dark:bg-[#1F6A5C]/20" : "border-white/20 dark:border-white/8 hover:border-[#1F6A5C]/40 hover:bg-white/15 dark:hover:bg-white/[0.04]"}`}>
+                              <div className="font-semibold text-xs text-[#1C1E1C] dark:text-white leading-snug">{t.name}</div>
+                              <div className="text-[10px] text-[#1C1E1C]/50 dark:text-[#F4F3F4]/35 truncate">{t.from_name}</div>
                               <DiffBadge difficulty={t.difficulty} />
-                            </div>
-                          </button>
+                            </button>
+                            {/* Edit HTML button — always visible */}
+                            <button
+                              onClick={e => { e.stopPropagation(); setPreviewingTemplate(t); setPreviewShowCode(true); }}
+                              title="Edit HTML"
+                              className="absolute top-2 right-2 p-1 rounded-md bg-white/60 dark:bg-white/8 border border-white/30 dark:border-white/10 text-[#1F6A5C] dark:text-[#3FFFA3] hover:bg-[#1F6A5C]/15 transition-colors z-10"
+                            >
+                              <MdCode size={12} />
+                            </button>
+                          </div>
                         ))
                       )}
                     </div>
@@ -1100,7 +1115,8 @@ export default function PhishingPage() {
                       )}
                     </div>
                   </div>
-                )}
+                  );
+                })()}
 
                 {/* Step 3: Groups */}
                 {wizardStep === 3 && (
