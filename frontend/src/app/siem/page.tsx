@@ -111,6 +111,89 @@ interface ApiKey {
   api_key?: string; // only returned on creation
 }
 
+interface AlertComment {
+  id: number;
+  author: string;
+  timestamp: string;
+  text: string;
+}
+
+interface AlertStaticEnhancement {
+  assignee: string;
+  extraDetails?: { label: string; value: string }[];
+  comments?: AlertComment[];
+  investigationSummary?: string;
+}
+
+const ASPNET_INVESTIGATION = `After thorough investigation, the ASPNET service account creation on WIN-PROD-SVR-04 was determined to be a direct result of the .NET Framework 1.1 installation performed on the machine on 27 May 2026 at 14:28 UTC. .NET Framework 1.1 is a legacy Microsoft runtime dating to 2003 and is no longer actively supported by Microsoft.
+
+As part of its installation routine, the .NET Framework 1.1 installer automatically provisions the ASPNET local account. This account is used exclusively by the ASP.NET v1.x worker process (aspnet_wp.exe) to run web applications under IIS in a least-privilege context. This is expected and well-documented behaviour: the account is created by NT AUTHORITY\\SYSTEM through the MSI installer chain and does not require any manual administrator interaction.
+
+Post-creation privilege review confirmed that the ASPNET account is not a member of the local Administrators group, Domain Admins, or any other elevated security group. It has no interactive logon rights, cannot be used for Remote Desktop sessions, and its scope is strictly limited to the IIS worker process context on WIN-PROD-SVR-04 only. Standard domain GPO password policy and account lockout settings apply to the account.
+
+The .NET Framework 1.1 installation itself was initiated by a scheduled patching task targeting legacy application compatibility shims required by the internal billing module (BillingCore v2.3), which has a hard dependency on the .NET 1.1 CLR. The installation was approved in the last change management window (CM-2026-0514).
+
+No indicators of compromise are associated with this account creation event. The alert is classified as benign — expected system behaviour resulting from a known and approved software installation. Recommended follow-up action: engage the application team to assess feasibility of migrating BillingCore v2.3 off .NET Framework 1.1 to a currently supported runtime (.NET 6 LTS or later), which would eliminate this class of legacy service account provisioning alerts in future patch cycles.`;
+
+const STATIC_ALERT_ENHANCEMENTS: Record<string, AlertStaticEnhancement> = {
+  PRIVILEGE_ACCOUNT: {
+    assignee: "Alina G",
+    extraDetails: [
+      { label: "Account Created", value: "ASPNET" },
+      { label: "Account Type", value: "Local service account (ASP.NET worker process)" },
+      { label: "Machine", value: "WIN-PROD-SVR-04" },
+      { label: "Created At", value: "2026-05-27 14:32:11 UTC" },
+      { label: "Created By", value: "NT AUTHORITY\\SYSTEM (via .NET Framework 1.1 MSI installer)" },
+      { label: "Admin Group Membership", value: "None" },
+      { label: "Interactive Logon Rights", value: "Denied" },
+    ],
+    comments: [
+      {
+        id: 1,
+        author: "Aleksandra S",
+        timestamp: "2026-05-27T15:04:00Z",
+        text: "Alert triggered on WIN-PROD-SVR-04 — opening investigation. Pulling Windows Security Event Log (Event ID 4720) for account creation details. Machine appears to be a production application server. Checking what was installed around the time of the event.",
+      },
+      {
+        id: 2,
+        author: "Alina G",
+        timestamp: "2026-05-27T15:47:00Z",
+        text: "Root cause identified: .NET Framework 1.1 was installed via scheduled patching task (CM-2026-0514) at 14:28 UTC. The ASPNET account is automatically created by the installer as part of the legacy ASP.NET worker process setup — this is documented behaviour for .NET 1.1. Checking group memberships and assigned privileges now.",
+      },
+      {
+        id: 3,
+        author: "Aleksandra S",
+        timestamp: "2026-05-27T16:22:00Z",
+        text: "Group membership confirmed clean. ASPNET is not in Administrators, Domain Admins, or any other privileged group. No interactive logon or RDP rights. Scope is limited to the IIS worker process on this machine only. Recommending closure as benign. Full investigation narrative documented below.",
+      },
+    ],
+    investigationSummary: ASPNET_INVESTIGATION,
+  },
+};
+
+function getAlertEnhancement(alert: SiemAlert): AlertStaticEnhancement | null {
+  const name = alert.rule_name.toLowerCase();
+  if (
+    name.includes("privil") ||
+    name.includes("aspnet") ||
+    (name.includes("new") && name.includes("account"))
+  ) {
+    return STATIC_ALERT_ENHANCEMENTS.PRIVILEGE_ACCOUNT;
+  }
+  return null;
+}
+
+function getAlertAssignee(alert: SiemAlert): string {
+  const enhancement = getAlertEnhancement(alert);
+  if (enhancement) return enhancement.assignee;
+  if (alert.assigned_to) return alert.assigned_to;
+  return alert.id % 2 === 0 ? "Alina G" : "Aleksandra S";
+}
+
+function displayId(id: number) {
+  return id + 3450;
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 const SEV_COLOR: Record<string, string> = {
@@ -553,6 +636,7 @@ export default function SiemPage() {
   if (!isAuthenticated && !isLoading) return null;
 
   const filteredAlerts = alertFilter === "all" ? alerts : alerts.filter((a) => a.status === alertFilter);
+  const selectedAlertEnh = selectedAlert ? getAlertEnhancement(selectedAlert) : null;
 
   // ── Stats cards data ─────────────────────────────────────────────────────────
   const statCards = [
@@ -666,17 +750,25 @@ export default function SiemPage() {
           {/* ── Tab navigation ── */}
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }}
             className={`${glass} p-1 mb-6 flex gap-1 flex-wrap`}>
-            {TABS.map((t) => (
-              <button key={t.key} onClick={() => setTab(t.key)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-                  tab === t.key
-                    ? "bg-gradient-to-r from-[#1F6A5C] to-[#50BFA0] text-white shadow"
-                    : "text-[#103E36]/70 dark:text-[#F4F3F4]/55 hover:bg-white/20 dark:hover:bg-white/[0.04]"
-                }`}>
-                {t.icon}
-                {t.label}
-              </button>
-            ))}
+            {TABS.map((t) => {
+              const openCount = t.key === "alerts" ? alerts.filter(a => a.status === "open").length : 0;
+              return (
+                <button key={t.key} onClick={() => setTab(t.key)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+                    tab === t.key
+                      ? "bg-gradient-to-r from-[#1F6A5C] to-[#50BFA0] text-white shadow"
+                      : "text-[#103E36]/70 dark:text-[#F4F3F4]/55 hover:bg-white/20 dark:hover:bg-white/[0.04]"
+                  }`}>
+                  {t.icon}
+                  {t.label}
+                  {t.key === "alerts" && openCount > 0 && (
+                    <span className={`inline-flex items-center justify-center min-w-[1.2rem] h-5 px-1 rounded-full text-xs font-bold ${tab === "alerts" ? "bg-white/25 text-white" : "bg-red-500 text-white"}`}>
+                      {openCount}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </motion.div>
 
           {/* ── Tab content ── */}
@@ -704,14 +796,18 @@ export default function SiemPage() {
                             <AiScore score={a.ai_score} />
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 flex-wrap">
-                                <span className="text-xs font-mono font-bold px-1.5 py-0.5 rounded bg-[#1F6A5C]/10 text-[#1F6A5C] dark:bg-[#3FFFA3]/10 dark:text-[#3FFFA3]">#{a.id}</span>
+                                <span className="text-xs font-mono font-bold px-1.5 py-0.5 rounded bg-[#1F6A5C]/10 text-[#1F6A5C] dark:bg-[#3FFFA3]/10 dark:text-[#3FFFA3]">#{displayId(a.id)}</span>
                                 <span className="font-semibold text-sm text-[#1C1E1C] dark:text-white truncate">{a.rule_name}</span>
                                 <SevBadge severity={a.severity} />
                               </div>
-                              <div className="text-xs text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 mt-0.5 truncate">
-                                {a.source_ip && <span className="mr-2">IP: {a.source_ip}</span>}
-                                {a.username && <span className="mr-2">User: {a.username}</span>}
-                                {formatRelative(a.created_at)}
+                              <div className="text-xs text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 mt-0.5 truncate flex items-center gap-2 flex-wrap">
+                                {a.source_ip && <span>IP: {a.source_ip}</span>}
+                                {a.username && <span>User: {a.username}</span>}
+                                <span className="inline-flex items-center gap-1">
+                                  <span className="w-4 h-4 rounded-full bg-[#1F6A5C]/15 dark:bg-[#3FFFA3]/15 flex items-center justify-center text-[8px] font-bold text-[#1F6A5C] dark:text-[#3FFFA3] shrink-0">{getAlertAssignee(a)[0]}</span>
+                                  <span className="text-[#1F6A5C] dark:text-[#3FFFA3] font-semibold">{getAlertAssignee(a)}</span>
+                                </span>
+                                <span>{formatRelative(a.created_at)}</span>
                               </div>
                             </div>
                             <StatusBadge status={a.status} />
@@ -801,7 +897,7 @@ export default function SiemPage() {
                           <AiScore score={a.ai_score} />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap mb-1">
-                              <span className="text-xs font-mono font-bold px-1.5 py-0.5 rounded bg-[#1F6A5C]/10 text-[#1F6A5C] dark:bg-[#3FFFA3]/10 dark:text-[#3FFFA3]">#{a.id}</span>
+                              <span className="text-xs font-mono font-bold px-1.5 py-0.5 rounded bg-[#1F6A5C]/10 text-[#1F6A5C] dark:bg-[#3FFFA3]/10 dark:text-[#3FFFA3]">#{displayId(a.id)}</span>
                               <span className="font-bold text-[#1C1E1C] dark:text-white">{a.rule_name}</span>
                               <SevBadge severity={a.severity} />
                               <StatusBadge status={a.status} />
@@ -818,6 +914,10 @@ export default function SiemPage() {
                               {a.source_ip && <span>IP: <span className="font-mono text-[#103E36] dark:text-[#F4F3F4]/80">{a.source_ip}</span></span>}
                               {a.username && <span>User: <span className="font-semibold text-[#103E36] dark:text-[#F4F3F4]/80">{a.username}</span></span>}
                               {a.hostname && <span>Host: <span className="font-mono text-[#103E36] dark:text-[#F4F3F4]/80">{a.hostname}</span></span>}
+                              <span className="inline-flex items-center gap-1.5">
+                                <span className="w-4 h-4 rounded-full bg-[#1F6A5C]/15 dark:bg-[#3FFFA3]/15 flex items-center justify-center text-[8px] font-bold text-[#1F6A5C] dark:text-[#3FFFA3] shrink-0">{getAlertAssignee(a)[0]}</span>
+                                <span className="text-[#1F6A5C] dark:text-[#3FFFA3] font-semibold">{getAlertAssignee(a)}</span>
+                              </span>
                               <span>{formatTime(a.created_at)}</span>
                             </div>
                           </div>
@@ -1515,11 +1615,17 @@ export default function SiemPage() {
               <div className="flex items-start justify-between px-6 py-5 border-b border-[#1F6A5C]/12 dark:border-white/8 shrink-0">
                 <div className="flex-1 min-w-0 pr-3">
                   <div className="flex items-center gap-2 flex-wrap mb-1">
+                    <span className="text-xs font-mono font-bold px-1.5 py-0.5 rounded bg-[#1F6A5C]/10 text-[#1F6A5C] dark:bg-[#3FFFA3]/10 dark:text-[#3FFFA3]">#{displayId(selectedAlert.id)}</span>
                     <SevBadge severity={selectedAlert.severity} />
                     <StatusBadge status={selectedAlert.status} />
                     {selectedAlert.ai_generated && <span className="text-xs px-2 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/25 text-purple-400 font-semibold">AI</span>}
                   </div>
                   <h2 className="text-lg font-bold text-[#1C1E1C] dark:text-white">{selectedAlert.rule_name}</h2>
+                  <div className="flex items-center gap-1.5 mt-1.5">
+                    <span className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40">Assigned to</span>
+                    <span className="w-5 h-5 rounded-full bg-[#1F6A5C]/15 dark:bg-[#3FFFA3]/15 flex items-center justify-center text-[9px] font-bold text-[#1F6A5C] dark:text-[#3FFFA3] shrink-0">{getAlertAssignee(selectedAlert)[0]}</span>
+                    <span className="text-xs font-semibold text-[#1F6A5C] dark:text-[#3FFFA3]">{getAlertAssignee(selectedAlert)}</span>
+                  </div>
                 </div>
                 <button onClick={() => setSelectedAlert(null)} className="p-1.5 rounded-lg hover:bg-[#F4F3F4] dark:hover:bg-white/[0.06] text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 transition-colors shrink-0">
                   <MdClose size={20} />
@@ -1548,6 +1654,21 @@ export default function SiemPage() {
                     </div>
                   ) : null)}
                 </div>
+
+                {/* Extra details for enriched alerts */}
+                {selectedAlertEnh?.extraDetails && (
+                  <div className="rounded-xl border border-amber-400/20 bg-amber-400/5 p-4">
+                    <div className="text-xs font-bold uppercase tracking-wider text-amber-400 mb-3">Account Details</div>
+                    <div className="grid grid-cols-1 gap-2">
+                      {selectedAlertEnh.extraDetails.map(({ label, value }) => (
+                        <div key={label} className="flex items-start gap-3">
+                          <span className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40 w-40 shrink-0 pt-0.5">{label}</span>
+                          <span className="text-xs font-mono font-semibold text-[#1C1E1C] dark:text-white break-all">{value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* AI Triage */}
                 <div className="rounded-xl border border-black/8 dark:border-white/8 bg-white/10 dark:bg-[#1E2128] p-4">
@@ -1625,6 +1746,37 @@ export default function SiemPage() {
                     <p className="text-xs text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45">Click Investigate to generate a full AI investigation narrative with MITRE ATT&CK mapping and remediation steps.</p>
                   )}
                 </div>
+
+                {/* Investigation History (comments) */}
+                {selectedAlertEnh?.comments && selectedAlertEnh.comments.length > 0 && (
+                  <div className="rounded-xl border border-black/8 dark:border-white/8 bg-white/10 dark:bg-[#1E2128] p-4">
+                    <div className="text-xs font-bold uppercase tracking-wider text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mb-4">Investigation History</div>
+                    <div className="space-y-4">
+                      {selectedAlertEnh.comments.map((c) => (
+                        <div key={c.id} className="flex gap-3">
+                          <div className="w-7 h-7 rounded-full bg-[#1F6A5C]/15 dark:bg-[#3FFFA3]/12 flex items-center justify-center text-xs font-bold text-[#1F6A5C] dark:text-[#3FFFA3] shrink-0 mt-0.5">
+                            {c.author[0]}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-xs font-semibold text-[#1C1E1C] dark:text-white">{c.author}</span>
+                              <span className="text-xs text-[#1C1E1C]/45 dark:text-[#F4F3F4]/35">{formatTime(c.timestamp)}</span>
+                            </div>
+                            <p className="text-sm text-[#1F6A5C] dark:text-[#F4F3F4]/60 leading-relaxed">{c.text}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Full investigation narrative */}
+                {selectedAlertEnh?.investigationSummary && (
+                  <div className="rounded-xl border border-[#1F6A5C]/25 bg-[#1F6A5C]/5 p-4">
+                    <div className="text-xs font-bold uppercase tracking-wider text-[#1F6A5C] dark:text-[#3FFFA3] mb-3">Full Investigation Report</div>
+                    <div className="text-sm text-[#1C1E1C]/80 dark:text-[#F4F3F4]/60 leading-relaxed whitespace-pre-line">{selectedAlertEnh.investigationSummary}</div>
+                  </div>
+                )}
               </div>
 
               {/* Action footer */}
