@@ -118,53 +118,109 @@ interface AlertComment {
   text: string;
 }
 
+interface AlertCommandLog {
+  timestamp: string;
+  host: string;
+  user: string;
+  cmdline: string;
+}
+
 interface AlertStaticEnhancement {
   assignee: string;
   extraDetails?: { label: string; value: string }[];
+  commandLogs?: AlertCommandLog[];
   comments?: AlertComment[];
   investigationSummary?: string;
 }
 
-const ASPNET_INVESTIGATION = `After thorough investigation, the ASPNET service account creation on WIN-PROD-SVR-04 was determined to be a direct result of the .NET Framework 1.1 installation performed on the machine on 27 May 2026 at 14:28 UTC. .NET Framework 1.1 is a legacy Microsoft runtime dating to 2003 and is no longer actively supported by Microsoft.
+const ASPNET_INVESTIGATION = `After thorough investigation, the ASPNET administrator account creation on WIN-PROD-SVR-04 was determined to be a direct result of the .NET Framework 1.1 installation performed on the machine on 27 May 2026 at 14:28 UTC.
 
-As part of its installation routine, the .NET Framework 1.1 installer automatically provisions the ASPNET local account. This account is used exclusively by the ASP.NET v1.x worker process (aspnet_wp.exe) to run web applications under IIS in a least-privilege context. This is expected and well-documented behaviour: the account is created by NT AUTHORITY\\SYSTEM through the MSI installer chain and does not require any manual administrator interaction.
+ROOT CAUSE
+The .NET Framework 1.1 MSI installer (dotnetfx.exe) was executed via a scheduled patching task at 14:28:03 UTC. As part of its setup chain, the installer invoked aspnet_regiis.exe -i -enable to register ASP.NET with IIS, which in turn executed net user ASPNET /add followed by net localgroup Administrators ASPNET /add. This is a documented behaviour of the legacy .NET 1.1 runtime — the installer adds the ASPNET account to the local Administrators group to ensure the ASP.NET worker process (aspnet_wp.exe) has sufficient rights to access system resources, write to the Temporary ASP.NET Files directory, and load required DLLs. This behaviour was removed in later .NET versions (2.0+), which use a dedicated low-privilege IIS AppPool identity instead.
 
-Post-creation privilege review confirmed that the ASPNET account is not a member of the local Administrators group, Domain Admins, or any other elevated security group. It has no interactive logon rights, cannot be used for Remote Desktop sessions, and its scope is strictly limited to the IIS worker process context on WIN-PROD-SVR-04 only. Standard domain GPO password policy and account lockout settings apply to the account.
+COMMAND LINE EVIDENCE
+Process execution logs recovered from Sysmon (Event ID 1) and Windows Security Audit logs confirm the following sequence:
 
-The .NET Framework 1.1 installation itself was initiated by a scheduled patching task targeting legacy application compatibility shims required by the internal billing module (BillingCore v2.3), which has a hard dependency on the .NET 1.1 CLR. The installation was approved in the last change management window (CM-2026-0514).
+  14:28:03  msiexec.exe /i "C:\\Temp\\dotnetfx.exe" /quiet /norestart
+  14:30:17  aspnet_regiis.exe -i -enable
+  14:32:11  net.exe user ASPNET /add /comment:"ASP.NET Machine Account"
+  14:32:12  net.exe localgroup Administrators ASPNET /add
+  14:32:14  icacls "C:\\WINDOWS\\Microsoft.NET\\Framework\\v1.1.4322\\Temporary ASP.NET Files" /grant ASPNET:(OI)(CI)F
 
-No indicators of compromise are associated with this account creation event. The alert is classified as benign — expected system behaviour resulting from a known and approved software installation. Recommended follow-up action: engage the application team to assess feasibility of migrating BillingCore v2.3 off .NET Framework 1.1 to a currently supported runtime (.NET 6 LTS or later), which would eliminate this class of legacy service account provisioning alerts in future patch cycles.`;
+All five commands were spawned by NT AUTHORITY\\SYSTEM under the msiexec.exe process tree. No human operator interaction was involved.
+
+PRIVILEGE ASSESSMENT
+Although ASPNET was added to the local Administrators group, the account is restricted by domain GPO: interactive logon is denied (Deny log on locally / Deny log on through Remote Desktop Services), and the account has no domain-level privileges. Password is system-managed and does not expire. The effective risk of this account being leveraged for lateral movement or privilege escalation is low given the logon restrictions, but should be monitored.
+
+ORIGIN OF INSTALLATION
+The .NET Framework 1.1 installation was initiated by patching task CM-2026-0514, approved in the last change management window, targeting legacy compatibility shims required by the internal billing module BillingCore v2.3 (hard dependency on .NET 1.1 CLR).
+
+CLASSIFICATION
+Benign — expected and documented behaviour of the .NET Framework 1.1 installer on legacy Windows infrastructure. No indicators of compromise. Recommended action: review whether .NET 1.1 is still required by BillingCore v2.3 and assess migration to .NET 6 LTS to eliminate this class of privileged account provisioning events in future.`;
 
 const STATIC_ALERT_ENHANCEMENTS: Record<string, AlertStaticEnhancement> = {
   PRIVILEGE_ACCOUNT: {
     assignee: "Alina G",
     extraDetails: [
       { label: "Account Created", value: "ASPNET" },
-      { label: "Account Type", value: "Local service account (ASP.NET worker process)" },
+      { label: "Account Type", value: "Administrator account (auto-provisioned by .NET 1.1 installer)" },
       { label: "Machine", value: "WIN-PROD-SVR-04" },
       { label: "Created At", value: "2026-05-27 14:32:11 UTC" },
-      { label: "Created By", value: "NT AUTHORITY\\SYSTEM (via .NET Framework 1.1 MSI installer)" },
-      { label: "Admin Group Membership", value: "None" },
-      { label: "Interactive Logon Rights", value: "Denied" },
+      { label: "Created By", value: "NT AUTHORITY\\SYSTEM (msiexec → aspnet_regiis.exe chain)" },
+      { label: "Admin Group Membership", value: "Administrators (local) — added by installer" },
+      { label: "Interactive Logon Rights", value: "Denied (GPO: Deny log on locally)" },
+      { label: "Domain Privileges", value: "None" },
+    ],
+    commandLogs: [
+      {
+        timestamp: "2026-05-27 14:28:03",
+        host: "WIN-PROD-SVR-04",
+        user: "NT AUTHORITY\\SYSTEM",
+        cmdline: 'msiexec.exe /i "C:\\Temp\\dotnetfx.exe" /quiet /norestart /log "C:\\Windows\\Logs\\dotnetfx_install.log"',
+      },
+      {
+        timestamp: "2026-05-27 14:30:17",
+        host: "WIN-PROD-SVR-04",
+        user: "NT AUTHORITY\\SYSTEM",
+        cmdline: "C:\\WINDOWS\\Microsoft.NET\\Framework\\v1.1.4322\\aspnet_regiis.exe -i -enable",
+      },
+      {
+        timestamp: "2026-05-27 14:32:11",
+        host: "WIN-PROD-SVR-04",
+        user: "NT AUTHORITY\\SYSTEM",
+        cmdline: 'net.exe user ASPNET /add /comment:"ASP.NET Machine Account"',
+      },
+      {
+        timestamp: "2026-05-27 14:32:12",
+        host: "WIN-PROD-SVR-04",
+        user: "NT AUTHORITY\\SYSTEM",
+        cmdline: "net.exe localgroup Administrators ASPNET /add",
+      },
+      {
+        timestamp: "2026-05-27 14:32:14",
+        host: "WIN-PROD-SVR-04",
+        user: "NT AUTHORITY\\SYSTEM",
+        cmdline: 'icacls "C:\\WINDOWS\\Microsoft.NET\\Framework\\v1.1.4322\\Temporary ASP.NET Files" /grant ASPNET:(OI)(CI)F',
+      },
     ],
     comments: [
       {
         id: 1,
         author: "Aleksandra S",
         timestamp: "2026-05-27T15:04:00Z",
-        text: "Alert triggered on WIN-PROD-SVR-04 — opening investigation. Pulling Windows Security Event Log (Event ID 4720) for account creation details. Machine appears to be a production application server. Checking what was installed around the time of the event.",
+        text: "Alert triggered on WIN-PROD-SVR-04 — ASPNET admin account created (Event ID 4720 + 4732). Opening investigation. Machine is a production app server. Pulling Sysmon process creation logs (Event ID 1) around 14:28–14:33 UTC to find what spawned the account creation.",
       },
       {
         id: 2,
         author: "Alina G",
         timestamp: "2026-05-27T15:47:00Z",
-        text: "Root cause identified: .NET Framework 1.1 was installed via scheduled patching task (CM-2026-0514) at 14:28 UTC. The ASPNET account is automatically created by the installer as part of the legacy ASP.NET worker process setup — this is documented behaviour for .NET 1.1. Checking group memberships and assigned privileges now.",
+        text: "Root cause confirmed via Sysmon logs. The msiexec.exe process launched aspnet_regiis.exe -i -enable, which called net.exe to create the ASPNET account and add it to local Administrators. Full command-line chain recovered — all spawned by NT AUTHORITY\\SYSTEM under the dotnetfx.exe installer. Triggered by patching task CM-2026-0514 (.NET Framework 1.1 for BillingCore v2.3).",
       },
       {
         id: 3,
         author: "Aleksandra S",
         timestamp: "2026-05-27T16:22:00Z",
-        text: "Group membership confirmed clean. ASPNET is not in Administrators, Domain Admins, or any other privileged group. No interactive logon or RDP rights. Scope is limited to the IIS worker process on this machine only. Recommending closure as benign. Full investigation narrative documented below.",
+        text: "Verified: ASPNET is in local Administrators but interactive logon is blocked by GPO (Deny log on locally / Deny RDP). No domain privileges. Net risk is low. Recommend monitoring and flagging for BillingCore migration off .NET 1.1. Closing as benign — full command-line evidence and investigation report below.",
       },
     ],
     investigationSummary: ASPNET_INVESTIGATION,
@@ -1664,6 +1720,25 @@ export default function SiemPage() {
                         <div key={label} className="flex items-start gap-3">
                           <span className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40 w-40 shrink-0 pt-0.5">{label}</span>
                           <span className="text-xs font-mono font-semibold text-[#1C1E1C] dark:text-white break-all">{value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Command log evidence */}
+                {selectedAlertEnh?.commandLogs && selectedAlertEnh.commandLogs.length > 0 && (
+                  <div className="rounded-xl border border-[#1F6A5C]/20 bg-[#0D1117] p-4">
+                    <div className="text-xs font-bold uppercase tracking-wider text-[#3FFFA3] mb-3">Process Execution Evidence (Sysmon Event ID 1)</div>
+                    <div className="space-y-3">
+                      {selectedAlertEnh.commandLogs.map((log, i) => (
+                        <div key={i} className="border-l-2 border-[#1F6A5C]/40 pl-3">
+                          <div className="flex flex-wrap gap-x-3 gap-y-0.5 mb-1">
+                            <span className="text-xs font-mono text-[#3FFFA3]/70">{log.timestamp}</span>
+                            <span className="text-xs font-mono text-[#F4F3F4]/40">{log.host}</span>
+                            <span className="text-xs font-mono text-amber-400/70">{log.user}</span>
+                          </div>
+                          <code className="text-xs font-mono text-[#F4F3F4]/85 break-all leading-relaxed">{log.cmdline}</code>
                         </div>
                       ))}
                     </div>
