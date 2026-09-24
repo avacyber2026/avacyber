@@ -223,6 +223,39 @@ router.post('/alerts/:id/resolve', async (req, res) => {
   }
 });
 
+// ── Alert Comments ───────────────────────────────────────────────────────────
+
+router.get('/alerts/:id/comments', async (req, res) => {
+  const alertId = parseInt(req.params.id);
+  try {
+    const result = await pool.query(
+      `SELECT id, author, text, created_at FROM siem_alert_comments WHERE alert_id = $1 ORDER BY created_at ASC`,
+      [alertId]
+    );
+    res.json({ comments: result.rows });
+  } catch (err) {
+    console.error('SIEM comments GET:', err);
+    res.status(500).json({ error: 'Failed to fetch comments' });
+  }
+});
+
+router.post('/alerts/:id/comments', async (req, res) => {
+  const alertId = parseInt(req.params.id);
+  const { text } = req.body;
+  if (!text?.trim()) return res.status(400).json({ error: 'Comment text is required' });
+  const author = req.user?.name || req.user?.email || 'Analyst';
+  try {
+    const result = await pool.query(
+      `INSERT INTO siem_alert_comments (alert_id, author, text) VALUES ($1, $2, $3) RETURNING id, author, text, created_at`,
+      [alertId, author, text.trim()]
+    );
+    res.json({ comment: result.rows[0] });
+  } catch (err) {
+    console.error('SIEM comments POST:', err);
+    res.status(500).json({ error: 'Failed to add comment' });
+  }
+});
+
 // ── Rules ────────────────────────────────────────────────────────────────────
 
 router.get('/rules', async (req, res) => {

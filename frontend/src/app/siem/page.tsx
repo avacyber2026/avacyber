@@ -20,6 +20,7 @@ import {
   MdAutoAwesome,
   MdRefresh,
   MdAdd,
+  MdSend,
 } from "react-icons/md";
 import {
   IoAlertCircle,
@@ -158,7 +159,70 @@ The .NET Framework 1.1 installation was initiated by patching task CM-2026-0514,
 CLASSIFICATION
 Benign — expected and documented behaviour of the .NET Framework 1.1 installer on legacy Windows infrastructure. No indicators of compromise. Recommended action: review whether .NET 1.1 is still required by BillingCore v2.3 and assess migration to .NET 6 LTS to eliminate this class of privileged account provisioning events in future.`;
 
+const SSO_PASSKEY_INVESTIGATION = `After investigation, the alerts were traced to an active social engineering campaign targeting AVA Cyber users during the SSO Passkey enrollment flow.
+
+ROOT CAUSE
+A threat actor registered lookalike domains (sso-passkey.ava-cyber-login.com, secure-passkey-setup.net) and hosted pixel-perfect replicas of the AVA Cyber SSO Passkey creation page. Victims were directed to these pages via spear-phishing emails with subject lines such as "Action Required: Enroll your security key before Friday" and "Your account requires passkey setup — complete now".
+
+The fake pages mimic the WebAuthn credential creation UI. On submission, the page harvests the user's session token and redirects them to the legitimate SSO page, giving no indication anything is wrong.
+
+NETWORK INDICATORS
+DNS and proxy logs confirm traffic to the following malicious infrastructure:
+  - sso-passkey.ava-cyber-login.com → 185.220.101.47 (Tor exit node, DE)
+  - secure-passkey-setup.net → 91.108.4.180 (bulletproof hosting, NL)
+  - Registrar: Namecheap (both domains registered 2026-09-20)
+  - TLS cert: Let's Encrypt — auto-issued same day as registration
+
+AFFECTED USERS
+Three users reached the phishing page. Two submitted credentials:
+  - j.harris@ava-cyber.com — session token harvested at 08:21 UTC
+  - m.petrov@ava-cyber.com — session token harvested at 08:44 UTC
+  - r.okafor@ava-cyber.com — reached page, did not submit (session intact)
+
+CONTAINMENT ACTIONS
+  - DNS sinkhole applied to both domains via Cloudflare at 10:37 UTC
+  - Affected sessions revoked in IdP at 10:52 UTC
+  - Both affected users notified and asked to re-authenticate with MFA
+  - No passkeys were successfully registered in the IdP — WebAuthn ceremony failed on fake origin
+
+CLASSIFICATION
+True Positive — active phishing campaign. Recommended actions: (1) submit both domains to threat intel feeds; (2) enable login anomaly detection on new passkey enrollments; (3) send company-wide phishing awareness reminder.`;
+
 const STATIC_ALERT_ENHANCEMENTS: Record<string, AlertStaticEnhancement> = {
+  SSO_PASSKEY_PHISHING: {
+    assignee: "Alina G",
+    extraDetails: [
+      { label: "Technique", value: "Social Engineering / Credential Phishing (MITRE T1566, T1556.006)" },
+      { label: "Target Flow", value: "SSO Passkey Creation (WebAuthn enrollment)" },
+      { label: "Fake Domains", value: "sso-passkey.ava-cyber-login.com, secure-passkey-setup.net" },
+      { label: "Malicious IPs", value: "185.220.101.47 (Tor exit, DE), 91.108.4.180 (bulletproof, NL)" },
+      { label: "Affected Users", value: "3 users reached page; 2 submitted credentials" },
+      { label: "Campaign First Seen", value: "2026-09-22 08:14 UTC" },
+      { label: "Domains Registered", value: "2026-09-20 (Namecheap)" },
+      { label: "Passkeys Registered", value: "None — WebAuthn origin check failed on fake domain" },
+    ],
+    comments: [
+      {
+        id: 1,
+        author: "Alina G",
+        timestamp: "2026-09-22T09:05:00Z",
+        text: "Alert triggered after DNS logs flagged two users being redirected to sso-passkey.ava-cyber-login.com during what appeared to be a passkey enrollment session. Page is a replica of our SSO setup UI. Pulling proxy logs and user activity now.",
+      },
+      {
+        id: 2,
+        author: "Aleksandra S",
+        timestamp: "2026-09-22T10:30:00Z",
+        text: "Confirmed phishing campaign. The domain resolves to 185.220.101.47 — a known Tor exit node. Found a second domain: secure-passkey-setup.net on 91.108.4.180. Both registered 2 days ago on Namecheap with Let's Encrypt TLS. Three users reached the page; j.harris and m.petrov submitted credentials. Sinkholing both domains at DNS level now.",
+      },
+      {
+        id: 3,
+        author: "Alina G",
+        timestamp: "2026-09-22T11:15:00Z",
+        text: "DNS sinkhole applied via Cloudflare at 10:37 UTC. Affected sessions for j.harris and m.petrov revoked in IdP at 10:52 UTC. Checked IdP passkey registry — no new passkeys registered under either account (WebAuthn origin binding blocked the fake site). Both users notified to re-auth with MFA. Escalating to submit IOCs to threat intel feed.",
+      },
+    ],
+    investigationSummary: SSO_PASSKEY_INVESTIGATION,
+  },
   PRIVILEGE_ACCOUNT: {
     assignee: "Alina G",
     extraDetails: [
@@ -229,6 +293,13 @@ const STATIC_ALERT_ENHANCEMENTS: Record<string, AlertStaticEnhancement> = {
 
 function getAlertEnhancement(alert: SiemAlert): AlertStaticEnhancement | null {
   const name = alert.rule_name.toLowerCase();
+  if (
+    name.includes("sso") ||
+    name.includes("passkey") ||
+    name.includes("social engineering")
+  ) {
+    return STATIC_ALERT_ENHANCEMENTS.SSO_PASSKEY_PHISHING;
+  }
   if (
     name.includes("privil") ||
     name.includes("aspnet") ||
@@ -503,6 +574,36 @@ export default function SiemPage() {
   // Alert detail panel
   const [selectedAlert, setSelectedAlert] = useState<SiemAlert | null>(null);
   const [investigatingId, setInvestigatingId] = useState<number | null>(null);
+
+  // Alert comments
+  const [alertComments, setAlertComments] = useState<Record<number, AlertComment[]>>({});
+  const [commentInput, setCommentInput] = useState("");
+  const [commentPosting, setCommentPosting] = useState(false);
+
+  useEffect(() => {
+    if (!selectedAlert) return;
+    if (alertComments[selectedAlert.id] !== undefined) return;
+    api.get(`/siem/alerts/${selectedAlert.id}/comments`)
+      .then(r => setAlertComments(prev => ({ ...prev, [selectedAlert.id]: r.data.comments ?? [] })))
+      .catch(() => setAlertComments(prev => ({ ...prev, [selectedAlert.id]: [] })));
+  }, [selectedAlert]);
+
+  async function postComment() {
+    if (!selectedAlert || !commentInput.trim()) return;
+    setCommentPosting(true);
+    try {
+      const res = await api.post(`/siem/alerts/${selectedAlert.id}/comments`, { text: commentInput.trim() });
+      setAlertComments(prev => ({
+        ...prev,
+        [selectedAlert.id]: [...(prev[selectedAlert.id] ?? []), res.data.comment],
+      }));
+      setCommentInput("");
+    } catch {
+      toast.error("Failed to post comment");
+    } finally {
+      setCommentPosting(false);
+    }
+  }
 
   // Resolve modal
   const [resolveModal, setResolveModal] = useState<number | null>(null);
@@ -1822,28 +1923,62 @@ export default function SiemPage() {
                   )}
                 </div>
 
-                {/* Investigation History (comments) */}
-                {selectedAlertEnh?.comments && selectedAlertEnh.comments.length > 0 && (
-                  <div className="rounded-xl border border-black/8 dark:border-white/8 bg-white/10 dark:bg-[#1E2128] p-4">
-                    <div className="text-xs font-bold uppercase tracking-wider text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mb-4">Investigation History</div>
-                    <div className="space-y-4">
-                      {selectedAlertEnh.comments.map((c) => (
-                        <div key={c.id} className="flex gap-3">
-                          <div className="w-7 h-7 rounded-full bg-[#1F6A5C]/15 dark:bg-[#3FFFA3]/12 flex items-center justify-center text-xs font-bold text-[#1F6A5C] dark:text-[#3FFFA3] shrink-0 mt-0.5">
-                            {c.author[0]}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="text-xs font-semibold text-[#1C1E1C] dark:text-white">{c.author}</span>
-                              <span className="text-xs text-[#1C1E1C]/45 dark:text-[#F4F3F4]/35">{formatTime(c.timestamp)}</span>
+                {/* Investigation Discussion */}
+                {(() => {
+                  const staticComments = selectedAlertEnh?.comments ?? [];
+                  const realComments = (alertComments[selectedAlert.id] ?? []).map(c => ({
+                    id: c.id + 100000,
+                    author: c.author,
+                    timestamp: c.created_at,
+                    text: c.text,
+                  }));
+                  const allComments = [...staticComments, ...realComments];
+                  return (
+                    <div className="rounded-xl border border-black/8 dark:border-white/8 bg-white/10 dark:bg-[#1E2128] p-4">
+                      <div className="text-xs font-bold uppercase tracking-wider text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mb-4">Investigation Discussion</div>
+                      {allComments.length > 0 && (
+                        <div className="space-y-4 mb-4">
+                          {allComments.map((c) => (
+                            <div key={c.id} className="flex gap-3">
+                              <div className="w-7 h-7 rounded-full bg-[#1F6A5C]/15 dark:bg-[#3FFFA3]/12 flex items-center justify-center text-xs font-bold text-[#1F6A5C] dark:text-[#3FFFA3] shrink-0 mt-0.5">
+                                {c.author[0]}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="text-xs font-semibold text-[#1C1E1C] dark:text-white">{c.author}</span>
+                                  <span className="text-xs text-[#1C1E1C]/45 dark:text-[#F4F3F4]/35">{formatTime(c.timestamp)}</span>
+                                </div>
+                                <p className="text-sm text-[#1F6A5C] dark:text-[#F4F3F4]/60 leading-relaxed">{c.text}</p>
+                              </div>
                             </div>
-                            <p className="text-sm text-[#1F6A5C] dark:text-[#F4F3F4]/60 leading-relaxed">{c.text}</p>
-                          </div>
+                          ))}
                         </div>
-                      ))}
+                      )}
+                      {allComments.length === 0 && (
+                        <p className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/35 mb-4">No comments yet — be the first to add a note.</p>
+                      )}
+                      <div className="flex gap-2 items-end">
+                        <textarea
+                          value={commentInput}
+                          onChange={e => setCommentInput(e.target.value)}
+                          onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); postComment(); } }}
+                          placeholder="Add a note or finding… (Enter to send)"
+                          rows={2}
+                          className="flex-1 resize-none px-3 py-2 rounded-lg text-sm border border-[#1F6A5C]/20 dark:border-white/10 bg-white/40 dark:bg-[#131517] text-[#1C1E1C] dark:text-[#F4F3F4]/80 placeholder:text-[#1C1E1C]/35 dark:placeholder:text-[#F4F3F4]/25 focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/40"
+                        />
+                        <button
+                          onClick={postComment}
+                          disabled={commentPosting || !commentInput.trim()}
+                          className="p-2.5 rounded-lg bg-gradient-to-br from-[#1F6A5C] to-[#50BFA0] text-white disabled:opacity-40 hover:opacity-90 transition-opacity shrink-0"
+                        >
+                          {commentPosting
+                            ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin block" />
+                            : <MdSend size={16} />}
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  );
+                })()}
 
                 {/* Full investigation narrative */}
                 {selectedAlertEnh?.investigationSummary && (
