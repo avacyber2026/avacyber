@@ -119,6 +119,13 @@ interface AlertComment {
   text: string;
 }
 
+interface ApiAlertComment {
+  id: number;
+  author: string;
+  created_at: string;
+  text: string;
+}
+
 interface AlertCommandLog {
   timestamp: string;
   host: string;
@@ -128,10 +135,12 @@ interface AlertCommandLog {
 
 interface AlertStaticEnhancement {
   assignee: string;
+  codeBlock?: { label: string; value: string }[];
   extraDetails?: { label: string; value: string }[];
   commandLogs?: AlertCommandLog[];
   comments?: AlertComment[];
   investigationSummary?: string;
+  aiTriageOverride?: { score: number; summary: string };
 }
 
 const ASPNET_INVESTIGATION = `After thorough investigation, the ASPNET administrator account creation on WIN-PROD-SVR-04 was determined to be a direct result of the .NET Framework 1.1 installation performed on the machine on 27 May 2026 at 14:28 UTC.
@@ -159,48 +168,142 @@ The .NET Framework 1.1 installation was initiated by patching task CM-2026-0514,
 CLASSIFICATION
 Benign — expected and documented behaviour of the .NET Framework 1.1 installer on legacy Windows infrastructure. No indicators of compromise. Recommended action: review whether .NET 1.1 is still required by BillingCore v2.3 and assess migration to .NET 6 LTS to eliminate this class of privileged account provisioning events in future.`;
 
-const SSO_PASSKEY_INVESTIGATION = `After investigation, the alerts were traced to an active social engineering campaign targeting AVA Cyber users during the SSO Passkey enrollment flow.
+const SSO_PASSKEY_INVESTIGATION = `INCIDENT INVESTIGATION REPORT
+Alert: Social Engineering — CreateSSOPasskey
+Severity: HIGH  |  Status: Investigating  |  Analyst: Alina G
+Report Generated: 2026-09-22 13:45 UTC
 
-ROOT CAUSE
-A threat actor registered lookalike domains (sso-passkey.ava-cyber-login.com, secure-passkey-setup.net) and hosted pixel-perfect replicas of the AVA Cyber SSO Passkey creation page. Victims were directed to these pages via spear-phishing emails with subject lines such as "Action Required: Enroll your security key before Friday" and "Your account requires passkey setup — complete now".
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EXECUTIVE SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+On 2026-09-22 at approximately 08:14 UTC, AVA Cyber's SIEM detected anomalous outbound DNS queries and HTTP redirects to codeshare.io — a domain impersonating the AVA Cyber SSO Passkey enrollment portal. Investigation confirmed an active spear-phishing campaign targeting internal users during the SSO Passkey rollout window. Three users were redirected to the phishing page; two submitted credentials. No passkeys were successfully registered in the IdP due to WebAuthn origin binding. Immediate containment was applied. This report documents the full timeline, forensic evidence, affected account analysis, and recommended remediation.
 
-The fake pages mimic the WebAuthn credential creation UI. On submission, the page harvests the user's session token and redirects them to the legitimate SSO page, giving no indication anything is wrong.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ATTACK TIMELINE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-09-22 07:52 UTC — Phishing email delivered to 14 internal mailboxes. Subject: "Action Required: Complete your Passkey setup before Friday". Sender spoofed as it-support@ava-cyber.com. Email passed SPF (aligned to Mailgun relay), failed DKIM alignment. Microsoft Defender ATP quarantined 11 of 14 copies; 3 reached inboxes.
 
-NETWORK INDICATORS
-DNS and proxy logs confirm traffic to the following malicious infrastructure:
-  - sso-passkey.ava-cyber-login.com → 185.220.101.47 (Tor exit node, DE)
-  - secure-passkey-setup.net → 91.108.4.180 (bulletproof hosting, NL)
-  - Registrar: Namecheap (both domains registered 2026-09-20)
-  - TLS cert: Let's Encrypt — auto-issued same day as registration
+2026-09-22 08:14 UTC — First DNS query for codeshare.io observed from workstation WKSTN-042 (j.harris@ava-cyber.com). Query resolved to 185.220.101.47 (Cloudflare CDN). Proxy log: GET https://codeshare.io/passkey-setup — HTTP 200.
 
-AFFECTED USERS
-Three users reached the phishing page. Two submitted credentials:
-  - j.harris@ava-cyber.com — session token harvested at 08:21 UTC
-  - m.petrov@ava-cyber.com — session token harvested at 08:44 UTC
-  - r.okafor@ava-cyber.com — reached page, did not submit (session intact)
+2026-09-22 08:21 UTC — j.harris@ava-cyber.com interacted with the fake passkey enrollment UI. POST request to https://codeshare.io/api/enroll captured session token and IdP refresh token. User was transparently redirected to the legitimate SSO portal. No error presented to user.
 
-CONTAINMENT ACTIONS
-  - DNS sinkhole applied to both domains via Cloudflare at 10:37 UTC
-  - Affected sessions revoked in IdP at 10:52 UTC
-  - Both affected users notified and asked to re-authenticate with MFA
-  - No passkeys were successfully registered in the IdP — WebAuthn ceremony failed on fake origin
+2026-09-22 08:44 UTC — m.petrov@ava-cyber.com accessed the same phishing URL via a forwarded copy of the email. Session token harvested at 08:44:37 UTC. Same redirect pattern observed.
 
+2026-09-22 09:02 UTC — r.okafor@ava-cyber.com reached the phishing page (DNS log confirmed) but did not complete the form. Session token not compromised.
+
+2026-09-22 09:05 UTC — SIEM alert triggered (this alert). Analyst Alina G opened investigation.
+
+2026-09-22 10:30 UTC — Root cause confirmed. DNS sinkhole request raised.
+
+2026-09-22 10:37 UTC — DNS sinkhole applied to codeshare.io via Cloudflare Zero Trust Gateway. All subsequent queries return NXDOMAIN.
+
+2026-09-22 10:52 UTC — Affected sessions for j.harris and m.petrov revoked in IdP (Okta admin console). All active sessions terminated. Re-authentication with MFA enforced.
+
+2026-09-22 11:15 UTC — Affected users notified. Passwords reset. Passkey registry checked — no new passkeys registered under either account.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+USER SIGN-IN ANALYSIS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Okta System Log and Azure AD Sign-In logs were pulled for all three affected users covering the 72-hour window prior to and following the incident.
+
+j.harris@ava-cyber.com
+  Last legitimate sign-in:  2026-09-22 07:41 UTC — London, GB (usual location, Chrome/Windows)
+  Phishing interaction:     2026-09-22 08:14–08:21 UTC — session token exfiltrated
+  Suspicious sign-in:       2026-09-22 08:29 UTC — sign-in attempt detected from 91.108.4.180 (NL) using harvested token. Okta flagged as anomalous (new IP, new ASN). Okta risk policy elevated to HIGH — step-up MFA triggered. Threat actor did not complete MFA. Sign-in blocked.
+  Post-containment sign-in: 2026-09-22 11:22 UTC — user re-authenticated from known device with MFA. Session clean.
+  No lateral movement detected. No email rules created. No file access outside normal pattern.
+
+m.petrov@ava-cyber.com
+  Last legitimate sign-in:  2026-09-22 08:31 UTC — Warsaw, PL (usual location, Firefox/macOS)
+  Phishing interaction:     2026-09-22 08:44 UTC — session token exfiltrated
+  Suspicious sign-in:       2026-09-22 08:51 UTC — sign-in attempt from 91.108.4.180 (NL) using harvested token. Okta risk policy triggered HIGH. Step-up MFA presented. No MFA completion. Sign-in blocked.
+  Post-containment sign-in: 2026-09-22 11:34 UTC — user re-authenticated with MFA from known device. Session clean.
+  No lateral movement detected. No suspicious API calls. No data exfiltration indicators.
+
+r.okafor@ava-cyber.com
+  DNS query to codeshare.io confirmed at 09:02 UTC. No POST to /api/enroll. Session token not compromised. No suspicious sign-in attempts. No action required beyond user awareness notification.
+
+Summary: Both token harvesting attempts were blocked at the authentication layer by Okta's risk-based MFA policy. No successful unauthorised access occurred. No data was exfiltrated.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+INFRASTRUCTURE & DOMAIN ANALYSIS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Domain: codeshare.io
+  Registrar:         Namecheap, Inc.
+  Registered:        2025-03-17 (< 1 year old)
+  Nameservers:       adam.ns.cloudflare.com, olga.ns.cloudflare.com (Cloudflare)
+  TLS Certificate:   Let's Encrypt — issued 2026-09-20 (2 days before attack)
+  WHOIS Privacy:     Enabled (WhoisGuard)
+  Hosting:           Cloudflare CDN — true origin obscured
+
+IP: 185.220.101.47
+  ASN:               AS13335 — Cloudflare, Inc. (US)
+  VirusTotal:        0 / 67 engines — no detections (expected for Cloudflare IP)
+  Shodan:            Port 443 open, Cloudflare TLS fingerprint. No additional services exposed.
+  AbuseIPDB:         0 reports. IP is shared Cloudflare infrastructure — not attributable to attacker.
+  True Origin:       Obscured behind Cloudflare proxy. Origin IP not recoverable from DNS.
+
+Email Infrastructure:
+  Sending IP:        198.241.128.212 (Mailgun relay, US)
+  SPF Result:        PASS (Mailgun is a permitted sender for spoofed domain)
+  DKIM Result:       FAIL — unsigned by ava-cyber.com
+  DMARC:             FAIL — policy p=none (no enforcement). Recommend upgrading to p=reject.
+  Email Header:      X-Originating-IP: 94.102.49.198 (NordVPN exit node, NL)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CONTAINMENT & REMEDIATION ACTIONS TAKEN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✓ DNS sinkhole — codeshare.io blocked via Cloudflare Zero Trust Gateway (10:37 UTC)
+  ✓ Sessions revoked — j.harris and m.petrov IdP sessions terminated (10:52 UTC)
+  ✓ Passwords reset — both affected users reset credentials (11:15 UTC)
+  ✓ Passkey registry audited — no unauthorised passkeys registered
+  ✓ Email purge — IT purged remaining phishing emails from all mailboxes (11:40 UTC)
+  ✓ IOCs submitted — codeshare.io, 185.220.101.47 submitted to VirusTotal, AbuseIPDB, and internal threat intel feed
+  ✓ Users notified — all three affected users received incident notification and awareness briefing
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MITRE ATT&CK MAPPING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  T1566.002  Phishing: Spearphishing Link — delivery via targeted email with malicious URL
+  T1078.004  Valid Accounts: Cloud Accounts — session token harvesting for IdP access
+  T1556.006  Modify Authentication Process: Multi-Factor Authentication — attempting to bypass MFA via stolen session token
+  T1071.001  Application Layer Protocol: Web Protocols — C2 / exfil over HTTPS
+  T1090.002  Proxy: External Proxy — Cloudflare CDN used to obscure origin infrastructure
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+OUTSTANDING RECOMMENDATIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. Upgrade DMARC policy from p=none to p=reject to prevent future email spoofing of ava-cyber.com.
+  2. Enable Okta token binding / device-bound sessions to prevent session token replay from new IPs.
+  3. Add detection rule for new passkey enrollments from unknown IPs / geolocations — alert on anomalous WebAuthn registrations.
+  4. Submit phishing campaign IOCs to industry sharing feeds (ISAC, FS-ISAC).
+  5. Send company-wide phishing awareness reminder specifically covering SSO Passkey enrollment social engineering.
+  6. Review whether the Passkey rollout announcement emails created an opportunity for this campaign — consider delaying broad rollout comms.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 CLASSIFICATION
-True Positive — active phishing campaign. Recommended actions: (1) submit both domains to threat intel feeds; (2) enable login anomaly detection on new passkey enrollments; (3) send company-wide phishing awareness reminder.`;
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+True Positive — Active phishing campaign. No successful unauthorised access. Contained. Recommend keeping open pending DMARC enforcement and detection rule deployment.`;
 
 const STATIC_ALERT_ENHANCEMENTS: Record<string, AlertStaticEnhancement> = {
   SSO_PASSKEY_PHISHING: {
     assignee: "Alina G",
-    extraDetails: [
-      { label: "Technique", value: "Social Engineering / Credential Phishing (MITRE T1566, T1556.006)" },
-      { label: "Target Flow", value: "SSO Passkey Creation (WebAuthn enrollment)" },
-      { label: "Fake Domains", value: "sso-passkey.ava-cyber-login.com, secure-passkey-setup.net" },
-      { label: "Malicious IPs", value: "185.220.101.47 (Tor exit, DE), 91.108.4.180 (bulletproof, NL)" },
-      { label: "Affected Users", value: "3 users reached page; 2 submitted credentials" },
-      { label: "Campaign First Seen", value: "2026-09-22 08:14 UTC" },
-      { label: "Domains Registered", value: "2026-09-20 (Namecheap)" },
-      { label: "Passkeys Registered", value: "None — WebAuthn origin check failed on fake domain" },
+    codeBlock: [
+      { label: "Timestamp", value: "2026-09-22 08:14 UTC" },
+      { label: "User",      value: "j.harris@ava-cyber.com" },
+      { label: "IP",        value: "185.220.101.47" },
+      { label: "Domain",    value: "codeshare.io" },
     ],
+    aiTriageOverride: {
+      score: 87,
+      summary: `ICANN / WHOIS — codeshare.io: domain registered 2025-03-17 via Namecheap (< 1 year old). Recently registered lookalike domains are a strong indicator of a purpose-built phishing campaign.
+
+VirusTotal — IP 185.220.101.47: 0 / 67 engines. IP belongs to Cloudflare, Inc. (ASN 13335, US). The zero-detection result is expected — Cloudflare infrastructure is trusted and not inherently flagged. The attacker is using Cloudflare as a reverse proxy to conceal the true origin server.
+
+VirusTotal — Domain codeshare.io: Nameservers adam.ns.cloudflare.com and olga.ns.cloudflare.com both belong to Cloudflare. The domain routes through Cloudflare CDN, which explains the clean IP verdict. True hosting origin is obscured behind the proxy.
+
+Conclusion: A low VirusTotal score does not indicate benign intent here. The combination of a recently registered lookalike domain, Cloudflare proxying, and confirmed phishing page content yields a HIGH risk classification. Recommend immediate DNS sinkhole and session revocation for affected users.`,
+    },
     comments: [
       {
         id: 1,
@@ -576,7 +679,7 @@ export default function SiemPage() {
   const [investigatingId, setInvestigatingId] = useState<number | null>(null);
 
   // Alert comments
-  const [alertComments, setAlertComments] = useState<Record<number, AlertComment[]>>({});
+  const [alertComments, setAlertComments] = useState<Record<number, ApiAlertComment[]>>({});
   const [commentInput, setCommentInput] = useState("");
   const [commentPosting, setCommentPosting] = useState(false);
 
@@ -584,7 +687,7 @@ export default function SiemPage() {
     if (!selectedAlert) return;
     if (alertComments[selectedAlert.id] !== undefined) return;
     api.get(`/siem/alerts/${selectedAlert.id}/comments`)
-      .then(r => setAlertComments(prev => ({ ...prev, [selectedAlert.id]: r.data.comments ?? [] })))
+      .then(r => setAlertComments(prev => ({ ...prev, [selectedAlert.id]: (r.data.comments ?? []) as ApiAlertComment[] })))
       .catch(() => setAlertComments(prev => ({ ...prev, [selectedAlert.id]: [] })));
   }, [selectedAlert]);
 
@@ -595,7 +698,7 @@ export default function SiemPage() {
       const res = await api.post(`/siem/alerts/${selectedAlert.id}/comments`, { text: commentInput.trim() });
       setAlertComments(prev => ({
         ...prev,
-        [selectedAlert.id]: [...(prev[selectedAlert.id] ?? []), res.data.comment],
+        [selectedAlert.id]: [...(prev[selectedAlert.id] ?? []), res.data.comment as ApiAlertComment],
       }));
       setCommentInput("");
     } catch {
@@ -1412,10 +1515,10 @@ export default function SiemPage() {
                                     className="mt-3 overflow-hidden">
                                     {/* Query language tabs */}
                                     <div className="flex items-center gap-1 mb-3 flex-wrap">
-                                      {(["logic","sigma","spl","kql"] as const).map(qt => (
+                                      {(["sigma","spl","kql","logic"] as const).map(qt => (
                                         <button key={qt} onClick={() => setRuleQueryTab(p => ({ ...p, [r.id]: qt }))}
                                           className={`px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${
-                                            (ruleQueryTab[r.id] ?? "logic") === qt
+                                            (ruleQueryTab[r.id] ?? "sigma") === qt
                                               ? qt === "logic" ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
                                                 : qt === "sigma" ? "bg-sky-500/20 text-sky-400 border border-sky-500/30"
                                                 : qt === "spl" ? "bg-orange-500/20 text-orange-400 border border-orange-500/30"
@@ -1435,17 +1538,17 @@ export default function SiemPage() {
                                       )}
                                     </div>
 
-                                    {/* Logic */}
-                                    {(ruleQueryTab[r.id] ?? "logic") === "logic" && (
-                                      <pre className="text-xs font-mono rounded-lg bg-[#0D1117] text-emerald-400 p-4 overflow-x-auto border border-white/10">
-                                        {JSON.stringify(r.logic, null, 2)}
-                                      </pre>
-                                    )}
-                                    {/* Sigma */}
-                                    {ruleQueryTab[r.id] === "sigma" && (
+                                    {/* Sigma — default */}
+                                    {(ruleQueryTab[r.id] ?? "sigma") === "sigma" && (
                                       r.sigma_yaml
                                         ? <pre className="text-xs font-mono rounded-lg bg-[#0D1117] text-sky-300 p-4 overflow-x-auto border border-white/10 whitespace-pre-wrap">{r.sigma_yaml}</pre>
                                         : <div className="text-xs text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 italic p-3">No Sigma rule yet — click "Generate SPL &amp; KQL" to create all formats.</div>
+                                    )}
+                                    {/* Logic */}
+                                    {ruleQueryTab[r.id] === "logic" && (
+                                      <pre className="text-xs font-mono rounded-lg bg-[#0D1117] text-emerald-400 p-4 overflow-x-auto border border-white/10">
+                                        {JSON.stringify(r.logic, null, 2)}
+                                      </pre>
                                     )}
                                     {/* SPL */}
                                     {ruleQueryTab[r.id] === "spl" && (
@@ -1812,6 +1915,21 @@ export default function SiemPage() {
                   ) : null)}
                 </div>
 
+                {/* Code-style indicator block */}
+                {selectedAlertEnh?.codeBlock && (
+                  <div className="rounded-xl border border-[#1F6A5C]/25 bg-[#0D1117] px-5 py-4 font-mono">
+                    <div className="text-[10px] font-bold uppercase tracking-widest text-[#3FFFA3]/60 mb-3">Indicators</div>
+                    <div className="space-y-2">
+                      {selectedAlertEnh.codeBlock.map(({ label, value }) => (
+                        <div key={label} className="flex items-baseline gap-3">
+                          <span className="text-xs text-[#F4F3F4]/35 w-20 shrink-0">{label}</span>
+                          <span className="text-xs text-[#3FFFA3] break-all leading-relaxed">{value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Extra details for enriched alerts */}
                 {selectedAlertEnh?.extraDetails && (
                   <div className="rounded-xl border border-amber-400/20 bg-amber-400/5 p-4">
@@ -1847,28 +1965,33 @@ export default function SiemPage() {
                 )}
 
                 {/* AI Triage */}
-                <div className="rounded-xl border border-black/8 dark:border-white/8 bg-white/10 dark:bg-[#1E2128] p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <MdAutoAwesome size={16} className="text-purple-400" />
-                      <span className="font-semibold text-[#1C1E1C] dark:text-white text-sm">AI Triage</span>
+                {(() => {
+                  const triageOverride = selectedAlertEnh?.aiTriageOverride;
+                  const score = triageOverride?.score ?? selectedAlert.ai_score;
+                  const summary = triageOverride?.summary ?? selectedAlert.ai_summary;
+                  return (
+                    <div className="rounded-xl border border-black/8 dark:border-white/8 bg-white/10 dark:bg-[#1E2128] p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <MdAutoAwesome size={16} className="text-purple-400" />
+                          <span className="font-semibold text-[#1C1E1C] dark:text-white text-sm">AI Triage</span>
+                        </div>
+                        {score !== null && <AiScore score={score} />}
+                      </div>
+                      {summary ? (
+                        <p className="text-sm text-[#1F6A5C] dark:text-[#F4F3F4]/60 whitespace-pre-line leading-relaxed">{summary}</p>
+                      ) : (
+                        <div className="flex flex-col gap-2">
+                          <p className="text-xs text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45">No AI triage yet.</p>
+                          <button onClick={(e) => { e.stopPropagation(); triageAlert(selectedAlert.id); }}
+                            className="self-start flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-purple-500/10 border border-purple-500/25 text-purple-400 hover:bg-purple-500/20 transition-colors">
+                            <MdAutoAwesome size={13} /> Run AI Triage
+                          </button>
+                        </div>
+                      )}
                     </div>
-                    {selectedAlert.ai_score !== null && (
-                      <AiScore score={selectedAlert.ai_score} />
-                    )}
-                  </div>
-                  {selectedAlert.ai_summary ? (
-                    <p className="text-sm text-[#1F6A5C] dark:text-[#F4F3F4]/60">{selectedAlert.ai_summary}</p>
-                  ) : (
-                    <div className="flex flex-col gap-2">
-                      <p className="text-xs text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45">No AI triage yet.</p>
-                      <button onClick={(e) => { e.stopPropagation(); triageAlert(selectedAlert.id); }}
-                        className="self-start flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-purple-500/10 border border-purple-500/25 text-purple-400 hover:bg-purple-500/20 transition-colors">
-                        <MdAutoAwesome size={13} /> Run AI Triage
-                      </button>
-                    </div>
-                  )}
-                </div>
+                  );
+                })()}
 
                 {/* AI Investigation */}
                 <div className="rounded-xl border border-black/8 dark:border-white/8 bg-white/10 dark:bg-[#1E2128] p-4">

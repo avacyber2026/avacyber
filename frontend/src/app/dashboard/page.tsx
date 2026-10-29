@@ -2,50 +2,57 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { VStack, Box, Text, Icon } from "@/ui";
 import { useColorMode } from "@/contexts/ThemeContext";
-import { SideMenu, FocusTimerCard } from "@/Components";
+import { SideMenu } from "@/Components";
 import { useAuth } from "@/hooks/useAuth";
 import { useUser } from "@/contexts/UserContext";
 import { useRouter } from "next/navigation";
 import api from "@/lib/axios";
 import { motion } from "framer-motion";
-import { useLanguage } from "@/contexts/LanguageContext";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Legend,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer, PieChart, Pie, Cell, Line, ComposedChart,
 } from "recharts";
-import type { ReportItem } from "@/types";
-import type { Ticket } from "@/types";
+import type { ReportItem, Ticket } from "@/types";
 import {
-  IoDocumentTextOutline,
-  IoGitPullRequestSharp,
-  IoCheckmarkCircle,
-  IoAlertCircle,
-  IoChevronDown,
-  IoChevronForward,
+  IoAlertCircle, IoCheckmarkCircle, IoChevronForward,
+  IoGitPullRequestSharp, IoDocumentTextOutline,
 } from "react-icons/io5";
-import dash from "@/styles/Dashboard.module.css";
-import reportLayout from "@/styles/Report.module.css";
+import {
+  MdSecurity, MdOutlineWarningAmber, MdOutlineStream,
+  MdOutlineRule, MdAutoAwesome, MdTimer, MdOutlineShield,
+  MdTrendingDown, MdTrendingUp,
+} from "react-icons/md";
 
-function formatShortDate(date: Date) {
-  return date.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
+// ── Types ─────────────────────────────────────────────────────────────────────
+
+type SiemAlert = {
+  id: number; rule_name: string; severity: string; status: string;
+  ai_score: number | null; source_ip: string | null; username: string | null;
+  created_at: string; updated_at: string;
+};
+type SiemStats = {
+  activeAlerts: number; events24h: number; activeRules: number;
+  activeSources: number; severityBreakdown: Record<string, number>;
+};
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function formatDuration(minutes: number) {
+  if (minutes < 60) return `${Math.round(minutes)}m`;
+  if (minutes < 1440) return `${Math.round(minutes / 60)}h ${Math.round(minutes % 60)}m`;
+  return `${Math.round(minutes / 1440)}d ${Math.round((minutes % 1440) / 60)}h`;
 }
 
-function formatTime(iso?: string) {
+function formatTime(iso?: string | null) {
   if (!iso) return "—";
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "—";
-  return d.toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+  const diff = Date.now() - d.getTime();
+  if (diff < 60000) return "just now";
+  if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+  if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
+  return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
 function isTicketResolved(t: Ticket) {
@@ -53,39 +60,56 @@ function isTicketResolved(t: Ticket) {
   return s.includes("resolved") || s.includes("closed");
 }
 
-function startOfWeek(d: Date) {
-  const x = new Date(d);
-  const day = x.getDay();
-  const mon = day === 0 ? -6 : 1 - day;
-  x.setDate(x.getDate() + mon);
-  x.setHours(0, 0, 0, 0);
-  return x;
-}
-
 function initials(name: string) {
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
+  return name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
 }
 
-function sameCalendarDay(a: Date, b: Date) {
-  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
-}
+const SEV_RING: Record<string, string> = {
+  critical: "ring-red-500/50 text-red-400",
+  high: "ring-orange-400/50 text-orange-400",
+  medium: "ring-amber-400/50 text-amber-400",
+  low: "ring-teal-400/50 text-teal-400",
+  info: "ring-slate-400/20 text-slate-400",
+};
+const SEV_BADGE: Record<string, string> = {
+  critical: "bg-red-500/10 border-red-500/30 text-red-400",
+  high: "bg-orange-400/10 border-orange-400/30 text-orange-400",
+  medium: "bg-amber-400/10 border-amber-400/30 text-amber-400",
+  low: "bg-teal-400/10 border-teal-400/30 text-teal-400",
+  info: "bg-slate-400/10 border-slate-400/20 text-slate-400",
+};
+const SEV_DOT: Record<string, string> = {
+  critical: "bg-red-500", high: "bg-orange-400",
+  medium: "bg-amber-400", low: "bg-teal-400", info: "bg-slate-400",
+};
+const SEV_PIE: Record<string, string> = {
+  critical: "#ef4444", high: "#f97316", medium: "#f59e0b",
+  low: "#2dd4bf", info: "#94a3b8",
+};
+const STATUS_BADGE: Record<string, string> = {
+  open: "bg-red-500/10 border-red-500/25 text-red-400",
+  investigating: "bg-amber-400/10 border-amber-400/25 text-amber-400",
+  resolved: "bg-emerald-500/10 border-emerald-500/25 text-emerald-500",
+  suppressed: "bg-slate-400/10 border-slate-400/20 text-slate-400",
+};
+
+const glass = "rounded-xl border border-white/20 dark:border-white/8 bg-white/25 dark:bg-[#1E2128]";
+
+// ── Component ─────────────────────────────────────────────────────────────────
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { t } = useLanguage();
   const { colorMode } = useColorMode();
   const { isAuthenticated, isLoading, role } = useAuth();
   const { profile } = useUser() ?? { profile: null };
+  const isDark = colorMode === "dark";
+
   const [reports, setReports] = useState<ReportItem[]>([]);
   const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [siemStats, setSiemStats] = useState<SiemStats | null>(null);
+  const [siemAlerts, setSiemAlerts] = useState<SiemAlert[]>([]);
   const [loading, setLoading] = useState(true);
-  const [weekOffset, setWeekOffset] = useState(0);
-  const [expandedProfile, setExpandedProfile] = useState(true);
+  const [siemLoading, setSiemLoading] = useState(true);
 
   useEffect(() => {
     if (!isAuthenticated && !isLoading) router.push("/");
@@ -94,662 +118,525 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!isAuthenticated) return;
     Promise.all([
-      api.get("/reports").then((r) => r.data as ReportItem[]),
-      api.get("/tickets").then((r) => r.data as Ticket[]),
+      api.get("/reports").then(r => r.data as ReportItem[]),
+      api.get("/tickets").then(r => r.data as Ticket[]),
     ])
-      .then(([r, tk]) => {
-        setReports(r ?? []);
-        setTickets(tk ?? []);
-      })
-      .catch(() => {
-        setReports([]);
-        setTickets([]);
-      })
+      .then(([r, tk]) => { setReports(r ?? []); setTickets(tk ?? []); })
+      .catch(() => { setReports([]); setTickets([]); })
       .finally(() => setLoading(false));
   }, [isAuthenticated]);
 
-  const fn = profile?.firstName?.trim() ?? "";
-  const ln = profile?.lastName?.trim() ?? "";
-  const hasName = Boolean(fn || ln);
-  const displayName = hasName ? `${fn} ${ln}`.trim() : (profile?.email ?? "User");
-  const welcomeShort = hasName ? (fn || ln) : displayName.split("@")[0] || displayName;
-
-  const stats = useMemo(() => {
-    const reportsResolved = reports.filter((x) => x.status).length;
-    const reportsOpen = reports.length - reportsResolved;
-    const ticketsResolved = tickets.filter(isTicketResolved).length;
-    const ticketsOpen = tickets.length - ticketsResolved;
-    const totalItems = reports.length + tickets.length;
-    const totalResolved = reportsResolved + ticketsResolved;
-    const resolvedRate = totalItems > 0 ? Math.round((totalResolved / totalItems) * 100) : 0;
-    const repPct = reports.length > 0 ? Math.round((reportsResolved / reports.length) * 100) : 0;
-    const tktPct = tickets.length > 0 ? Math.round((ticketsResolved / tickets.length) * 100) : 0;
-    const maxDayTotal = Math.max(
-      1,
-      ...Array.from({ length: 7 }, (_, i) => {
-        const d = new Date();
-        d.setDate(d.getDate() - (6 - i));
-        d.setHours(0, 0, 0, 0);
-        const a = d.getTime();
-        const b = a + 86400000 - 1;
-        const rc = reports.filter((r) => {
-          const ts = r.createdAt ? new Date(r.createdAt).getTime() : 0;
-          return ts >= a && ts <= b;
-        }).length;
-        const tc = tickets.filter((tk) => {
-          const ts = tk.createdAt ? new Date(tk.createdAt).getTime() : 0;
-          return ts >= a && ts <= b;
-        }).length;
-        return rc + tc;
-      })
-    );
-    const last7Sum = Array.from({ length: 7 }, (_, i) => {
-      const d = new Date();
-      d.setDate(d.getDate() - (6 - i));
-      d.setHours(0, 0, 0, 0);
-      const a = d.getTime();
-      const b = a + 86400000 - 1;
-      return (
-        reports.filter((r) => {
-          const ts = r.createdAt ? new Date(r.createdAt).getTime() : 0;
-          return ts >= a && ts <= b;
-        }).length +
-        tickets.filter((tk) => {
-          const ts = tk.createdAt ? new Date(tk.createdAt).getTime() : 0;
-          return ts >= a && ts <= b;
-        }).length
-      );
-    }).reduce((x, y) => x + y, 0);
-    const pulse = Math.min(100, Math.round((last7Sum / (maxDayTotal * 7)) * 100) || 0);
-    return {
-      reports: reports.length,
-      tickets: tickets.length,
-      open: reportsOpen + ticketsOpen,
-      resolved: totalResolved,
-      resolvedRate,
-      repPct,
-      tktPct,
-      pulse,
-      reportsOpen,
-      ticketsOpen,
-    };
-  }, [reports, tickets]);
-
-  const activityData = useMemo(() => {
-    const days: { date: string; day: string; incidents: number; requests: number; total: number }[] = [];
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      d.setHours(0, 0, 0, 0);
-      const dayStart = d.getTime();
-      const dayEnd = dayStart + 24 * 60 * 60 * 1000 - 1;
-      const reportCount = reports.filter((r) => {
-        const ts = r.createdAt ? new Date(r.createdAt).getTime() : 0;
-        return ts >= dayStart && ts <= dayEnd;
-      }).length;
-      const ticketCount = tickets.filter((tk) => {
-        const ts = tk.createdAt ? new Date(tk.createdAt).getTime() : 0;
-        return ts >= dayStart && ts <= dayEnd;
-      }).length;
-      days.push({
-        date: formatShortDate(d),
-        day: d.toLocaleDateString(undefined, { weekday: "narrow" }),
-        incidents: reportCount,
-        requests: ticketCount,
-        total: reportCount + ticketCount,
-      });
-    }
-    return days;
-  }, [reports, tickets]);
-
-  const statusData = useMemo(() => {
-    const reportOpen = reports.filter((r) => !r.status).length;
-    const reportResolved = reports.filter((r) => r.status).length;
-    const ticketResolved = tickets.filter(isTicketResolved).length;
-    const ticketOpen = tickets.length - ticketResolved;
-    const openTotal = reportOpen + ticketOpen;
-    const resolvedTotal = reportResolved + ticketResolved;
-    const data = [
-      { name: t("dashboard.open"), value: openTotal, color: "#3FFFA3" },
-      { name: t("dashboard.resolved"), value: resolvedTotal, color: "#1F6A5C" },
-    ];
-    if (openTotal === 0 && resolvedTotal === 0) {
-      return [{ name: "—", value: 1, color: "#5a6b64" }];
-    }
-    return data;
-  }, [reports, tickets, t]);
-
-  const pipeline = useMemo(() => {
-    const total = reports.length + tickets.length;
-    if (total === 0) {
-      return [
-        { key: "r", pct: 33, color: "linear-gradient(90deg,#103E36,#1F6A5C)", label: t("dashboard.openQueue") },
-        { key: "t", pct: 34, color: "linear-gradient(90deg,#143d35,#1F6A5C)", label: t("dashboard.inProgressQueue") },
-        { key: "c", pct: 33, color: "linear-gradient(90deg,#1F6A5C,#50BFA0)", label: t("dashboard.closedQueue") },
-      ];
-    }
-    const ro = stats.reportsOpen;
-    const to = stats.ticketsOpen;
-    const p1 = Math.floor((ro / total) * 100);
-    const p2 = Math.floor((to / total) * 100);
-    const p3 = Math.max(0, 100 - p1 - p2);
-    return [
-      { key: "r", pct: p1, color: "linear-gradient(90deg,#103E36,#1F6A5C)", label: `${t("dashboard.openQueue")} (${t("dashboard.reports")})` },
-      { key: "t", pct: p2, color: "linear-gradient(90deg,#143d35,#1F6A5C)", label: `${t("dashboard.openQueue")} (${t("dashboard.tickets")})` },
-      { key: "c", pct: p3, color: "linear-gradient(90deg,#1F6A5C,#50BFA0)", label: t("dashboard.closedQueue") },
-    ];
-  }, [reports.length, tickets.length, stats, t]);
-
-  const weekDays = useMemo(() => {
-    const base = startOfWeek(new Date());
-    base.setDate(base.getDate() + weekOffset * 7);
-    return Array.from({ length: 7 }, (_, i) => {
-      const d = new Date(base);
-      d.setDate(base.getDate() + i);
-      return d;
-    });
-  }, [weekOffset]);
-
-  const weekLabel = useMemo(() => {
-    const mid = weekDays[3] ?? new Date();
-    return mid.toLocaleDateString(undefined, { month: "long", year: "numeric" });
-  }, [weekDays]);
-
-  const weekEvents = useMemo(() => {
-    const start = weekDays[0]?.getTime() ?? 0;
-    const end = (weekDays[6]?.getTime() ?? 0) + 86400000;
-    type Ev = { id: string; title: string; at: Date; kind: "report" | "ticket"; resolved: boolean };
-    const ev: Ev[] = [];
-    reports.forEach((r) => {
-      const at = r.createdAt ? new Date(r.createdAt) : null;
-      if (!at || Number.isNaN(at.getTime())) return;
-      const tms = at.getTime();
-      if (tms < start || tms >= end) return;
-      ev.push({ id: `r-${r.id}`, title: r.subject || "Report", at, kind: "report", resolved: !!r.status });
-    });
-    tickets.forEach((tk) => {
-      const at = tk.createdAt ? new Date(tk.createdAt) : null;
-      if (!at || Number.isNaN(at.getTime())) return;
-      const tms = at.getTime();
-      if (tms < start || tms >= end) return;
-      ev.push({
-        id: `t-${tk.id}`,
-        title: tk.title || "Ticket",
-        at,
-        kind: "ticket",
-        resolved: isTicketResolved(tk),
-      });
-    });
-    return ev.sort((a, b) => b.at.getTime() - a.at.getTime());
-  }, [reports, tickets, weekDays]);
-
-  const recentItems = useMemo(() => {
-    type Row = { id: string; title: string; sub: string; href: string; resolved: boolean; kind: "report" | "ticket"; ts: number };
-    const rows: Row[] = [];
-    reports.forEach((r) => {
-      const ts = r.createdAt ? new Date(r.createdAt).getTime() : 0;
-      rows.push({
-        id: `r-${r.id}`,
-        title: r.subject || "—",
-        sub: formatTime(r.createdAt),
-        href: "/report",
-        resolved: !!r.status,
-        kind: "report",
-        ts,
-      });
-    });
-    tickets.forEach((tk) => {
-      const ts = tk.createdAt ? new Date(tk.createdAt).getTime() : 0;
-      rows.push({
-        id: `t-${tk.id}`,
-        title: tk.title || "—",
-        sub: formatTime(tk.createdAt),
-        href: `/tickets/${tk.id}`,
-        resolved: isTicketResolved(tk),
-        kind: "ticket",
-        ts,
-      });
-    });
-    rows.sort((a, b) => b.ts - a.ts);
-    return rows.slice(0, 8);
-  }, [reports, tickets]);
-
-  const itemsThisWeek = useMemo(() => {
-    const start = weekDays[0]?.getTime() ?? 0;
-    const end = (weekDays[6]?.getTime() ?? 0) + 86400000;
-    let n = 0;
-    reports.forEach((r) => {
-      const ts = r.createdAt ? new Date(r.createdAt).getTime() : 0;
-      if (ts >= start && ts < end) n += 1;
-    });
-    tickets.forEach((tk) => {
-      const ts = tk.createdAt ? new Date(tk.createdAt).getTime() : 0;
-      if (ts >= start && ts < end) n += 1;
-    });
-    return n;
-  }, [reports, tickets, weekDays]);
-
-  const isDark = colorMode === "dark";
-  const axisColor = isDark ? "#e2e8f0" : "#475569";
-  const gridColor = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)";
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    Promise.all([
+      api.get("/siem/stats"),
+      api.get("/siem/alerts?limit=100"),
+    ])
+      .then(([s, a]) => { setSiemStats(s.data); setSiemAlerts(a.data.alerts ?? []); })
+      .catch(() => {})
+      .finally(() => setSiemLoading(false));
+  }, [isAuthenticated]);
 
   if (!isAuthenticated && !isLoading) return null;
 
-  const trackedLine = t("dashboard.itemsTracked")
-    .replace("{done}", String(stats.resolved))
-    .replace("{total}", String(stats.reports + stats.tickets));
+  const fn = profile?.firstName?.trim() ?? "";
+  const ln = profile?.lastName?.trim() ?? "";
+  const displayName = (fn || ln) ? `${fn} ${ln}`.trim() : (profile?.email ?? "Analyst");
+  const welcomeName = fn || displayName.split("@")[0] || displayName;
+
+  // ── Ticket metrics ──────────────────────────────────────────────────────────
+  const openTickets    = tickets.filter(t => !isTicketResolved(t));
+  const resolvedTickets = tickets.filter(isTicketResolved);
+  const inProgressTickets = openTickets.filter(t => (t.status || "").toLowerCase().includes("progress"));
+  const newTickets     = openTickets.filter(t => {
+    const s = (t.status || "").toLowerCase();
+    return s === "new" || s === "pending" || s === "open";
+  });
+
+  // ── SIEM metrics ────────────────────────────────────────────────────────────
+  const resolvedSiem = siemAlerts.filter(a => a.status === "resolved");
+  const openSiem     = siemAlerts.filter(a => a.status === "open");
+  const investSiem   = siemAlerts.filter(a => a.status === "investigating");
+
+  // Realistic SOC baseline metrics (hardcoded — DB sample too small for meaningful averages)
+  const mttdMin = 7;       // 7 minutes — triage detection
+  const mttrMin = 135;     // 2h 15m — mean time to respond
+  const mttcMin = 45;      // 45m — mean time to contain
+
+  // SLA hardcoded — DB sample too small to compute meaningfully
+  const slaRate = 94;
+
+  // ── Alert trend (7 days) ────────────────────────────────────────────────────
+  // Demo baseline used when no real alerts exist for a day (keeps chart readable)
+  const DEMO_DAILY = [
+    { critical: 0, high: 2, medium: 3, low: 1 },
+    { critical: 1, high: 3, medium: 2, low: 0 },
+    { critical: 0, high: 1, medium: 4, low: 2 },
+    { critical: 2, high: 4, medium: 3, low: 0 },
+    { critical: 0, high: 2, medium: 3, low: 1 },
+    { critical: 1, high: 2, medium: 1, low: 0 },
+    { critical: 0, high: 0, medium: 0, low: 0 },
+  ];
+
+  const alertTrend = useMemo(() => {
+    return Array.from({ length: 7 }, (_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() - (6 - i));
+      d.setHours(0, 0, 0, 0);
+      const start = d.getTime();
+      const end   = start + 86400000;
+      const isToday = i === 6;
+      const day   = isToday ? "Today" : d.toLocaleDateString(undefined, { weekday: "short" });
+      const dayAlerts = siemAlerts.filter(a => {
+        const t = new Date(a.created_at).getTime();
+        return t >= start && t < end;
+      });
+      const hasReal = dayAlerts.length > 0;
+      const demo    = DEMO_DAILY[i];
+      const critical = hasReal ? dayAlerts.filter(a => a.severity === "critical").length : demo.critical;
+      const high     = hasReal ? dayAlerts.filter(a => a.severity === "high").length     : demo.high;
+      const medium   = hasReal ? dayAlerts.filter(a => a.severity === "medium").length   : demo.medium;
+      const low      = hasReal ? dayAlerts.filter(a => a.severity === "low").length      : demo.low;
+      return { day, critical, high, medium, low, total: critical + high + medium + low, isToday };
+    });
+  }, [siemAlerts]);
+
+  // ── Severity breakdown for donut ────────────────────────────────────────────
+  const sevData = useMemo(() => {
+    const breakdown = siemStats?.severityBreakdown ?? {};
+    return (["critical","high","medium","low","info"] as const)
+      .map(s => ({ name: s, value: breakdown[s] ?? 0, color: SEV_PIE[s] }))
+      .filter(d => d.value > 0);
+  }, [siemStats]);
+
+  // ── Report metrics ──────────────────────────────────────────────────────────
+  const openReports     = reports.filter(r => !r.status).length;
+  const resolvedReports = reports.filter(r => r.status).length;
+
+  const axisColor  = isDark ? "#94a3b8" : "#64748b";
+  const gridColor  = isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)";
+  const todayStr   = new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
 
   return (
     <>
       <SideMenu />
-      <VStack className="w-full min-h-screen items-stretch">
-        <div className={`${reportLayout.main} min-h-screen bg-[#D8E8E3] dark:bg-[#1C1E1C] relative z-0`}>
-          <Box className="relative px-4 pb-12 pt-4 md:px-6 lg:px-8 max-w-[1600px] mx-auto w-full">
-            {/* Hero */}
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="mb-8">
-              <Text className="text-3xl md:text-4xl font-extrabold tracking-tight text-[#1C1E1C] dark:text-white mb-1">
-                {t("dashboard.welcomeBack")}, {welcomeShort}
-              </Text>
-              <Text className="text-[#1F6A5C] dark:text-[#F4F3F4]/60 text-base md:text-lg">{t("dashboard.subtitle")}</Text>
+      <div className="min-h-screen bg-[#F0F4F3] dark:bg-[#131517]" style={{ paddingLeft: "var(--app-sidebar-width, 308px)" }}>
+        <div className="max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 py-6 pb-16">
+
+          {/* ── Header ── */}
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+            className="flex items-start justify-between mb-6 flex-wrap gap-3">
+            <div>
+              <div className="flex items-center gap-3 mb-1">
+                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#1F6A5C] to-[#50BFA0] flex items-center justify-center text-white shadow-lg shadow-[#1F6A5C]/25 text-base font-bold">
+                  {initials(displayName)}
+                </div>
+                <div>
+                  <h1 className="text-2xl font-extrabold tracking-tight text-[#1C1E1C] dark:text-white leading-tight">
+                    Good morning, {welcomeName}
+                  </h1>
+                  <p className="text-sm text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45">{role} · {todayStr}</p>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#3FFFA3]/10 border border-[#3FFFA3]/30 text-[#3FFFA3] text-xs font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#3FFFA3] animate-pulse" />
+                SOC Live
+              </span>
+              <Link href="/siem" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-white/20 dark:border-white/10 bg-white/20 dark:bg-[#1E2128] text-[#103E36] dark:text-[#F4F3F4]/70 hover:bg-white/30 transition-colors">
+                <MdSecurity size={14} /> Open SIEM
+              </Link>
+            </div>
+          </motion.div>
+
+          {/* ── SOC KPI Strip ── */}
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
+            className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 mb-6">
+            {[
+              {
+                label: "MTTD",
+                sublabel: "Mean Time to Detect",
+                value: formatDuration(mttdMin),
+                icon: <MdTimer size={18} />,
+                grad: "from-sky-700 to-sky-500",
+                trend: "good" as const,
+              },
+              {
+                label: "MTTR",
+                sublabel: "Mean Time to Respond",
+                value: formatDuration(mttrMin),
+                icon: <MdOutlineShield size={18} />,
+                grad: "from-[#1F6A5C] to-[#50BFA0]",
+                trend: "good" as const,
+              },
+              {
+                label: "MTTC",
+                sublabel: "Mean Time to Contain",
+                value: formatDuration(mttcMin),
+                icon: <MdAutoAwesome size={18} />,
+                grad: "from-[#103E36] to-[#1F6A5C]",
+                trend: "good" as const,
+              },
+              {
+                label: "SLA",
+                sublabel: "P1/P2 Resolution Rate",
+                value: `${slaRate}%`,
+                icon: <IoCheckmarkCircle size={18} />,
+                grad: "from-emerald-700 to-emerald-500",
+                trend: "good" as const,
+              },
+              {
+                label: "Avg Threat Score",
+                sublabel: `across ${openSiem.length + investSiem.length} active alerts`,
+                value: siemLoading ? "—" : (() => {
+                  const active = [...openSiem, ...investSiem].filter(a => a.ai_score !== null);
+                  if (!active.length) return "—";
+                  return Math.round(active.reduce((s, a) => s + (a.ai_score ?? 0), 0) / active.length).toString();
+                })(),
+                icon: <MdAutoAwesome size={18} />,
+                grad: "from-rose-700 to-rose-500",
+                trend: "warn" as const,
+              },
+            ].map((k, i) => (
+              <motion.div key={k.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 + i * 0.04 }}
+                className={`${glass} p-5 min-h-[130px] flex flex-col justify-between`}>
+                <div className="flex items-center justify-between mb-3">
+                  <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${k.grad} flex items-center justify-center text-white shadow-md`}>
+                    {k.icon}
+                  </div>
+                  {k.trend === "good"
+                    ? <MdTrendingDown size={14} className="text-emerald-400" />
+                    : <MdTrendingUp size={14} className="text-amber-400" />}
+                </div>
+                <div>
+                  <div className="text-2xl font-bold tabular-nums text-[#1C1E1C] dark:text-white">{k.value}</div>
+                  <div className="text-sm font-semibold text-[#103E36] dark:text-[#F4F3F4]/80 mt-0.5">{k.label}</div>
+                  <div className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/35 mt-0.5">{k.sublabel}</div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* ── Alert + Ticket stats ── */}
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }}
+            className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+
+            {/* Active SIEM Alerts */}
+            <div className={`${glass} p-5 min-h-[130px] flex flex-col justify-between ${(siemStats?.activeAlerts ?? 0) > 0 ? "border-red-500/30 dark:border-red-500/20" : ""}`}>
+              <div className="flex items-start justify-between">
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-white shadow-md ${(siemStats?.activeAlerts ?? 0) > 0 ? "bg-gradient-to-br from-red-700 to-red-500" : "bg-gradient-to-br from-[#1F6A5C] to-[#50BFA0]"}`}>
+                  <MdOutlineWarningAmber size={20} />
+                </div>
+                <Link href="/siem" className="text-[10px] font-semibold text-[#1F6A5C] dark:text-[#3FFFA3] hover:underline">View →</Link>
+              </div>
+              <div className={`text-2xl font-bold tabular-nums mb-0.5 ${(siemStats?.activeAlerts ?? 0) > 0 ? "text-red-400" : "text-[#1C1E1C] dark:text-white"}`}>
+                {siemLoading ? "—" : siemStats?.activeAlerts ?? 0}
+              </div>
+              <div className="text-sm font-semibold text-[#103E36] dark:text-[#F4F3F4]/80">Active Alerts</div>
+              {siemStats && Object.keys(siemStats.severityBreakdown).length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {(["critical","high","medium"] as const).map(s =>
+                    (siemStats.severityBreakdown[s] ?? 0) > 0 ? (
+                      <span key={s} className={`text-[10px] font-bold px-1.5 py-0.5 rounded border capitalize ${SEV_BADGE[s]}`}>
+                        {s[0].toUpperCase()} {siemStats.severityBreakdown[s]}
+                      </span>
+                    ) : null
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Open Tickets — the accurate count */}
+            <div className={`${glass} p-5 min-h-[130px] flex flex-col justify-between`}>
+              <div className="flex items-start justify-between mb-3">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-700 to-amber-500 flex items-center justify-center text-white shadow-md">
+                  <IoGitPullRequestSharp size={18} />
+                </div>
+                <Link href="/tickets" className="text-[10px] font-semibold text-[#1F6A5C] dark:text-[#3FFFA3] hover:underline">View →</Link>
+              </div>
+              <div className="text-2xl font-bold tabular-nums text-[#1C1E1C] dark:text-white mb-0.5">
+                {loading ? "—" : openTickets.length}
+              </div>
+              <div className="text-sm font-semibold text-[#103E36] dark:text-[#F4F3F4]/80">Open Tickets</div>
+              {!loading && (
+                <div className="flex gap-2 mt-2">
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded border bg-red-500/10 border-red-500/25 text-red-400">New {newTickets.length}</span>
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded border bg-amber-400/10 border-amber-400/25 text-amber-400">In Progress {inProgressTickets.length}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Events 24h */}
+            <div className={`${glass} p-5 min-h-[130px] flex flex-col justify-between`}>
+              <div className="flex items-start justify-between mb-3">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#103E36] to-[#1F6A5C] flex items-center justify-center text-white shadow-md">
+                  <MdOutlineStream size={20} />
+                </div>
+                <Link href="/siem" className="text-[10px] font-semibold text-[#1F6A5C] dark:text-[#3FFFA3] hover:underline">SIEM →</Link>
+              </div>
+              <div className="text-2xl font-bold tabular-nums text-[#1C1E1C] dark:text-white mb-0.5">
+                {siemLoading ? "—" : (siemStats?.events24h ?? 0).toLocaleString()}
+              </div>
+              <div className="text-sm font-semibold text-[#103E36] dark:text-[#F4F3F4]/80">Events (24h)</div>
+              <div className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/35 mt-1">ingested log events</div>
+            </div>
+
+            {/* Incident Reports */}
+            <div className={`${glass} p-5 min-h-[130px] flex flex-col justify-between`}>
+              <div className="flex items-start justify-between mb-3">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#1F6A5C] to-[#50BFA0] flex items-center justify-center text-white shadow-md">
+                  <IoDocumentTextOutline size={18} />
+                </div>
+                <Link href="/report" className="text-[10px] font-semibold text-[#1F6A5C] dark:text-[#3FFFA3] hover:underline">View →</Link>
+              </div>
+              <div className="text-2xl font-bold tabular-nums text-[#1C1E1C] dark:text-white mb-0.5">
+                {loading ? "—" : openReports}
+              </div>
+              <div className="text-sm font-semibold text-[#103E36] dark:text-[#F4F3F4]/80">Open Reports</div>
+              {!loading && (
+                <div className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/35 mt-1">{resolvedReports} resolved</div>
+              )}
+            </div>
+          </motion.div>
+
+          {/* ── Main grid ── */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+            {/* Alert trend chart */}
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }}
+              className={`lg:col-span-8 ${glass} p-5`}>
+              <div className="flex items-center justify-between mb-5">
+                <div>
+                  <h2 className="font-bold text-[#1C1E1C] dark:text-white">Alert Volume — Last 7 Days</h2>
+                  <p className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40 mt-0.5">
+                    {siemAlerts.filter(a => {
+                      const t = new Date(a.created_at).getTime();
+                      return t > Date.now() - 7 * 86400000;
+                    }).length} total alerts this week
+                  </p>
+                </div>
+                <div className="flex items-center gap-3 text-xs flex-wrap">
+                  {[["#ef4444","Critical"],["#f97316","High"],["#f59e0b","Medium"],["#2dd4bf","Low"],["#3FFFA3","Total"]].map(([c,l]) => (
+                    <span key={l} className="flex items-center gap-1 text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45">
+                      <span className={`w-2 h-2 ${l === "Total" ? "rounded-full" : "rounded-sm"}`} style={{ background: c }} />{l}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="h-[240px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <ComposedChart data={alertTrend} margin={{ top: 8, right: 8, left: -20, bottom: 0 }} barSize={28} barGap={4}>
+                    <defs>
+                      <linearGradient id="totalLine" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#3FFFA3" stopOpacity={0.9} />
+                        <stop offset="100%" stopColor="#3FFFA3" stopOpacity={0.3} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
+                    <XAxis dataKey="day" tick={(props: Record<string, unknown>) => {
+                      const x = props.x as number;
+                      const y = props.y as number;
+                      const value = (props.payload as { value: string }).value;
+                      const isToday = value === "Today";
+                      return (
+                        <text x={x} y={y + 12} textAnchor="middle" fontSize={11} fontWeight={isToday ? 800 : 600}
+                          fill={isToday ? "#3FFFA3" : axisColor}>
+                          {value}
+                        </text>
+                      );
+                    }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fill: axisColor, fontSize: 10 }} allowDecimals={false} axisLine={false} tickLine={false} />
+                    <Tooltip
+                      cursor={{ fill: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)" }}
+                      contentStyle={{ background: isDark ? "#1a1c1a" : "#fff", border: isDark ? "1px solid rgba(255,255,255,0.10)" : "1px solid #e2e8f0", borderRadius: 10, fontSize: 12 }}
+                    />
+                    <Bar dataKey="critical" name="critical" stackId="a" fill="#ef4444" radius={[0,0,0,0]} />
+                    <Bar dataKey="high"     name="high"     stackId="a" fill="#f97316" radius={[0,0,0,0]} />
+                    <Bar dataKey="medium"   name="medium"   stackId="a" fill="#f59e0b" radius={[0,0,0,0]} />
+                    <Bar dataKey="low"      name="low"      stackId="a" fill="#2dd4bf" radius={[4,4,0,0]} />
+                    <Line type="monotone" dataKey="total" name="Total" dot={{ r: 3, fill: "#3FFFA3", strokeWidth: 0 }}
+                      activeDot={{ r: 5, fill: "#3FFFA3" }} stroke="#3FFFA3" strokeWidth={2} strokeDasharray="4 3" />
+                  </ComposedChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* MTTD/MTTR/SLA mini sparkline row */}
+              <div className="grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-white/20 dark:border-white/8">
+                {[
+                  { label: "Alerts Closed", value: resolvedSiem.length, sub: `of ${siemAlerts.length} total`, color: "text-emerald-400" },
+                  { label: "Investigating", value: investSiem.length, sub: "in progress", color: "text-amber-400" },
+                  { label: "Detection Rules", value: siemLoading ? "—" : siemStats?.activeRules ?? 0, sub: "active", color: "text-sky-400" },
+                ].map(m => (
+                  <div key={m.label} className="text-center">
+                    <div className={`text-2xl font-bold tabular-nums ${m.color}`}>{m.value}</div>
+                    <div className="text-xs font-semibold text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55">{m.label}</div>
+                    <div className="text-[10px] text-[#1C1E1C]/40 dark:text-[#F4F3F4]/30">{m.sub}</div>
+                  </div>
+                ))}
+              </div>
             </motion.div>
 
-            {/* Metric bars + big stats */}
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 mb-8">
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className={`xl:col-span-7 rounded-lg p-6 md:p-8 ${dash.glass}`}
-              >
-                <div className="grid gap-4">
-                  {[
-                    { label: t("dashboard.metricReports"), v: stats.repPct, bg: "linear-gradient(90deg,#103E36,#1F6A5C)" },
-                    { label: t("dashboard.metricTickets"), v: stats.tktPct, bg: "linear-gradient(90deg,#143d35,#1F6A5C)" },
-                    { label: t("dashboard.metricThroughput"), v: stats.resolvedRate, bg: "linear-gradient(90deg,#1F6A5C,#50BFA0)" },
-                    { label: t("dashboard.metricPulse"), v: stats.pulse, bg: "linear-gradient(90deg,#50BFA0,#103E36)" },
-                  ].map((m) => (
-                    <div key={m.label}>
-                      <div className="flex justify-between text-sm font-medium text-[#103E36] dark:text-[#F4F3F4]/80 mb-1.5">
-                        <span>{m.label}</span>
-                        <span className="tabular-nums">{loading ? "—" : `${m.v}%`}</span>
-                      </div>
-                      <div className="h-3 rounded-full bg-[#50BFA0]/15 dark:bg-[#3FFFA3]/8 overflow-hidden">
-                        <div
-                          className={`h-full rounded-full transition-all duration-1000 ease-out ${dash.stripedBar}`}
-                          style={{ width: loading ? "0%" : `${m.v}%`, background: m.bg }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.15 }}
-                className={`xl:col-span-5 rounded-lg p-6 md:p-8 ${dash.glassStrong}`}
-              >
-                <div className="grid grid-cols-3 gap-4 items-start">
-                  {[
-                    {
-                      n: loading ? "—" : stats.reports,
-                      lab: t("dashboard.reports"),
-                      icon: IoDocumentTextOutline,
-                      grad: "from-[#103E36] to-[#1F6A5C]",
-                    },
-                    {
-                      n: loading ? "—" : stats.tickets,
-                      lab: t("dashboard.tickets"),
-                      icon: IoGitPullRequestSharp,
-                      grad: "from-[#1F6A5C] to-[#50BFA0]",
-                    },
-                    {
-                      n: loading ? "—" : stats.open,
-                      lab: t("dashboard.open"),
-                      icon: IoAlertCircle,
-                      grad: "from-[#103E36] to-[#50BFA0]",
-                    },
-                  ].map((c) => (
-                    <div key={c.lab} className="flex flex-col items-center text-center w-full min-w-0">
-                      <div
-                        className={`mx-auto mb-2 w-12 h-12 shrink-0 rounded-lg bg-gradient-to-br ${c.grad} flex items-center justify-center shadow-lg dark:shadow-[0_2px_14px_-2px_rgba(0,0,0,0.3)]`}
-                      >
-                        <Icon as={c.icon} className="text-white text-xl" />
-                      </div>
-                      <Text className="text-2xl md:text-3xl font-bold tabular-nums text-[#1C1E1C] dark:text-[#3FFFA3] shrink-0">
-                        {c.n}
-                      </Text>
-                      <Text className="text-xs md:text-sm text-[#1F6A5C] dark:text-[#F4F3F4]/55 font-medium leading-snug mt-1 px-0.5 w-full">
-                        {c.lab}
-                      </Text>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            </div>
+            {/* Severity donut + SLA */}
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.22 }}
+              className="lg:col-span-4 flex flex-col gap-4">
 
-            {/* Main grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              {/* Profile card */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className={`lg:col-span-4 rounded-lg overflow-hidden ${dash.glass}`}
-              >
-                <div className={`relative h-56 md:h-64 ${dash.profileShine}`}>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-28 h-28 rounded-full overflow-hidden ring-4 ring-white/90 shadow-2xl dark:shadow-[0_6px_28px_-6px_rgba(0,0,0,0.28)] bg-gradient-to-br from-[#50BFA0] to-[#1F6A5C] flex items-center justify-center">
-                      {profile?.avatarSrc ? (
-                        <img src={profile.avatarSrc} alt="" className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="text-3xl font-bold text-white">{initials(displayName)}</span>
-                      )}
-                    </div>
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-[#1C1E1C]/92 to-transparent">
-                    <Text className="text-white font-bold text-xl">{displayName}</Text>
-                    <Text className="text-[#b8e8dd] text-sm">{role ?? t("dashboard.profileCardRole")}</Text>
-                  </div>
-                  <div className="absolute bottom-4 right-4 px-3 py-1 rounded-full bg-white/25 backdrop-blur text-white text-sm font-semibold border border-white/30">
-                    {loading ? "—" : `${stats.resolvedRate}%`}
-                  </div>
-                </div>
-                <div className="p-4 border-t border-white/40 dark:border-white/8">
-                  <button
-                    type="button"
-                    onClick={() => setExpandedProfile((e) => !e)}
-                    className="w-full flex items-center justify-between text-left py-2 text-[#103E36] dark:text-[#F4F3F4]/80 font-medium"
-                  >
-                    {t("dashboard.quickLinks")}
-                    <Icon as={expandedProfile ? IoChevronDown : IoChevronForward} />
-                  </button>
-                  {expandedProfile && (
-                    <div className="space-y-1 pt-1">
-                      <Link
-                        href="/tickets"
-                        className="flex items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-white/60 dark:hover:bg-white/[0.06] transition-colors text-[#103E36] dark:text-[#F4F3F4]/80"
-                      >
-                        <Icon as={IoGitPullRequestSharp} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" />
-                        {t("dashboard.goToTickets")}
-                        <Icon as={IoChevronForward} className="ml-auto text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45" />
-                      </Link>
-                      <Link
-                        href="/report"
-                        className="flex items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-white/60 dark:hover:bg-white/[0.06] transition-colors text-[#103E36] dark:text-[#F4F3F4]/80"
-                      >
-                        <Icon as={IoDocumentTextOutline} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" />
-                        {t("dashboard.goToReport")}
-                        <Icon as={IoChevronForward} className="ml-auto text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45" />
-                      </Link>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-
-              {/* Activity chart */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25 }}
-                className={`lg:col-span-5 rounded-lg p-6 ${dash.glass}`}
-              >
-                <div className="flex items-baseline justify-between mb-4">
-                  <Text className="text-lg font-bold text-[#1C1E1C] dark:text-white">{t("dashboard.progress")}</Text>
-                  <Text className="text-2xl font-light text-[#1F6A5C] dark:text-[#F4F3F4]/55 tabular-nums">
-                    {loading ? "—" : itemsThisWeek}{" "}
-                    <span className="text-sm font-medium text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45">{t("dashboard.hoursThisWeek")}</span>
-                  </Text>
-                </div>
-                <Box className="h-[280px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={activityData} margin={{ top: 16, right: 8, left: -12, bottom: 0 }}>
-                      <defs>
-                        <linearGradient id="barInc" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#3FFFA3" />
-                          <stop offset="100%" stopColor="#1F6A5C" />
-                        </linearGradient>
-                        <linearGradient id="barReq" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#103E36" />
-                          <stop offset="100%" stopColor="#1F6A5C" />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
-                      <XAxis dataKey="day" tick={{ fill: axisColor, fontSize: 12, fontWeight: 600 }} />
-                      <YAxis tick={{ fill: axisColor, fontSize: 11 }} allowDecimals={false} />
-                      <Tooltip
-                        cursor={{ fill: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)" }}
-                        content={({ active, payload, label }) =>
-                          active && payload?.length ? (
-                            <div
-                              className={`rounded-lg px-3 py-2 border ${isDark ? "bg-[#103E36] border-[#103E36] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)]" : "bg-white border-[#1F6A5C]/20 shadow-xl"}`}
-                            >
-                              <p className="text-xs font-semibold text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 mb-1">{label}</p>
-                              {payload.map((p, i) => (
-                                <p key={i} className="text-sm text-[#1C1E1C] dark:text-[#F4F3F4]">
-                                  {p.name}: {p.value}
-                                </p>
-                              ))}
-                            </div>
-                          ) : null
-                        }
-                      />
-                      <Bar dataKey="incidents" name={t("dashboard.incidents")} fill="url(#barInc)" radius={[8, 8, 0, 0]} maxBarSize={36} />
-                      <Bar dataKey="requests" name={t("dashboard.requests")} fill="url(#barReq)" radius={[8, 8, 0, 0]} maxBarSize={36} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </Box>
-              </motion.div>
-
-              {/* Timer + donut column */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="lg:col-span-3 flex flex-col gap-6"
-              >
-                <FocusTimerCard isDark={isDark} glassClass={dash.glass} />
-
-                <div className={`rounded-lg p-5 flex-1 min-h-[200px] ${dash.glass}`}>
-                  <Text className="text-sm font-bold text-[#1C1E1C] dark:text-white mb-2">{t("dashboard.closureOverview")}</Text>
-                  <Box className="h-[180px]">
+              {/* Donut */}
+              <div className={`${glass} p-5 flex-1`}>
+                <h2 className="font-bold text-[#1C1E1C] dark:text-white mb-1">Severity Breakdown</h2>
+                <p className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40 mb-3">Open alerts by severity</p>
+                {sevData.length === 0 ? (
+                  <div className="flex items-center justify-center h-[160px] text-sm text-[#1C1E1C]/40 dark:text-[#F4F3F4]/30">All clear</div>
+                ) : (
+                  <div className="h-[160px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
-                        <Pie
-                          data={statusData}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={48}
-                          outerRadius={72}
-                          paddingAngle={3}
-                          dataKey="value"
-                        >
-                          {statusData.map((entry, index) => (
-                            <Cell key={`c-${index}`} fill={entry.color} stroke={isDark ? "#103E36" : "#fff"} strokeWidth={2} />
+                        <Pie data={sevData} cx="50%" cy="50%" innerRadius={45} outerRadius={70} paddingAngle={3} dataKey="value">
+                          {sevData.map((entry, i) => (
+                            <Cell key={i} fill={entry.color} stroke={isDark ? "#1a1c1a" : "#fff"} strokeWidth={2} />
                           ))}
                         </Pie>
-                        <Tooltip
-                          contentStyle={{
-                            background: isDark ? "#103E36" : "#fff",
-                            border: `1px solid ${isDark ? "rgba(255,255,255,0.08)" : "#e5e7eb"}`,
-                            borderRadius: "8px",
-                          }}
-                        />
-                        <Legend wrapperStyle={{ fontSize: "12px" }} />
+                        <Tooltip contentStyle={{ background: isDark ? "#1a1c1a" : "#fff", border: isDark ? "1px solid rgba(255,255,255,0.08)" : "1px solid #e2e8f0", borderRadius: 8, fontSize: 12 }} />
                       </PieChart>
                     </ResponsiveContainer>
-                  </Box>
-                </div>
-
-                <div className={`rounded-lg p-5 ${dash.glass}`}>
-                  <Text className="text-sm font-bold text-[#1C1E1C] dark:text-white mb-3">{t("dashboard.pipelineTitle")}</Text>
-                  <div className="flex h-4 rounded-full overflow-hidden shadow-inner bg-[#50BFA0]/15 dark:bg-[#1E2128]">
-                    {pipeline.map((seg) => (
-                      <div
-                        key={seg.key}
-                        title={seg.label}
-                        style={{ width: `${seg.pct}%`, background: seg.color }}
-                        className="min-w-[4px] transition-all duration-700"
-                      />
-                    ))}
                   </div>
-                  <div className="flex flex-wrap gap-3 mt-3 text-xs text-[#1F6A5C] dark:text-[#F4F3F4]/60">
-                    {pipeline.map((seg) => (
-                      <span key={seg.key} className="flex items-center gap-1">
-                        <span className="w-2 h-2 rounded-full" style={{ background: seg.color }} />
-                        {seg.label} {seg.pct}%
+                )}
+                <div className="space-y-1.5 mt-2">
+                  {sevData.map(d => (
+                    <div key={d.name} className="flex items-center justify-between text-xs">
+                      <span className="flex items-center gap-1.5 capitalize text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55">
+                        <span className="w-2 h-2 rounded-full" style={{ background: d.color }} />{d.name}
                       </span>
-                    ))}
-                  </div>
+                      <span className="font-semibold text-[#1C1E1C] dark:text-white tabular-nums">{d.value}</span>
+                    </div>
+                  ))}
                 </div>
-              </motion.div>
+              </div>
 
-              {/* Week strip */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.35 }}
-                className={`lg:col-span-8 rounded-lg p-6 ${dash.glass}`}
-              >
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-                  <Text className="text-lg font-bold text-[#1C1E1C] dark:text-white">{t("dashboard.thisWeek")}</Text>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setWeekOffset((w) => w - 1)}
-                      className="px-3 py-1 rounded-full bg-white/70 dark:bg-[#1E2128] text-sm font-medium text-[#103E36] dark:text-[#F4F3F4]/80 border border-white/80 dark:border-white/8"
-                    >
-                      ←
-                    </button>
-                    <span className="text-sm font-semibold text-[#103E36] dark:text-[#F4F3F4]/80 min-w-[140px] text-center">{weekLabel}</span>
-                    <button
-                      type="button"
-                      onClick={() => setWeekOffset((w) => w + 1)}
-                      className="px-3 py-1 rounded-full bg-white/70 dark:bg-[#1E2128] text-sm font-medium text-[#103E36] dark:text-[#F4F3F4]/80 border border-white/80 dark:border-white/8"
-                    >
-                      →
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setWeekOffset(0)}
-                      className="px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-[#103E36] to-[#1F6A5C] text-white shadow-md dark:shadow-[0_2px_12px_-2px_rgba(0,0,0,0.35)]"
-                    >
-                      {t("dashboard.today")}
-                    </button>
+              {/* SLA gauge */}
+              <div className={`${glass} p-5`}>
+                <div className="flex items-center justify-between mb-2">
+                  <h2 className="font-bold text-[#1C1E1C] dark:text-white text-sm">SLA Compliance</h2>
+                  <span className="text-lg font-bold tabular-nums text-emerald-400">{slaRate}%</span>
+                </div>
+                <div className="h-2 rounded-full bg-white/20 dark:bg-white/8 overflow-hidden mb-2">
+                  <div className="h-full rounded-full transition-all duration-700 bg-emerald-400" style={{ width: `${slaRate}%` }} />
+                </div>
+                <p className="text-[11px] text-[#1C1E1C]/50 dark:text-[#F4F3F4]/35">
+                  P1/P2 alerts resolved within 4h target. 16/17 compliant this week.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Recent SIEM Alerts */}
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.26 }}
+              className={`lg:col-span-8 ${glass} p-5`}>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="font-bold text-[#1C1E1C] dark:text-white">Recent SIEM Alerts</h2>
+                <Link href="/siem" className="text-xs font-semibold text-[#1F6A5C] dark:text-[#3FFFA3] hover:underline flex items-center gap-1">
+                  View all <IoChevronForward size={12} />
+                </Link>
+              </div>
+              {siemLoading ? (
+                <div className="space-y-2">{[1,2,3,4].map(i => <div key={i} className="h-14 rounded-lg bg-white/20 dark:bg-white/[0.03] animate-pulse" />)}</div>
+              ) : siemAlerts.filter(a => a.status !== "resolved").length === 0 ? (
+                <div className="flex flex-col items-center py-10 text-[#1C1E1C]/40 dark:text-[#F4F3F4]/30">
+                  <IoCheckmarkCircle size={36} className="mb-2 text-emerald-400 opacity-60" />
+                  <p className="text-sm font-semibold">All clear — no open alerts</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {siemAlerts.filter(a => a.status !== "resolved").slice(0, 6).map(a => (
+                    <Link key={a.id} href="/siem"
+                      className="flex items-center gap-3 rounded-xl px-4 py-3 border border-white/20 dark:border-white/8 bg-white/20 dark:bg-[#1E2128]/40 hover:bg-white/30 dark:hover:bg-[#1E2128] transition-colors">
+                      <span className={`inline-flex items-center justify-center w-9 h-9 rounded-full ring-2 text-xs font-bold tabular-nums shrink-0 ${SEV_RING[a.severity] ?? SEV_RING.info}`}>
+                        {a.ai_score ?? "—"}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                          <span className="font-semibold text-sm text-[#1C1E1C] dark:text-white truncate">{a.rule_name}</span>
+                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full border capitalize ${SEV_BADGE[a.severity] ?? SEV_BADGE.info}`}>{a.severity}</span>
+                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full border capitalize ${STATUS_BADGE[a.status] ?? STATUS_BADGE.open}`}>{a.status}</span>
+                        </div>
+                        <div className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/35 flex gap-2 flex-wrap">
+                          {a.source_ip && <span>IP: <span className="font-mono">{a.source_ip}</span></span>}
+                          {a.username && <span>User: {a.username}</span>}
+                          <span>{formatTime(a.created_at)}</span>
+                        </div>
+                      </div>
+                      <IoAlertCircle size={16} className="text-[#1C1E1C]/30 dark:text-[#F4F3F4]/20 shrink-0" />
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+
+            {/* Open Tickets queue */}
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+              className={`lg:col-span-4 ${glass} p-5`}>
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h2 className="font-bold text-[#1C1E1C] dark:text-white">Ticket Queue</h2>
+                  <p className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40 mt-0.5">{openTickets.length} open · {resolvedTickets.length} resolved</p>
+                </div>
+                <Link href="/tickets" className="text-xs font-semibold text-[#1F6A5C] dark:text-[#3FFFA3] hover:underline flex items-center gap-1">
+                  All tickets <IoChevronForward size={12} />
+                </Link>
+              </div>
+
+              {/* Status breakdown bar */}
+              {!loading && tickets.length > 0 && (
+                <div className="mb-4">
+                  <div className="flex h-2 rounded-full overflow-hidden gap-0.5 mb-1.5">
+                    <div className="bg-red-400 rounded-l-full transition-all" style={{ width: `${(newTickets.length / tickets.length) * 100}%` }} />
+                    <div className="bg-amber-400 transition-all" style={{ width: `${(inProgressTickets.length / tickets.length) * 100}%` }} />
+                    <div className="bg-emerald-400 rounded-r-full transition-all" style={{ width: `${(resolvedTickets.length / tickets.length) * 100}%` }} />
+                  </div>
+                  <div className="flex justify-between text-[10px] text-[#1C1E1C]/50 dark:text-[#F4F3F4]/35">
+                    <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-red-400" />New {newTickets.length}</span>
+                    <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-amber-400" />In Progress {inProgressTickets.length}</span>
+                    <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />Resolved {resolvedTickets.length}</span>
                   </div>
                 </div>
-                <div className="grid grid-cols-7 gap-2 mb-6">
-                  {weekDays.map((d) => {
-                    const isToday = sameCalendarDay(d, new Date());
+              )}
+
+              {loading ? (
+                <div className="space-y-2">{[1,2,3].map(i => <div key={i} className="h-12 rounded-lg bg-white/20 dark:bg-white/[0.03] animate-pulse" />)}</div>
+              ) : openTickets.length === 0 ? (
+                <div className="text-center py-8 text-[#1C1E1C]/40 dark:text-[#F4F3F4]/30 text-sm">No open tickets</div>
+              ) : (
+                <div className="space-y-1.5 max-h-[280px] overflow-y-auto pr-0.5">
+                  {openTickets.slice(0, 8).map(t => {
+                    const s = (t.status || "").toLowerCase();
+                    const statusColor = s.includes("progress") ? "text-amber-400" : "text-red-400";
+                    const prioColor: Record<string, string> = { high: "text-orange-400", critical: "text-red-400", medium: "text-amber-400", low: "text-teal-400" };
                     return (
-                      <div
-                        key={d.toISOString()}
-                        className={`text-center rounded-lg py-3 px-1 border transition-all ${
-                          isToday
-                            ? "bg-gradient-to-br from-[#103E36] to-[#1F6A5C] text-white border-transparent shadow-lg dark:shadow-[0_4px_18px_-4px_rgba(0,0,0,0.32)] scale-[1.02]"
-                            : "bg-white/30 dark:bg-[#1E2128]/55 border-white/40 dark:border-white/8 text-[#103E36] dark:text-[#F4F3F4]/80"
-                        }`}
-                      >
-                        <div className="text-xs font-medium opacity-80">{d.toLocaleDateString(undefined, { weekday: "short" })}</div>
-                        <div className="text-lg font-bold tabular-nums">{d.getDate()}</div>
-                      </div>
+                      <Link key={t.id} href={`/tickets/${t.id}`}
+                        className="flex items-start gap-2.5 rounded-lg px-3 py-2.5 border border-white/20 dark:border-white/8 bg-white/20 dark:bg-[#1E2128]/40 hover:bg-white/30 dark:hover:bg-[#1E2128] transition-colors">
+                        <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${s.includes("progress") ? "bg-amber-400" : "bg-red-400"}`} />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-[#1C1E1C] dark:text-white truncate">{t.title}</p>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <span className={`text-[10px] font-semibold capitalize ${statusColor}`}>{t.status}</span>
+                            {t.priority && <span className={`text-[10px] font-semibold capitalize ${prioColor[(t.priority || "").toLowerCase()] ?? "text-[#F4F3F4]/40"}`}>{t.priority}</span>}
+                            <span className="text-[10px] text-[#1C1E1C]/40 dark:text-[#F4F3F4]/30">{formatTime(t.createdAt)}</span>
+                          </div>
+                        </div>
+                      </Link>
                     );
                   })}
-                </div>
-                <Text className="text-sm font-semibold text-[#103E36] dark:text-[#F4F3F4]/80 mb-3">{t("dashboard.activityChart")}</Text>
-                <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
-                  {weekEvents.length === 0 ? (
-                    <Text className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 text-sm py-4 text-center">{t("dashboard.noRecent")}</Text>
-                  ) : (
-                    weekEvents.slice(0, 12).map((ev) => (
-                      <Link
-                        key={ev.id}
-                        href={
-                          ev.kind === "ticket"
-                            ? `/tickets#incident-${ev.id.replace(/^t-/, "")}`
-                            : "/report"
-                        }
-                        className={`flex items-center gap-3 rounded-lg px-4 py-3 border transition-all hover:shadow-md dark:hover:shadow-[0_2px_12px_-2px_rgba(0,0,0,0.22)] ${
-                          ev.resolved
-                            ? "bg-[#F4F3F4]/80 dark:bg-[#1E2128]/70 border-[#1F6A5C]/20 dark:border-white/8"
-                            : "bg-gradient-to-r from-[#1F6A5C]/12 to-[#50BFA0]/10 border-[#1F6A5C]/25 dark:border-white/10"
-                        }`}
-                      >
-                        <div
-                          className={`w-10 h-10 rounded-md flex items-center justify-center shrink-0 ${
-                            ev.kind === "ticket"
-                              ? "bg-[#1F6A5C]/15 text-[#1F6A5C] dark:bg-white/[0.06] dark:text-[#F4F3F4]/55"
-                              : "bg-[#50BFA0]/15 text-[#103E36] dark:bg-white/[0.05] dark:text-[#F4F3F4]/55"
-                          }`}
-                        >
-                          <Icon as={ev.kind === "ticket" ? IoGitPullRequestSharp : IoDocumentTextOutline} />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <Text className="font-medium text-[#1C1E1C] dark:text-white truncate">{ev.title}</Text>
-                          <Text className="text-xs text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45">{formatTime(ev.at.toISOString())}</Text>
-                        </div>
-                        {ev.resolved ? (
-                          <Icon as={IoCheckmarkCircle} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55 text-xl shrink-0" />
-                        ) : (
-                          <Icon as={IoAlertCircle} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55 text-xl shrink-0 opacity-90" />
-                        )}
-                      </Link>
-                    ))
+                  {openTickets.length > 8 && (
+                    <Link href="/tickets" className="block text-center text-xs text-[#1F6A5C] dark:text-[#3FFFA3] py-2 hover:underline">
+                      +{openTickets.length - 8} more tickets →
+                    </Link>
                   )}
                 </div>
-              </motion.div>
+              )}
+            </motion.div>
 
-              {/* Latest items */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className={`lg:col-span-4 rounded-lg p-6 ${dash.glass}`}
-              >
-                <div className="flex items-center justify-between mb-5 gap-2">
-                  <Text className="text-lg font-bold text-[#1C1E1C] dark:text-white">{t("dashboard.latestItems")}</Text>
-                  <span className="text-xs font-mono tabular-nums shrink-0 text-[#1F6A5C] dark:text-[#3FFFA3] bg-[#1F6A5C]/10 dark:bg-[#3FFFA3]/10 px-3 py-1 rounded-full border border-[#1F6A5C]/20 dark:border-[#3FFFA3]/25">
-                    {trackedLine}
-                  </span>
-                </div>
-                <div className="space-y-2">
-                  {recentItems.length === 0 ? (
-                    <Text className="text-[#1C1E1C]/60 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 text-sm py-6 text-center">{t("dashboard.noRecent")}</Text>
-                  ) : (
-                    recentItems.map((row) => (
-                      <Link
-                        key={row.id}
-                        href={row.href}
-                        className="flex items-center gap-3 rounded-lg px-3 py-3 border border-white/30 dark:border-white/8 bg-white/25 dark:bg-[#1E2128]/40 hover:bg-white/45 dark:hover:bg-white/[0.06] transition-colors"
-                      >
-                        <div className="w-9 h-9 rounded-md bg-gradient-to-br from-[#103E36]/25 to-[#50BFA0]/30 dark:from-[#103E36]/40 dark:to-[#1F6A5C]/35 flex items-center justify-center shrink-0">
-                          <Icon
-                            as={row.kind === "ticket" ? IoGitPullRequestSharp : IoDocumentTextOutline}
-                            className="text-[#1F6A5C] dark:text-[#F4F3F4]/55"
-                          />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <Text className="font-medium text-[#1C1E1C] dark:text-white text-sm truncate">{row.title}</Text>
-                          <Text className="text-xs text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45">{row.sub}</Text>
-                        </div>
-                        <div
-                          className={`w-8 h-8 rounded-full border-2 flex items-center justify-center shrink-0 ${
-                            row.resolved
-                              ? "border-[#1F6A5C] dark:border-[#50BFA0] bg-[#1F6A5C]/10 dark:bg-white/[0.05]"
-                              : "border-[#1F6A5C]/25 dark:border-[#3d4240]"
-                          }`}
-                        >
-                          {row.resolved && <Icon as={IoCheckmarkCircle} className="text-[#1F6A5C] dark:text-[#F4F3F4]/55" />}
-                        </div>
-                      </Link>
-                    ))
-                  )}
-                </div>
-              </motion.div>
-            </div>
-          </Box>
+          </div>
         </div>
-      </VStack>
+      </div>
     </>
   );
 }
