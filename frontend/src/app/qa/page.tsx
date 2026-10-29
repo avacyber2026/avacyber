@@ -145,6 +145,170 @@ function resolutionLabel(r: string | null) {
 
 type PageTab = "queue" | "scorecards";
 
+// ── Static demo cases ────────────────────────────────────────────────────────
+
+const STATIC_QA_REVIEWS: QaReview[] = [
+  {
+    id: -1,
+    alert_id: 3451,
+    action_id: -1,
+    analyst_email: "alina@ava-cyber.com",
+    analyst_name: "Alina G",
+    ai_verdict: "pass",
+    ai_score: 92,
+    ai_findings: [
+      { category: "Evidence Documentation", passed: true, detail: "Full timeline documented with log timestamps. DNS query logs, proxy logs, and Okta sign-in records all referenced." },
+      { category: "Correct Classification", passed: true, detail: "Classified as True Positive — confirmed active phishing campaign with credential harvesting. Classification is accurate." },
+      { category: "Containment Actions", passed: true, detail: "DNS sinkhole applied, sessions revoked, affected users notified, and email purge completed within 90 minutes of detection." },
+      { category: "IOC Submission", passed: true, detail: "codeshare.io and 185.220.101.47 submitted to VirusTotal, AbuseIPDB, and internal threat intel feed." },
+      { category: "MITRE ATT&CK Coverage", passed: true, detail: "Five techniques mapped: T1566.002, T1078.004, T1556.006, T1071.001, T1090.002." },
+      { category: "Response Time", passed: true, detail: "First containment action (DNS sinkhole) applied 83 minutes after alert trigger. Within 2-hour SLA for HIGH severity." },
+    ],
+    ai_summary: "Report meets QA standards. Analyst correctly identified an active spear-phishing campaign targeting SSO passkey enrollment, documented forensic evidence, applied containment within SLA, and submitted IOCs. All six QA criteria passed.",
+    manager_decision: "approved",
+    manager_email: "manager@ava-cyber.com",
+    manager_notes: "Excellent investigation. Fast containment and thorough IOC documentation.",
+    reviewed_at: "2026-09-23T09:00:00Z",
+    created_at: "2026-09-22T12:00:00Z",
+    rule_name: "Social Engineering — CreateSSOPasskey",
+    severity: "high",
+    source_ip: "185.220.101.47",
+    username: "j.harris@ava-cyber.com",
+    hostname: "WKSTN-042",
+    alert_description: "Anomalous DNS queries to lookalike SSO domain during passkey rollout. Two users submitted credentials to phishing page.",
+    resolution_type: "true_positive",
+    analyst_notes: "Confirmed active phishing campaign targeting SSO passkey enrollment. Three users redirected to codeshare.io. j.harris and m.petrov submitted credentials; both sessions revoked at IdP. WebAuthn origin binding prevented passkey registration. DNS sinkhole applied 10:37 UTC. IOCs submitted to threat intel. Classification: True Positive.",
+    time_to_action_minutes: 83,
+    action_at: "2026-09-22T10:37:00Z",
+  },
+  {
+    id: -2,
+    alert_id: 3452,
+    action_id: -2,
+    analyst_email: "aleksandra@ava-cyber.com",
+    analyst_name: "Aleksandra S",
+    ai_verdict: "flag",
+    ai_score: 74,
+    ai_findings: [
+      { category: "Evidence Documentation", passed: true, detail: "Sysmon Event ID 1 process chain recovered. All five command-line entries documented with timestamps." },
+      { category: "Correct Classification", passed: true, detail: "Classified as Benign — account creation triggered by .NET 1.1 MSI installer. Classification is accurate given GPO logon restrictions." },
+      { category: "Root Cause Analysis", passed: true, detail: "Full installer chain traced: msiexec → aspnet_regiis.exe → net.exe. Change management ticket CM-2026-0514 confirmed." },
+      { category: "Follow-up Ticket", passed: false, detail: "Analyst recommended BillingCore migration off .NET 1.1 but did not create a follow-up tracking ticket. Outstanding recommendation is untracked." },
+      { category: "Response Time", passed: true, detail: "Alert triaged within 37 minutes of trigger. Within 2-hour SLA for MEDIUM severity." },
+      { category: "Risk Monitoring", passed: false, detail: "GPO logon restriction noted but no monitoring rule created for the ASPNET privileged account. Privileged accounts should be actively tracked." },
+    ],
+    ai_summary: "Root cause correctly identified and classification is accurate. Two gaps: BillingCore migration recommendation has no follow-up ticket, and no monitoring alert was created for the ASPNET account. Flagged for manager review.",
+    manager_decision: null,
+    manager_email: null,
+    manager_notes: null,
+    reviewed_at: "2026-05-28T08:30:00Z",
+    created_at: "2026-05-27T17:00:00Z",
+    rule_name: "Privileged Account Created — ASPNET",
+    severity: "medium",
+    source_ip: null,
+    username: "NT AUTHORITY\\SYSTEM",
+    hostname: "WIN-PROD-SVR-04",
+    alert_description: "New local administrator account ASPNET created on production server WIN-PROD-SVR-04 by SYSTEM process.",
+    resolution_type: "benign",
+    analyst_notes: "Root cause confirmed — ASPNET account created by .NET 1.1 MSI installer via aspnet_regiis.exe chain. Interactive logon blocked by GPO. No domain privileges. Patching task CM-2026-0514 confirmed. Classification: Benign. Recommend BillingCore migration off .NET 1.1.",
+    time_to_action_minutes: 37,
+    action_at: "2026-05-27T15:47:00Z",
+  },
+  {
+    id: -3,
+    alert_id: 3458,
+    action_id: -3,
+    analyst_email: "alina@ava-cyber.com",
+    analyst_name: "Alina G",
+    ai_verdict: "pass",
+    ai_score: 88,
+    ai_findings: [
+      { category: "Evidence Documentation", passed: true, detail: "847 failed authentication attempts logged with source IP, timestamps, and target accounts. Firewall and auth logs cited." },
+      { category: "Correct Classification", passed: true, detail: "Classified as True Positive. Credential stuffing from known threat infrastructure. Classification is accurate." },
+      { category: "Containment Actions", passed: true, detail: "Source IP 185.183.32.41 blocked at perimeter firewall within 18 minutes. No successful logins confirmed via Okta." },
+      { category: "Impact Assessment", passed: true, detail: "All 847 attempts blocked by MFA/conditional access policy. Zero successful authentications confirmed." },
+      { category: "Response Time", passed: true, detail: "Perimeter block applied 18 minutes post-alert. Well within 1-hour SLA for HIGH severity." },
+      { category: "Threat Intel Enrichment", passed: false, detail: "Source IP not checked against threat intel feeds. AbuseIPDB lookup would have confirmed prior reports for 185.183.32.41." },
+    ],
+    ai_summary: "Solid investigation with correct classification and fast containment. Minor gap: no threat intel lookup performed on the source IP. All critical criteria met. Recommend approval.",
+    manager_decision: "approved",
+    manager_email: "manager@ava-cyber.com",
+    manager_notes: "Good work on fast containment. Noted the threat intel gap — added to analyst training backlog.",
+    reviewed_at: "2026-10-12T14:00:00Z",
+    created_at: "2026-10-11T09:45:00Z",
+    rule_name: "Brute Force — O365 Auth (High Volume)",
+    severity: "high",
+    source_ip: "185.183.32.41",
+    username: "multiple accounts",
+    hostname: "o365.ava-cyber.com",
+    alert_description: "847 failed authentication attempts against O365 tenant from single IP in 4-minute window. Source geo: RU. Possible credential stuffing attack.",
+    resolution_type: "true_positive",
+    analyst_notes: "Detected 847 failed auth attempts against o365.ava-cyber.com from 185.183.32.41 (RU) over 4 minutes. All blocked by MFA/CAP. Zero successful logins via Okta. Source IP blocked at perimeter firewall 09:03 UTC. No breach. Classification: True Positive — blocked credential stuffing attack.",
+    time_to_action_minutes: 18,
+    action_at: "2026-10-11T09:03:00Z",
+  },
+  {
+    id: -4,
+    alert_id: 3461,
+    action_id: -4,
+    analyst_email: "aleksandra@ava-cyber.com",
+    analyst_name: "Aleksandra S",
+    ai_verdict: "fail",
+    ai_score: 38,
+    ai_findings: [
+      { category: "Evidence Documentation", passed: false, detail: "No memory dump collected. No file hashes recorded. Process tree not fully documented. Evidence is insufficient for a ransomware staging alert." },
+      { category: "Correct Classification", passed: false, detail: "Classified as False Positive with no supporting evidence. Rundll32 spawning cmd.exe/powershell with encoded payloads is high-confidence ransomware staging (T1055, T1059). Requires full investigation before FP closure." },
+      { category: "Endpoint Isolation", passed: false, detail: "WKSTN-087 was not isolated during investigation. If active staging occurred, lateral movement may have proceeded unchecked." },
+      { category: "Forensic Collection", passed: false, detail: "No EDR snapshot, no memory acquisition, no Sysmon timeline exported. Forensic baseline entirely missing." },
+      { category: "Response Time", passed: false, detail: "3 hours 14 minutes to action. SLA for CRITICAL alerts is 30 minutes. SLA breach of 164 minutes." },
+      { category: "MITRE ATT&CK Coverage", passed: false, detail: "No MITRE mapping provided. Applicable techniques: T1055 (Process Injection), T1059 (Scripting Interpreter), T1486 (Data Encrypted for Impact)." },
+    ],
+    ai_summary: "FAIL — Critical QA deficiencies. Ransomware staging alert closed as False Positive without adequate forensic evidence. Endpoint not isolated, no artifacts collected, SLA breached by 164 minutes, no MITRE mapping. This case requires immediate re-investigation with endpoint isolation and full forensic collection.",
+    manager_decision: null,
+    manager_email: null,
+    manager_notes: null,
+    reviewed_at: "2026-10-15T11:20:00Z",
+    created_at: "2026-10-14T16:00:00Z",
+    rule_name: "Ransomware Staging — rundll32 Anomaly",
+    severity: "critical",
+    source_ip: null,
+    username: "s.white@ava-cyber.com",
+    hostname: "WKSTN-087",
+    alert_description: "rundll32.exe spawned unusual child processes including cmd.exe and powershell.exe with encoded payloads on WKSTN-087. Consistent with ransomware staging or process injection.",
+    resolution_type: "false_positive",
+    analyst_notes: "Checked process monitor briefly — no malicious files found on quick scan. Closing as False Positive.",
+    time_to_action_minutes: 194,
+    action_at: "2026-10-14T19:14:00Z",
+  },
+];
+
+const STATIC_QA_SCORECARDS: Scorecard[] = [
+  {
+    analyst_email: "alina@ava-cyber.com",
+    analyst_name: "Alina G",
+    total_reviews: 2,
+    pass_count: 2,
+    flag_count: 0,
+    fail_count: 0,
+    avg_score: 90,
+    avg_time_min: 51,
+    approved_count: 2,
+    overridden_count: 0,
+  },
+  {
+    analyst_email: "aleksandra@ava-cyber.com",
+    analyst_name: "Aleksandra S",
+    total_reviews: 2,
+    pass_count: 0,
+    flag_count: 1,
+    fail_count: 1,
+    avg_score: 56,
+    avg_time_min: 116,
+    approved_count: 0,
+    overridden_count: 0,
+  },
+];
+
 // ── Main ─────────────────────────────────────────────────────────────────────
 
 export default function QaPage() {
@@ -156,7 +320,6 @@ export default function QaPage() {
   const [tab, setTab] = useState<PageTab>("queue");
   const [reviews, setReviews] = useState<QaReview[]>([]);
   const [scorecards, setScorecards] = useState<Scorecard[]>([]);
-  const [stats, setStats] = useState<QaStats | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Filter state
@@ -186,14 +349,12 @@ export default function QaPage() {
       if (verdictFilter !== "all") params.verdict = verdictFilter;
       if (statusFilter !== "all") params.status = statusFilter;
 
-      const [reviewsRes, scorecardsRes, statsRes] = await Promise.all([
+      const [reviewsRes, scorecardsRes] = await Promise.all([
         api.get("/qa/queue", { params }),
         api.get("/qa/scorecards"),
-        api.get("/qa/stats"),
       ]);
       setReviews(reviewsRes.data ?? []);
       setScorecards(scorecardsRes.data ?? []);
-      setStats(statsRes.data);
     } catch {
       // silently fail
     } finally {
@@ -226,7 +387,35 @@ export default function QaPage() {
 
   if (!isAuthenticated && !isLoading) return null;
 
-  const pendingCount = reviews.filter(r => r.manager_decision === null).length;
+  // Merge static demo cases with live API data
+  const allReviews = [...STATIC_QA_REVIEWS, ...reviews];
+
+  // Apply filters to merged set
+  const filteredReviews = allReviews.filter(r => {
+    if (verdictFilter !== "all" && r.ai_verdict !== verdictFilter) return false;
+    if (statusFilter === "pending" && r.manager_decision !== null) return false;
+    if (statusFilter === "reviewed" && r.manager_decision === null) return false;
+    return true;
+  });
+
+  // Merge scorecards — static entries are overridden by live entries if same email
+  const liveEmails = new Set(scorecards.map(s => s.analyst_email));
+  const allScorecards = [
+    ...STATIC_QA_SCORECARDS.filter(s => !liveEmails.has(s.analyst_email)),
+    ...scorecards,
+  ];
+
+  const stats = {
+    total: allReviews.length,
+    pending: allReviews.filter(r => r.manager_decision === null).length,
+    verdictBreakdown: {
+      pass: allReviews.filter(r => r.ai_verdict === "pass").length,
+      flag: allReviews.filter(r => r.ai_verdict === "flag").length,
+      fail: allReviews.filter(r => r.ai_verdict === "fail").length,
+    },
+  };
+
+  const pendingCount = allReviews.filter(r => r.manager_decision === null).length;
 
   return (
     <>
@@ -339,15 +528,15 @@ export default function QaPage() {
 
                   {loading ? (
                     <div className="space-y-3">{[1,2,3,4].map(i => <div key={i} className="h-20 rounded-xl bg-[#50BFA0]/15 dark:bg-[#1E2128]/60 animate-pulse" />)}</div>
-                  ) : reviews.length === 0 ? (
+                  ) : filteredReviews.length === 0 ? (
                     <div className="flex flex-col items-center py-16 text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45">
                       <IoCheckmarkCircle size={48} className="mb-3 opacity-30" />
-                      <div className="font-semibold text-[#1F6A5C] dark:text-[#F4F3F4]/60 mb-1">No reviews found</div>
-                      <div className="text-sm">Analyst actions will generate QA reviews automatically when alerts are resolved.</div>
+                      <div className="font-semibold text-[#1F6A5C] dark:text-[#F4F3F4]/60 mb-1">No reviews match filter</div>
+                      <div className="text-sm">Try changing the verdict or status filter above.</div>
                     </div>
                   ) : (
                     <div className="space-y-3">
-                      {reviews.map(r => (
+                      {filteredReviews.map(r => (
                         <div key={r.id} className={`rounded-xl border transition-colors ${
                           r.ai_verdict === "fail" ? "border-red-500/20 bg-red-500/3 dark:bg-red-500/5"
                           : r.ai_verdict === "flag" ? "border-amber-400/20 bg-amber-400/3 dark:bg-amber-400/5"
@@ -488,12 +677,6 @@ export default function QaPage() {
                   <h2 className="font-bold text-[#1C1E1C] dark:text-white text-lg mb-5">Analyst Scorecards</h2>
                   {loading ? (
                     <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-16 rounded-xl bg-[#50BFA0]/15 dark:bg-[#1E2128]/60 animate-pulse" />)}</div>
-                  ) : scorecards.length === 0 ? (
-                    <div className="flex flex-col items-center py-16 text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45">
-                      <MdOutlineShield size={48} className="mb-3 opacity-30" />
-                      <div className="font-semibold">No scorecards yet</div>
-                      <div className="text-sm">Scorecards populate once analysts resolve alerts.</div>
-                    </div>
                   ) : (
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
@@ -510,7 +693,7 @@ export default function QaPage() {
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-white/30 dark:divide-[#103E36]/60">
-                          {scorecards.map((s, i) => {
+                          {allScorecards.map((s, i) => {
                             const total = parseInt(String(s.total_reviews));
                             const pass = parseInt(String(s.pass_count));
                             const passRate = total > 0 ? Math.round((pass / total) * 100) : 0;
