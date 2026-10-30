@@ -28,6 +28,7 @@ import {
   IoSearch,
   IoEllipsisHorizontal,
   IoChevronDown,
+  IoGitPullRequestSharp,
 } from "react-icons/io5";
 import { FaShieldAlt, FaServer, FaCloud, FaNetworkWired, FaDesktop } from "react-icons/fa";
 
@@ -839,6 +840,74 @@ export default function SiemPage() {
     setResolveModal(id);
     setResolveNotes("");
     setResolveType("true_positive");
+  }
+
+  // Escalate to ticket
+  const [escalateAlert, setEscalateAlert] = useState<SiemAlert | null>(null);
+  const [escalateSubject, setEscalateSubject] = useState("");
+  const [escalateBody, setEscalateBody] = useState("");
+  const [escalateRecipient, setEscalateRecipient] = useState("");
+  const [escalatePriority, setEscalateTopPriority] = useState<"Low" | "Medium" | "High" | "Critical">("Medium");
+  const [escalating, setEscalating] = useState(false);
+  const [teamUsers, setTeamUsers] = useState<{ email: string; name: string }[]>([]);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    api.get("/users").then(r => {
+      const users = (r.data ?? []) as { email: string; firstName?: string; lastName?: string; first_name?: string; last_name?: string }[];
+      setTeamUsers(users.map(u => ({
+        email: u.email,
+        name: [u.firstName ?? u.first_name ?? "", u.lastName ?? u.last_name ?? ""].filter(Boolean).join(" ") || u.email,
+      })));
+    }).catch(() => {});
+  }, [isAuthenticated]);
+
+  function openEscalateModal(alert: SiemAlert) {
+    const sevToPriority: Record<string, "Low" | "Medium" | "High" | "Critical"> = {
+      critical: "Critical", high: "High", medium: "Medium", low: "Low", info: "Low",
+    };
+    setEscalateAlert(alert);
+    setEscalateSubject(`Activity Verification: ${alert.rule_name}`);
+    const lines = [
+      `Unusual activity was detected on your account and requires your verification.`,
+      ``,
+      `Alert: ${alert.rule_name}`,
+      alert.description ? `Details: ${alert.description}` : null,
+      alert.source_ip ? `Source IP: ${alert.source_ip}` : null,
+      alert.hostname ? `Hostname: ${alert.hostname}` : null,
+      ``,
+      `Please confirm whether this activity was performed by you. If not, contact the security team immediately.`,
+    ].filter(l => l !== null).join("\n");
+    setEscalateBody(lines);
+    setEscalateTopPriority(sevToPriority[alert.severity?.toLowerCase()] ?? "Medium");
+    const guessEmail = alert.username?.includes("@") ? alert.username : "";
+    setEscalateRecipient(guessEmail);
+  }
+
+  async function submitEscalate() {
+    if (!escalateAlert || !escalateRecipient) return;
+    setEscalating(true);
+    try {
+      const fd = new FormData();
+      fd.append("toWhom", "User");
+      fd.append("subject", escalateSubject);
+      fd.append("description", escalateBody);
+      fd.append("priority", escalatePriority);
+      fd.append("type", "Activity Verification");
+      fd.append("users", escalateRecipient);
+      fd.append("siemAlertId", String(escalateAlert.id));
+      const res = await api.post("/tickets", fd);
+      const ticketId: number = res.data.ticket?.id ?? res.data.id;
+      setAlerts(prev => prev.map(a => a.id === escalateAlert.id ? { ...a, ticket_id: ticketId } : a));
+      setSelectedAlert(p => p && p.id === escalateAlert.id ? { ...p, ticket_id: ticketId } : p);
+      toast.success(`Ticket #${ticketId} created`);
+      setEscalateAlert(null);
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { error?: string } } })?.response?.data?.error ?? "Failed to create ticket";
+      toast.error(msg);
+    } finally {
+      setEscalating(false);
+    }
   }
 
   async function triageAlert(id: number) {
@@ -1858,6 +1927,70 @@ export default function SiemPage() {
         )}
       </AnimatePresence>
 
+      {/* ── Escalate to Ticket Modal ── */}
+      <AnimatePresence>
+        {escalateAlert && (
+          <>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setEscalateAlert(null)}
+              className="fixed inset-0 bg-black/50 z-50" />
+            <motion.div initial={{ opacity: 0, scale: 0.96, y: 12 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.96, y: 12 }}
+              className="fixed z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white dark:bg-[#1a1c1a] rounded-2xl shadow-2xl border border-[#1F6A5C]/15 dark:border-white/10 overflow-hidden">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-[#1F6A5C]/12 dark:border-white/8">
+                <div>
+                  <h3 className="font-bold text-[#1C1E1C] dark:text-white">Escalate to Ticket</h3>
+                  <p className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40 mt-0.5">Send an Activity Verification request to the user</p>
+                </div>
+                <button onClick={() => setEscalateAlert(null)} className="p-1.5 rounded-lg hover:bg-[#F4F3F4] dark:hover:bg-white/[0.06] text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40">
+                  <MdClose size={18} />
+                </button>
+              </div>
+              <div className="px-6 py-5 space-y-4">
+                <div>
+                  <label className="text-xs font-semibold text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mb-1.5 block">Subject</label>
+                  <input value={escalateSubject} onChange={e => setEscalateSubject(e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg text-sm border border-[#1F6A5C]/20 dark:border-white/10 bg-[#F4F3F4]/50 dark:bg-[#1E2128] text-[#1C1E1C] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/30" />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mb-1.5 block">Send To (email)</label>
+                  <input value={escalateRecipient} onChange={e => setEscalateRecipient(e.target.value)}
+                    placeholder="user@company.com"
+                    list="escalate-users-list"
+                    className="w-full px-3 py-2 rounded-lg text-sm border border-[#1F6A5C]/20 dark:border-white/10 bg-[#F4F3F4]/50 dark:bg-[#1E2128] text-[#1C1E1C] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/30" />
+                  <datalist id="escalate-users-list">
+                    {teamUsers.map(u => <option key={u.email} value={u.email} label={u.name} />)}
+                  </datalist>
+                </div>
+                <div className="flex gap-3">
+                  <div className="flex-1">
+                    <label className="text-xs font-semibold text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mb-1.5 block">Priority</label>
+                    <select value={escalatePriority} onChange={e => setEscalateTopPriority(e.target.value as "Low" | "Medium" | "High" | "Critical")}
+                      className="w-full px-3 py-2 rounded-lg text-sm border border-[#1F6A5C]/20 dark:border-white/10 bg-[#F4F3F4]/50 dark:bg-[#1E2128] text-[#1C1E1C] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/30">
+                      {["Low", "Medium", "High", "Critical"].map(p => <option key={p}>{p}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mb-1.5 block">Message</label>
+                  <textarea value={escalateBody} onChange={e => setEscalateBody(e.target.value)} rows={5}
+                    className="w-full px-3 py-2 rounded-lg text-sm border border-[#1F6A5C]/20 dark:border-white/10 bg-[#F4F3F4]/50 dark:bg-[#1E2128] text-[#1C1E1C] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/30 resize-none" />
+                </div>
+              </div>
+              <div className="px-6 py-4 border-t border-[#1F6A5C]/12 dark:border-white/8 flex gap-2 justify-end">
+                <button onClick={() => setEscalateAlert(null)}
+                  className="px-4 py-2 rounded-lg text-sm font-semibold border border-[#1F6A5C]/20 dark:border-white/10 text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 hover:bg-[#F4F3F4] dark:hover:bg-white/[0.06] transition-colors">
+                  Cancel
+                </button>
+                <button onClick={submitEscalate} disabled={escalating || !escalateRecipient.trim() || !escalateSubject.trim()}
+                  className="px-5 py-2 rounded-lg text-sm font-semibold bg-[#1F6A5C] text-white hover:bg-[#1F6A5C]/90 transition-colors disabled:opacity-50">
+                  {escalating ? "Creating…" : "Create Ticket"}
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
       {/* ── Alert Detail Panel ── */}
       <AnimatePresence>
         {selectedAlert && (
@@ -2113,7 +2246,7 @@ export default function SiemPage() {
               </div>
 
               {/* Action footer */}
-              <div className="px-6 py-4 border-t border-[#1F6A5C]/12 dark:border-white/8 flex gap-2 shrink-0">
+              <div className="px-6 py-4 border-t border-[#1F6A5C]/12 dark:border-white/8 flex gap-2 shrink-0 flex-wrap">
                 {selectedAlert.status === "open" && (
                   <button onClick={() => { updateAlertStatus(selectedAlert.id, "investigating"); setSelectedAlert(p => p ? { ...p, status: "investigating" } : p); }}
                     className="flex-1 py-2 rounded-lg text-sm font-semibold bg-amber-400/10 border border-amber-400/25 text-amber-400 hover:bg-amber-400/20 transition-colors">
@@ -2126,8 +2259,18 @@ export default function SiemPage() {
                     <span className="flex items-center justify-center gap-1.5"><MdCheck size={15} /> Resolve</span>
                   </button>
                 )}
-                {selectedAlert.status === "resolved" && (
-                  <p className="flex-1 text-center text-sm text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 py-2">Alert resolved</p>
+                {selectedAlert.ticket_id ? (
+                  <a href="/tickets" className="flex-1 py-2 rounded-lg text-sm font-semibold bg-blue-500/10 border border-blue-500/25 text-blue-400 hover:bg-blue-500/20 transition-colors text-center">
+                    Ticket #{selectedAlert.ticket_id} ↗
+                  </a>
+                ) : (
+                  <button onClick={() => openEscalateModal(selectedAlert)}
+                    className="flex-1 py-2 rounded-lg text-sm font-semibold bg-[#1F6A5C]/10 border border-[#1F6A5C]/25 text-[#1F6A5C] dark:text-[#3FFFA3] dark:bg-[#3FFFA3]/8 dark:border-[#3FFFA3]/20 hover:bg-[#1F6A5C]/20 dark:hover:bg-[#3FFFA3]/15 transition-colors">
+                    <span className="flex items-center justify-center gap-1.5"><IoGitPullRequestSharp size={14} /> Escalate to Ticket</span>
+                  </button>
+                )}
+                {selectedAlert.status === "resolved" && !selectedAlert.ticket_id && (
+                  <p className="w-full text-center text-sm text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 py-1">Alert resolved</p>
                 )}
               </div>
             </motion.div>
