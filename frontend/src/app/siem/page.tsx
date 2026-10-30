@@ -1946,34 +1946,36 @@ export default function SiemPage() {
                   <MdClose size={18} />
                 </button>
               </div>
-              {/* Scrollable body */}
-              <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
+              {/* Body — fixed fields + growing textarea */}
+              <div className="flex-1 min-h-0 flex flex-col px-6 py-5 gap-4">
                 <div>
                   <label className="text-xs font-semibold text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mb-1.5 block">Subject</label>
                   <input value={escalateSubject} onChange={e => setEscalateSubject(e.target.value)}
                     className="w-full px-3 py-2 rounded-lg text-sm border border-[#1F6A5C]/20 dark:border-white/10 bg-[#F4F3F4]/50 dark:bg-[#1E2128] text-[#1C1E1C] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/30" />
                 </div>
-                <div>
-                  <label className="text-xs font-semibold text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mb-1.5 block">Send To (email)</label>
-                  <input value={escalateRecipient} onChange={e => setEscalateRecipient(e.target.value)}
-                    placeholder="user@company.com"
-                    list="escalate-users-list"
-                    className="w-full px-3 py-2 rounded-lg text-sm border border-[#1F6A5C]/20 dark:border-white/10 bg-[#F4F3F4]/50 dark:bg-[#1E2128] text-[#1C1E1C] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/30" />
-                  <datalist id="escalate-users-list">
-                    {teamUsers.map(u => <option key={u.email} value={u.email} label={u.name} />)}
-                  </datalist>
+                <div className="flex gap-3">
+                  <div className="flex-1">
+                    <label className="text-xs font-semibold text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mb-1.5 block">Send To (email)</label>
+                    <input value={escalateRecipient} onChange={e => setEscalateRecipient(e.target.value)}
+                      placeholder="user@company.com"
+                      list="escalate-users-list"
+                      className="w-full px-3 py-2 rounded-lg text-sm border border-[#1F6A5C]/20 dark:border-white/10 bg-[#F4F3F4]/50 dark:bg-[#1E2128] text-[#1C1E1C] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/30" />
+                    <datalist id="escalate-users-list">
+                      {teamUsers.map(u => <option key={u.email} value={u.email} label={u.name} />)}
+                    </datalist>
+                  </div>
+                  <div className="w-32 shrink-0">
+                    <label className="text-xs font-semibold text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mb-1.5 block">Priority</label>
+                    <select value={escalatePriority} onChange={e => setEscalateTopPriority(e.target.value as "Low" | "Medium" | "High" | "Critical")}
+                      className="w-full px-3 py-2 rounded-lg text-sm border border-[#1F6A5C]/20 dark:border-white/10 bg-[#F4F3F4]/50 dark:bg-[#1E2128] text-[#1C1E1C] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/30">
+                      {["Low", "Medium", "High", "Critical"].map(p => <option key={p}>{p}</option>)}
+                    </select>
+                  </div>
                 </div>
-                <div>
-                  <label className="text-xs font-semibold text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mb-1.5 block">Priority</label>
-                  <select value={escalatePriority} onChange={e => setEscalateTopPriority(e.target.value as "Low" | "Medium" | "High" | "Critical")}
-                    className="w-full px-3 py-2 rounded-lg text-sm border border-[#1F6A5C]/20 dark:border-white/10 bg-[#F4F3F4]/50 dark:bg-[#1E2128] text-[#1C1E1C] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/30">
-                    {["Low", "Medium", "High", "Critical"].map(p => <option key={p}>{p}</option>)}
-                  </select>
-                </div>
-                <div>
+                <div className="flex-1 min-h-0 flex flex-col">
                   <label className="text-xs font-semibold text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mb-1.5 block">Message</label>
-                  <textarea value={escalateBody} onChange={e => setEscalateBody(e.target.value)} rows={4}
-                    className="w-full px-3 py-2 rounded-lg text-sm border border-[#1F6A5C]/20 dark:border-white/10 bg-[#F4F3F4]/50 dark:bg-[#1E2128] text-[#1C1E1C] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/30 resize-none" />
+                  <textarea value={escalateBody} onChange={e => setEscalateBody(e.target.value)}
+                    className="flex-1 min-h-0 w-full px-3 py-2 rounded-lg text-sm border border-[#1F6A5C]/20 dark:border-white/10 bg-[#F4F3F4]/50 dark:bg-[#1E2128] text-[#1C1E1C] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/30 resize-none" />
                 </div>
               </div>
               {/* Footer — always visible */}
