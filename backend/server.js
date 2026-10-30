@@ -7,6 +7,7 @@ const { WebSocketServer } = require('ws');
 const jwt = require('jsonwebtoken');
 const router = require('./index');
 const { addClient, removeClient } = require('./ws/notificationHub');
+const { addChatClient, removeChatClient } = require('./ws/chatHub');
 
 const app = express();
 const PORT = process.env.PORT || 3020;
@@ -54,6 +55,28 @@ wss.on('connection', (ws, req) => {
 
   ws.on('close', () => {
     if (email) removeClient(email, ws);
+  });
+});
+
+const chatWss = new WebSocketServer({ server, path: '/ws/chat' });
+
+chatWss.on('connection', (ws, req) => {
+  let email = null;
+  try {
+    const host = req.headers.host || 'localhost';
+    const url = new URL(req.url || '/', `http://${host}`);
+    const token = url.searchParams.get('token');
+    if (!token) { ws.close(); return; }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+    if (!decoded?.email) { ws.close(); return; }
+    email = String(decoded.email);
+    addChatClient(email, ws);
+  } catch (_) {
+    try { ws.close(); } catch (__) {}
+    return;
+  }
+  ws.on('close', () => {
+    if (email) removeChatClient(email, ws);
   });
 });
 

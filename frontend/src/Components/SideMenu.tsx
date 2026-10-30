@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
 import { FaUserCog, FaChartLine, FaBook, FaPhone, FaBell, FaUser, FaUserShield } from "react-icons/fa";
-import { IoGitPullRequestSharp, IoFishOutline } from "react-icons/io5";
+import { IoGitPullRequestSharp, IoFishOutline, IoChatbubbles } from "react-icons/io5";
 import { MdSecurity } from "react-icons/md";
 import type { UserStatus } from "@/types";
 import { useAuth } from "@/hooks/useAuth";
@@ -19,6 +19,7 @@ function getBaseLinks(t: (key: string) => string, unreadNotifications = 0): Side
     { name: t("sidebar.profile"), icon: <FaUser />, link: "/profile" },
     { name: t("sidebar.userGuide"), icon: <FaBook />, link: "/guide" },
     { name: t("sidebar.securityOnCall"), icon: <FaPhone />, link: "/on-call" },
+    { name: "Chat", icon: <IoChatbubbles size={15} />, link: "/chat" },
     { name: t("sidebar.notifications"), icon: <FaBell />, link: "/notifications", badge: unreadNotifications },
   ];
 }

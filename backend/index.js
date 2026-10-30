@@ -13,6 +13,7 @@ const siemRoutes = require('./routes/siem');
 const qaRoutes   = require('./routes/qa');
 const ingestRoutes = require('./routes/ingest');
 const phishingRoutes = require('./routes/phishing');
+const chatRoutes = require('./routes/chat');
 
 const router = express.Router();
 
@@ -36,5 +37,6 @@ router.use('/siem', siemRoutes);
 router.use('/qa',   qaRoutes);
 router.use('/v1/ingest', ingestRoutes);
 router.use('/phishing', phishingRoutes);
+router.use('/chat', chatRoutes);
 
 module.exports = router;
