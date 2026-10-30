@@ -1935,8 +1935,10 @@ export default function SiemPage() {
               onClick={() => setEscalateAlert(null)}
               className="fixed inset-0 bg-black/50 z-[60]" />
             <motion.div initial={{ opacity: 0, scale: 0.96, y: 12 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.96, y: 12 }}
-              className="fixed z-[61] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white dark:bg-[#1a1c1a] rounded-2xl shadow-2xl border border-[#1F6A5C]/15 dark:border-white/10 overflow-hidden">
-              <div className="flex items-center justify-between px-6 py-4 border-b border-[#1F6A5C]/12 dark:border-white/8">
+              className="fixed z-[61] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-lg bg-white dark:bg-[#1a1c1a] rounded-2xl shadow-2xl border border-[#1F6A5C]/15 dark:border-white/10 flex flex-col"
+              style={{ maxHeight: "calc(100vh - 48px)" }}>
+              {/* Header — always visible */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-[#1F6A5C]/12 dark:border-white/8 shrink-0">
                 <div>
                   <h3 className="font-bold text-[#1C1E1C] dark:text-white">Escalate to Ticket</h3>
                   <p className="text-xs text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40 mt-0.5">Send an Activity Verification request to the user</p>
@@ -1945,7 +1947,8 @@ export default function SiemPage() {
                   <MdClose size={18} />
                 </button>
               </div>
-              <div className="px-6 py-5 space-y-4">
+              {/* Scrollable body */}
+              <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
                 <div>
                   <label className="text-xs font-semibold text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mb-1.5 block">Subject</label>
                   <input value={escalateSubject} onChange={e => setEscalateSubject(e.target.value)}
@@ -1961,22 +1964,21 @@ export default function SiemPage() {
                     {teamUsers.map(u => <option key={u.email} value={u.email} label={u.name} />)}
                   </datalist>
                 </div>
-                <div className="flex gap-3">
-                  <div className="flex-1">
-                    <label className="text-xs font-semibold text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mb-1.5 block">Priority</label>
-                    <select value={escalatePriority} onChange={e => setEscalateTopPriority(e.target.value as "Low" | "Medium" | "High" | "Critical")}
-                      className="w-full px-3 py-2 rounded-lg text-sm border border-[#1F6A5C]/20 dark:border-white/10 bg-[#F4F3F4]/50 dark:bg-[#1E2128] text-[#1C1E1C] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/30">
-                      {["Low", "Medium", "High", "Critical"].map(p => <option key={p}>{p}</option>)}
-                    </select>
-                  </div>
+                <div>
+                  <label className="text-xs font-semibold text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mb-1.5 block">Priority</label>
+                  <select value={escalatePriority} onChange={e => setEscalateTopPriority(e.target.value as "Low" | "Medium" | "High" | "Critical")}
+                    className="w-full px-3 py-2 rounded-lg text-sm border border-[#1F6A5C]/20 dark:border-white/10 bg-[#F4F3F4]/50 dark:bg-[#1E2128] text-[#1C1E1C] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/30">
+                    {["Low", "Medium", "High", "Critical"].map(p => <option key={p}>{p}</option>)}
+                  </select>
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mb-1.5 block">Message</label>
-                  <textarea value={escalateBody} onChange={e => setEscalateBody(e.target.value)} rows={5}
+                  <textarea value={escalateBody} onChange={e => setEscalateBody(e.target.value)} rows={4}
                     className="w-full px-3 py-2 rounded-lg text-sm border border-[#1F6A5C]/20 dark:border-white/10 bg-[#F4F3F4]/50 dark:bg-[#1E2128] text-[#1C1E1C] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/30 resize-none" />
                 </div>
               </div>
-              <div className="px-6 py-4 border-t border-[#1F6A5C]/12 dark:border-white/8 flex gap-2 justify-end">
+              {/* Footer — always visible */}
+              <div className="px-6 py-4 border-t border-[#1F6A5C]/12 dark:border-white/8 flex gap-2 justify-end shrink-0">
                 <button onClick={() => setEscalateAlert(null)}
                   className="px-4 py-2 rounded-lg text-sm font-semibold border border-[#1F6A5C]/20 dark:border-white/10 text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 hover:bg-[#F4F3F4] dark:hover:bg-white/[0.06] transition-colors">
                   Cancel
