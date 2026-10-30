@@ -2,6 +2,7 @@ const express = require('express');
 const pool = require('../db/pool');
 const { authMiddleware, requireAdmin } = require('../middleware/auth');
 const crypto = require('crypto');
+const { runQaForAlert } = require('../services/qaService');
 
 const router = express.Router();
 router.use(authMiddleware);
@@ -217,6 +218,11 @@ router.post('/alerts/:id/resolve', async (req, res) => {
     );
 
     res.json({ ok: true });
+
+    // Fire AI QA in background — doesn't block the response
+    setImmediate(() => {
+      runQaForAlert(alertId).catch(err => console.error('Auto QA failed for alert', alertId, err.message));
+    });
   } catch (err) {
     console.error('SIEM resolve:', err);
     res.status(500).json({ error: 'Failed to resolve alert' });
