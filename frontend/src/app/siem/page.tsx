@@ -2328,7 +2328,13 @@ export default function SiemPage() {
                 {selectedAlertEnh?.investigationSummary && (
                   <div className="rounded-xl border border-[#1F6A5C]/25 bg-[#1F6A5C]/5 p-4">
                     <div className="text-xs font-bold uppercase tracking-wider text-[#1F6A5C] dark:text-[#3FFFA3] mb-3">Full Investigation Report</div>
-                    <div className="text-sm text-[#1C1E1C]/80 dark:text-[#F4F3F4]/60 leading-relaxed whitespace-pre-line">{selectedAlertEnh.investigationSummary}</div>
+                    <div className="text-sm text-[#1C1E1C]/80 dark:text-[#F4F3F4]/60 leading-relaxed space-y-1">
+                      {selectedAlertEnh.investigationSummary.split("\n").map((line, i) =>
+                        /^[━─—=\-]{4,}$/.test(line.trim())
+                          ? <hr key={i} className="border-[#1F6A5C]/20 dark:border-white/10 my-2" />
+                          : <p key={i} className="break-words">{line || " "}</p>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
