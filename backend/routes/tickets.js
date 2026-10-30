@@ -273,6 +273,13 @@ router.post(
         );
         created = result.rows[0];
         const ticketId = created.id;
+        // Link ticket back to the SIEM alert so the panel shows "View Ticket #N"
+        if (siemAlertId) {
+          await client.query(
+            `UPDATE siem_alerts SET ticket_id = $1 WHERE id = $2`,
+            [ticketId, siemAlertId]
+          ).catch(() => {});
+        }
         for (const f of files) {
           await client.query(
             `INSERT INTO ticket_attachments (ticket_id, stored_name, original_name, mime, size_bytes)
