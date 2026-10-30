@@ -913,7 +913,7 @@ export default function SiemPage() {
       fd.append("description", escalateBody);
       fd.append("priority", escalatePriority);
       fd.append("type", "Activity Verification");
-      fd.append("users", escalateRecipient);
+      fd.append("user", escalateRecipient);
       fd.append("siemAlertId", String(escalateAlert.id));
       const res = await api.post("/tickets", fd);
       const ticketId: number = res.data.ticket?.id ?? res.data.id;
