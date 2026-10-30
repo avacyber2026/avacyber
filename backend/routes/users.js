@@ -25,4 +25,26 @@ router.get('/end-users', authMiddleware, requireRole('Security Manager', 'GSOC')
   }
 });
 
+// Get all non-admin users for escalation/notification purposes
+router.get('/', authMiddleware, async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT
+        email,
+        role,
+        NULLIF(TRIM(first_name), '') AS "firstName",
+        NULLIF(TRIM(last_name), '') AS "lastName"
+      FROM users
+      WHERE role != 'Admin'
+      ORDER BY
+        LOWER(COALESCE(TRIM(first_name), '') || ' ' || COALESCE(TRIM(last_name), '')),
+        LOWER(email)
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Get all users error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 module.exports = router;

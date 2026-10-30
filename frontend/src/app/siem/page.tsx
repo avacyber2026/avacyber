@@ -867,15 +867,16 @@ export default function SiemPage() {
   const [escalateRecipient, setEscalateRecipient] = useState("");
   const [escalatePriority, setEscalateTopPriority] = useState<"Low" | "Medium" | "High" | "Critical">("Medium");
   const [escalating, setEscalating] = useState(false);
-  const [teamUsers, setTeamUsers] = useState<{ email: string; name: string }[]>([]);
+  const [teamUsers, setTeamUsers] = useState<{ email: string; name: string; role: string }[]>([]);
 
   useEffect(() => {
     if (!isAuthenticated) return;
     api.get("/users").then(r => {
-      const users = (r.data ?? []) as { email: string; firstName?: string; lastName?: string; first_name?: string; last_name?: string }[];
+      const users = (r.data ?? []) as { email: string; role?: string; firstName?: string; lastName?: string; first_name?: string; last_name?: string }[];
       setTeamUsers(users.map(u => ({
         email: u.email,
         name: [u.firstName ?? u.first_name ?? "", u.lastName ?? u.last_name ?? ""].filter(Boolean).join(" ") || u.email,
+        role: u.role ?? "",
       })));
     }).catch(() => {});
   }, [isAuthenticated]);
@@ -1978,7 +1979,7 @@ export default function SiemPage() {
                       className="w-full px-3 py-2 rounded-lg text-sm border border-[#1F6A5C]/20 dark:border-white/10 bg-[#F4F3F4]/50 dark:bg-[#1E2128] text-[#1C1E1C] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/30">
                       <option value="">— pick a team member —</option>
                       {teamUsers.map(u => (
-                        <option key={u.email} value={u.email}>{u.name} ({u.email})</option>
+                        <option key={u.email} value={u.email}>{u.name} — {u.email} [{u.role}]</option>
                       ))}
                     </select>
                     <p className="text-[10px] text-[#1C1E1C]/40 dark:text-[#F4F3F4]/30 mt-1">Select the person whose account was flagged — they'll receive a verification request in Comms.</p>
