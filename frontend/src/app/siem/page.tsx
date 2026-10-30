@@ -1933,9 +1933,9 @@ export default function SiemPage() {
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setEscalateAlert(null)}
-              className="fixed inset-0 bg-black/50 z-50" />
+              className="fixed inset-0 bg-black/50 z-[60]" />
             <motion.div initial={{ opacity: 0, scale: 0.96, y: 12 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.96, y: 12 }}
-              className="fixed z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white dark:bg-[#1a1c1a] rounded-2xl shadow-2xl border border-[#1F6A5C]/15 dark:border-white/10 overflow-hidden">
+              className="fixed z-[61] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white dark:bg-[#1a1c1a] rounded-2xl shadow-2xl border border-[#1F6A5C]/15 dark:border-white/10 overflow-hidden">
               <div className="flex items-center justify-between px-6 py-4 border-b border-[#1F6A5C]/12 dark:border-white/8">
                 <div>
                   <h3 className="font-bold text-[#1C1E1C] dark:text-white">Escalate to Ticket</h3>
