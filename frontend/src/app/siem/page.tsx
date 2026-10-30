@@ -2246,31 +2246,36 @@ export default function SiemPage() {
               </div>
 
               {/* Action footer */}
-              <div className="px-6 py-4 border-t border-[#1F6A5C]/12 dark:border-white/8 flex gap-2 shrink-0 flex-wrap">
-                {selectedAlert.status === "open" && (
-                  <button onClick={() => { updateAlertStatus(selectedAlert.id, "investigating"); setSelectedAlert(p => p ? { ...p, status: "investigating" } : p); }}
-                    className="flex-1 py-2 rounded-lg text-sm font-semibold bg-amber-400/10 border border-amber-400/25 text-amber-400 hover:bg-amber-400/20 transition-colors">
-                    Mark Investigating
-                  </button>
-                )}
+              <div className="px-6 py-4 border-t border-[#1F6A5C]/12 dark:border-white/8 flex flex-col gap-2 shrink-0">
+                {/* Row 1: status actions */}
                 {selectedAlert.status !== "resolved" && (
-                  <button onClick={() => openResolveModal(selectedAlert.id)}
-                    className="flex-1 py-2 rounded-lg text-sm font-semibold bg-emerald-500/10 border border-emerald-500/25 text-emerald-500 hover:bg-emerald-500/20 transition-colors">
-                    <span className="flex items-center justify-center gap-1.5"><MdCheck size={15} /> Resolve</span>
-                  </button>
+                  <div className="flex gap-2">
+                    {selectedAlert.status === "open" && (
+                      <button onClick={() => { updateAlertStatus(selectedAlert.id, "investigating"); setSelectedAlert(p => p ? { ...p, status: "investigating" } : p); }}
+                        className="flex-1 py-2 rounded-lg text-sm font-semibold bg-amber-400/10 border border-amber-400/25 text-amber-400 hover:bg-amber-400/20 transition-colors">
+                        Mark Investigating
+                      </button>
+                    )}
+                    <button onClick={() => openResolveModal(selectedAlert.id)}
+                      className="flex-1 py-2 rounded-lg text-sm font-semibold bg-emerald-500/10 border border-emerald-500/25 text-emerald-500 hover:bg-emerald-500/20 transition-colors">
+                      <span className="flex items-center justify-center gap-1.5"><MdCheck size={15} /> Resolve</span>
+                    </button>
+                  </div>
                 )}
+                {selectedAlert.status === "resolved" && (
+                  <p className="text-center text-sm text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 py-1">Alert resolved</p>
+                )}
+                {/* Row 2: escalate */}
                 {selectedAlert.ticket_id ? (
-                  <a href="/tickets" className="flex-1 py-2 rounded-lg text-sm font-semibold bg-blue-500/10 border border-blue-500/25 text-blue-400 hover:bg-blue-500/20 transition-colors text-center">
-                    Ticket #{selectedAlert.ticket_id} ↗
+                  <a href="/tickets"
+                    className="w-full py-2 rounded-lg text-sm font-semibold bg-blue-500/10 border border-blue-500/25 text-blue-400 hover:bg-blue-500/20 transition-colors text-center block">
+                    View linked Ticket #{selectedAlert.ticket_id} ↗
                   </a>
                 ) : (
                   <button onClick={() => openEscalateModal(selectedAlert)}
-                    className="flex-1 py-2 rounded-lg text-sm font-semibold bg-[#1F6A5C]/10 border border-[#1F6A5C]/25 text-[#1F6A5C] dark:text-[#3FFFA3] dark:bg-[#3FFFA3]/8 dark:border-[#3FFFA3]/20 hover:bg-[#1F6A5C]/20 dark:hover:bg-[#3FFFA3]/15 transition-colors">
+                    className="w-full py-2 rounded-lg text-sm font-semibold bg-[#1F6A5C]/10 border border-[#1F6A5C]/25 text-[#1F6A5C] dark:text-[#3FFFA3] dark:bg-[#3FFFA3]/8 dark:border-[#3FFFA3]/20 hover:bg-[#1F6A5C]/20 dark:hover:bg-[#3FFFA3]/15 transition-colors">
                     <span className="flex items-center justify-center gap-1.5"><IoGitPullRequestSharp size={14} /> Escalate to Ticket</span>
                   </button>
-                )}
-                {selectedAlert.status === "resolved" && !selectedAlert.ticket_id && (
-                  <p className="w-full text-center text-sm text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 py-1">Alert resolved</p>
                 )}
               </div>
             </motion.div>
