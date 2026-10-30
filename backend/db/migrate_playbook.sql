@@ -1,0 +1,1 @@
+ALTER TABLE siem_alerts ADD COLUMN IF NOT EXISTS ai_playbook TEXT;

@@ -574,6 +574,68 @@ router.post('/ai/investigate/:id', async (req, res) => {
   }
 });
 
+// POST /siem/ai/playbook/:id — generate step-by-step response playbook
+router.post('/ai/playbook/:id', async (req, res) => {
+  const apiKey = process.env.OPENAI_API_KEY || process.env.LLM_API_KEY;
+  if (!apiKey) return res.status(503).json({ error: 'AI not configured' });
+
+  try {
+    const alertRes = await pool.query(`SELECT * FROM siem_alerts WHERE id = $1`, [parseInt(req.params.id)]);
+    if (!alertRes.rows.length) return res.status(404).json({ error: 'Alert not found' });
+    const alert = alertRes.rows[0];
+
+    const OpenAI = require('openai');
+    const client = new OpenAI({ apiKey, timeout: 45000, maxRetries: 2 });
+
+    const completion = await client.chat.completions.create({
+      model: 'gpt-4o',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a SOC incident response expert. Generate concise, actionable playbooks for security analysts. Respond ONLY with valid JSON.',
+        },
+        {
+          role: 'user',
+          content: `Generate a response playbook for this alert:
+- Rule: ${alert.rule_name}
+- Severity: ${alert.severity}
+- Description: ${alert.description}
+- Source IP: ${alert.source_ip ?? 'N/A'}
+- Username: ${alert.username ?? 'N/A'}
+- Hostname: ${alert.hostname ?? 'N/A'}
+
+Respond with:
+{
+  "title": "short playbook title",
+  "steps": [
+    {
+      "step": 1,
+      "action": "specific action to take",
+      "category": "containment|eradication|recovery|analysis",
+      "priority": "immediate|within_1h|within_24h"
+    }
+  ]
+}
+
+Include 5-8 steps. Be specific to the alert details (use actual IPs, hostnames, usernames where relevant). Steps must be practical actions an analyst can execute right now.`,
+        },
+      ],
+      temperature: 0.2,
+    });
+
+    let parsed;
+    try { parsed = JSON.parse(completion.choices[0]?.message?.content || '{}'); }
+    catch { return res.status(500).json({ error: 'AI returned invalid JSON' }); }
+
+    await pool.query(`UPDATE siem_alerts SET ai_playbook = $1, updated_at = NOW() WHERE id = $2`,
+      [JSON.stringify(parsed), parseInt(req.params.id)]);
+    res.json(parsed);
+  } catch (err) {
+    console.error('SIEM AI playbook:', err);
+    res.status(500).json({ error: 'AI playbook failed' });
+  }
+});
+
 // POST /siem/bulk-correlate — checks which usernames/hostnames have open SIEM alerts
 router.post('/bulk-correlate', async (req, res) => {
   const { items } = req.body; // [{username, hostname}]

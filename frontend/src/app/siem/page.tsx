@@ -54,6 +54,7 @@ interface SiemAlert {
   ai_score: number | null;
   ai_summary: string | null;
   ai_narrative: string | null;
+  ai_playbook: string | null;
   ai_generated: boolean | null;
   assigned_to: string | null;
   ticket_id: number | null;
@@ -678,6 +679,7 @@ export default function SiemPage() {
   // Alert detail panel
   const [selectedAlert, setSelectedAlert] = useState<SiemAlert | null>(null);
   const [investigatingId, setInvestigatingId] = useState<number | null>(null);
+  const [playbookLoadingId, setPlaybookLoadingId] = useState<number | null>(null);
 
   // Alert comments
   const [alertComments, setAlertComments] = useState<Record<number, ApiAlertComment[]>>({});
@@ -840,6 +842,22 @@ export default function SiemPage() {
     setResolveModal(id);
     setResolveNotes("");
     setResolveType("true_positive");
+  }
+
+  async function generatePlaybook(id: number) {
+    setPlaybookLoadingId(id);
+    try {
+      toast.loading("Generating playbook…", { id: `pb-${id}` });
+      const res = await api.post(`/siem/ai/playbook/${id}`);
+      const pb = JSON.stringify(res.data);
+      setAlerts(prev => prev.map(a => a.id === id ? { ...a, ai_playbook: pb } : a));
+      if (selectedAlert?.id === id) setSelectedAlert(p => p ? { ...p, ai_playbook: pb } : p);
+      toast.success("Playbook ready", { id: `pb-${id}` });
+    } catch {
+      toast.error("Playbook generation failed", { id: `pb-${id}` });
+    } finally {
+      setPlaybookLoadingId(null);
+    }
   }
 
   // Escalate to ticket
@@ -2179,6 +2197,71 @@ export default function SiemPage() {
                     } catch { return <p className="text-sm text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45">Investigation data unavailable.</p>; }
                   })() : (
                     <p className="text-xs text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45">Click Investigate to generate a full AI investigation narrative with MITRE ATT&CK mapping and remediation steps.</p>
+                  )}
+                </div>
+
+                {/* AI Playbook */}
+                <div className="rounded-xl border border-black/8 dark:border-white/8 bg-white/10 dark:bg-[#1E2128] p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <MdOutlineRule size={16} className="text-emerald-400" />
+                      <span className="font-semibold text-[#1C1E1C] dark:text-white text-sm">Response Playbook</span>
+                    </div>
+                    {!selectedAlert.ai_playbook && (
+                      <button onClick={() => generatePlaybook(selectedAlert.id)}
+                        disabled={playbookLoadingId === selectedAlert.id}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500/10 border border-emerald-500/25 text-emerald-500 hover:bg-emerald-500/20 disabled:opacity-50 transition-colors">
+                        {playbookLoadingId === selectedAlert.id
+                          ? <><span className="w-3 h-3 border-2 border-emerald-400/30 border-t-emerald-400 rounded-full animate-spin" /> Generating…</>
+                          : <><MdAutoAwesome size={13} /> Generate</>}
+                      </button>
+                    )}
+                    {selectedAlert.ai_playbook && (
+                      <button onClick={() => generatePlaybook(selectedAlert.id)}
+                        disabled={playbookLoadingId === selectedAlert.id}
+                        className="text-xs text-[#1C1E1C]/40 dark:text-[#F4F3F4]/30 hover:text-[#1C1E1C] dark:hover:text-white transition-colors">
+                        Regenerate
+                      </button>
+                    )}
+                  </div>
+                  {selectedAlert.ai_playbook ? (() => {
+                    try {
+                      const pb = JSON.parse(selectedAlert.ai_playbook);
+                      const catColor: Record<string, string> = {
+                        containment: "bg-red-500/10 border-red-500/20 text-red-400",
+                        eradication: "bg-orange-400/10 border-orange-400/20 text-orange-400",
+                        recovery: "bg-emerald-500/10 border-emerald-500/20 text-emerald-500",
+                        analysis: "bg-blue-500/10 border-blue-500/20 text-blue-400",
+                      };
+                      const priBadge: Record<string, string> = {
+                        immediate: "text-red-400 font-bold",
+                        within_1h: "text-amber-400 font-semibold",
+                        within_24h: "text-[#1C1E1C]/50 dark:text-[#F4F3F4]/40",
+                      };
+                      const priLabel: Record<string, string> = {
+                        immediate: "NOW",
+                        within_1h: "< 1h",
+                        within_24h: "< 24h",
+                      };
+                      return (
+                        <div className="space-y-2">
+                          {pb.steps?.map((s: { step: number; action: string; category: string; priority: string }, i: number) => (
+                            <div key={i} className="flex items-start gap-3 py-2 border-b border-[#1F6A5C]/8 dark:border-white/5 last:border-0">
+                              <span className="w-5 h-5 rounded-full bg-[#1F6A5C]/12 dark:bg-[#3FFFA3]/10 text-[#1F6A5C] dark:text-[#3FFFA3] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">{s.step}</span>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm text-[#1C1E1C] dark:text-[#F4F3F4]/80 leading-snug">{s.action}</p>
+                                <div className="flex items-center gap-2 mt-1">
+                                  <span className={`text-[10px] px-1.5 py-0.5 rounded border ${catColor[s.category] ?? catColor.analysis}`}>{s.category}</span>
+                                  <span className={`text-[10px] ${priBadge[s.priority] ?? priBadge.within_24h}`}>{priLabel[s.priority] ?? s.priority}</span>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    } catch { return <p className="text-sm text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45">Playbook data unavailable.</p>; }
+                  })() : (
+                    <p className="text-xs text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45">Generate a step-by-step response checklist tailored to this specific alert.</p>
                   )}
                 </div>
 
