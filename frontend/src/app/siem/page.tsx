@@ -1894,9 +1894,9 @@ export default function SiemPage() {
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setResolveModal(null)}
-              className="fixed inset-0 bg-black/50 z-40" />
+              className="fixed inset-0 bg-black/50 z-[80]" />
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-              className="fixed inset-0 z-50 flex items-center justify-center p-4">
+              className="fixed inset-0 z-[81] flex items-center justify-center p-4">
               <div className="w-full max-w-md bg-white dark:bg-[#1a1c1a] rounded-2xl shadow-2xl border border-white/20 dark:border-white/8 p-6">
                 <h3 className="font-bold text-[#1C1E1C] dark:text-white text-lg mb-1">Resolve Alert</h3>
                 <p className="text-sm text-[#1C1E1C]/70 dark:text-[#F4F3F4]/55 dark:text-[#F4F3F4]/45 mb-4">Record your determination — this feeds into AI QA review.</p>
