@@ -1022,7 +1022,7 @@ export default function SiemPage() {
     <>
       <SideMenu />
       <div className="min-h-screen bg-[#F4F3F4] dark:bg-[#131517]" style={{ paddingLeft: "var(--app-sidebar-width, 308px)" }}>
-        <div className="max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 py-6 pb-16">
+        <div className={`max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 py-6 pb-16 transition-all duration-300 ${selectedAlert ? "pr-[580px]" : ""}`}>
 
           {/* ── Header ── */}
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between mb-6 flex-wrap gap-3">
