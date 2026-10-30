@@ -1973,14 +1973,15 @@ export default function SiemPage() {
                 </div>
                 <div className="flex gap-3">
                   <div className="flex-1">
-                    <label className="text-xs font-semibold text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mb-1.5 block">Send To (email)</label>
-                    <input value={escalateRecipient} onChange={e => setEscalateRecipient(e.target.value)}
-                      placeholder="user@company.com"
-                      list="escalate-users-list"
-                      className="w-full px-3 py-2 rounded-lg text-sm border border-[#1F6A5C]/20 dark:border-white/10 bg-[#F4F3F4]/50 dark:bg-[#1E2128] text-[#1C1E1C] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/30" />
-                    <datalist id="escalate-users-list">
-                      {teamUsers.map(u => <option key={u.email} value={u.email} label={u.name} />)}
-                    </datalist>
+                    <label className="text-xs font-semibold text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mb-1.5 block">Send To — who triggered this alert?</label>
+                    <select value={escalateRecipient} onChange={e => setEscalateRecipient(e.target.value)}
+                      className="w-full px-3 py-2 rounded-lg text-sm border border-[#1F6A5C]/20 dark:border-white/10 bg-[#F4F3F4]/50 dark:bg-[#1E2128] text-[#1C1E1C] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1F6A5C]/30">
+                      <option value="">— pick a team member —</option>
+                      {teamUsers.map(u => (
+                        <option key={u.email} value={u.email}>{u.name} ({u.email})</option>
+                      ))}
+                    </select>
+                    <p className="text-[10px] text-[#1C1E1C]/40 dark:text-[#F4F3F4]/30 mt-1">Select the person whose account was flagged — they'll receive a verification request in Comms.</p>
                   </div>
                   <div className="w-32 shrink-0">
                     <label className="text-xs font-semibold text-[#1C1E1C]/60 dark:text-[#F4F3F4]/45 mb-1.5 block">Priority</label>
